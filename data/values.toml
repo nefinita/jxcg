@@ -1,0 +1,11 @@
+# 值集：交易行费率 / 取整 / 保管费（可随数据通道下发）
+
+[[zhiji]]
+id = "live-130"
+mingcheng = "正式服·130级"
+note = "5% 四舍五入 + 保管费 80 银/24h（社区口径，实机校准后更新）"
+
+[zhiji.shouxufei]
+shuilv_bp = 500
+quzheng = "half_up"
+baoguanfei = 8000

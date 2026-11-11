@@ -1,0 +1,24 @@
+# 五行石精炼（样例骨架，规则来自社区整理、待实机校准；界面可编辑）
+# 注意：同一等级存在可交易/绑定两个 id，P2 数据整理时按可交易版本归一。
+
+[[zhuanhuan]]
+id = "wuxing_1to3"
+mingcheng = "一级→三级（13 合 1）"
+cong = "5_24423"
+dao = "5_24425"
+xuyao = 13
+jingli = 10
+jinbi = 3900
+chenggonglv_bp = 10000
+laiyuan = "shequ-2023"
+
+[[zhuanhuan]]
+id = "wuxing_3to4"
+mingcheng = "三级+一级→四级（成功率 48.78%）"
+cong = "5_24425"
+dao = "5_24426"
+xuyao = 1
+jingli = 10
+jinbi = 8900
+chenggonglv_bp = 4878
+laiyuan = "shequ-2023"

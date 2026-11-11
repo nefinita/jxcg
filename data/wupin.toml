@@ -1,0 +1,91 @@
+# 物品（样例，P2 由 JX3BOX 全量导出替换）
+
+[[wupin]]
+id = "5_30853"
+mingcheng = "珠贝母"
+pinlei = "cailiao"
+dui = 20
+shangdianjia = 1000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30845"
+mingcheng = "云芝"
+pinlei = "cailiao"
+dui = 20
+shangdianjia = 1000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89970"
+mingcheng = "酱料"
+pinlei = "cailiao"
+dui = 20
+shangdianjia = 1
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89167"
+mingcheng = "竹沥"
+pinlei = "cailiao"
+dui = 20
+shangdianjia = 20
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31984"
+mingcheng = "老豆腐"
+pinlei = "cailiao"
+dui = 20
+shangdianjia = 55
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89346"
+mingcheng = "云芝竹沥羹"
+pinlei = "chengpin"
+dui = 20
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89347"
+mingcheng = "云芝竹沥羹·精"
+pinlei = "chengpin"
+dui = 20
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_24423"
+mingcheng = "五行石（一级）"
+pinlei = "wuxingshi"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_24424"
+mingcheng = "五行石（二级）"
+pinlei = "wuxingshi"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_24425"
+mingcheng = "五行石（三级）"
+pinlei = "wuxingshi"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_24426"
+mingcheng = "五行石（四级）"
+pinlei = "wuxingshi"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_24427"
+mingcheng = "五行石（五级）"
+pinlei = "wuxingshi"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_24428"
+mingcheng = "五行石（六级）"
+pinlei = "wuxingshi"
+laiyuan = "jx3box"

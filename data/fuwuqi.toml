@@ -1,0 +1,26 @@
+# 服务器（样例；P2 从 JX3BOX/jx3box-data data/server 全量导出）
+
+[[fuwuqi]]
+id = "jiandanqinxin"
+mingcheng = "剑胆琴心"
+daju = "电信区"
+
+[[fuwuqi]]
+id = "changan"
+mingcheng = "长安城"
+daju = "电信区"
+
+[[fuwuqi]]
+id = "weiwo"
+mingcheng = "唯我独尊"
+daju = "电信区"
+
+[[fuwuqi]]
+id = "shanhai"
+mingcheng = "山海相逢"
+daju = "无界区"
+
+[[fuwuqi]]
+id = "meijianxue"
+mingcheng = "眉间雪"
+daju = "无界区"

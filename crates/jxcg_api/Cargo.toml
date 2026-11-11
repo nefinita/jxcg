@@ -1,0 +1,12 @@
+[package]
+name = "jxcg_api"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "jxcg_api"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { workspace = true }

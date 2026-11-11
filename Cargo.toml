@@ -1,0 +1,24 @@
+[workspace]
+resolver = "2"
+members = ["crates/*", "examples/jxcg_app/src-tauri", "server_tools/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0"
+readme = "README.md"
+
+[workspace.dependencies]
+jxcg_api = { path = "crates/jxcg_api" }
+jxcg_core = { path = "crates/jxcg_core" }
+jxcg_market = { path = "crates/jxcg_market" }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+toml = "1.1.2"
+tokio = { version = "1.52.1", features = ["full"] }
+reqwest = { version = "0.13.3", features = ["json"] }
+tauri = { version = "2", features = [] }
+tauri-build = { version = "2", features = [] }
+
+[profile.dev.package.jxcg_core]
+opt-level = 2

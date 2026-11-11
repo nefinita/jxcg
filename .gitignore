@@ -1,0 +1,13 @@
+/target
+node_modules/
+examples/jxcg_app/dist/
+*.tsbuildinfo
+*.rlib
+**/.DS_Store
+.cache/
+.scratch/
+# 本地数据/存档（用户行情、设置不进仓库）
+hangqing/
+settings.toml
+.cache/
+examples/jxcg_app/src-tauri/gen/

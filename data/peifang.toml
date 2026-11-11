@@ -1,0 +1,43 @@
+# 生活技艺配方（样例：云芝竹沥羹，数据抓自 JX3BOX manufacture/cooking/437）
+# P2 由 server_tools/jx3box-export 全量导出（5 技艺 ≈ 1036 条）。
+
+[[peifang]]
+id = "cooking_437"
+mingcheng = "云芝竹沥羹"
+jiyi = "pengren"
+dengji = 50
+jingli = 75
+zhizuofei = 0
+laiyuan = "jx3box"
+
+[[peifang.cailiao]]
+wupin_id = "5_30853"
+shuliang = 1
+
+[[peifang.cailiao]]
+wupin_id = "5_30845"
+shuliang = 3
+
+[[peifang.cailiao]]
+wupin_id = "5_89970"
+shuliang = 3
+
+[[peifang.cailiao]]
+wupin_id = "5_89167"
+shuliang = 1
+
+[[peifang.cailiao]]
+wupin_id = "5_31984"
+shuliang = 10
+
+[[peifang.chuchan]]
+wupin_id = "5_89346"
+min = 2
+max = 3
+quanzhong = 1006633
+
+[[peifang.chuchan]]
+wupin_id = "5_89347"
+min = 2
+max = 3
+quanzhong = 41943
