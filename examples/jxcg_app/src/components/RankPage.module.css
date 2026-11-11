@@ -1,0 +1,45 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.select {
+  width: 110px;
+}
+
+.controlsSpacer {
+  flex: 1;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
+  gap: var(--space-md);
+  align-items: start;
+}
+
+@media (max-width: 1200px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.tableCard,
+.chartCard {
+  min-width: 0;
+}
+
+.chart {
+  width: 100%;
+}
+
+.metricActive {
+  font-weight: 700;
+  color: var(--primary-600);
+}
+
+.rowQuejia {
+  opacity: 0.62;
+}

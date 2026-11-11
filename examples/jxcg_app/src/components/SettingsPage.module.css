@@ -1,0 +1,53 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.rateGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--space-md);
+}
+
+@media (max-width: 900px) {
+  .rateGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.range {
+  flex: 1;
+  accent-color: var(--primary-500);
+}
+
+.rangeValue {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  min-width: 26px;
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+.dataList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--space-sm);
+}
+
+.dataList > div {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: var(--space-sm);
+  font-size: 0.83rem;
+}
+
+.dataList dt {
+  color: var(--text-muted);
+}
+
+.dataList dd {
+  color: var(--text-secondary);
+  word-break: break-word;
+}

@@ -32,7 +32,6 @@ pub fn load_settings(app: tauri::AppHandle) -> Result<Settings, String> {
 #[tauri::command]
 pub fn save_settings(app: tauri::AppHandle, settings: Settings) -> Result<(), String> {
     let path = settings_path(&app)?;
-    let text =
-        toml::to_string_pretty(&settings).map_err(|err| format!("序列化设置失败：{err}"))?;
+    let text = toml::to_string_pretty(&settings).map_err(|err| format!("序列化设置失败：{err}"))?;
     fs::write(&path, text).map_err(|err| format!("写入设置失败：{err}"))
 }

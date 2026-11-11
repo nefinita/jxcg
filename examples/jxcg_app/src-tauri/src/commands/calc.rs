@@ -17,8 +17,7 @@ pub fn calculate_net(req: NetRequest) -> Result<NetResult, String> {
 /// 保本总售价。
 #[tauri::command]
 pub fn calculate_baoben(req: BaobenRequest) -> Result<Tong, String> {
-    fee::baobenjia(req.chengben, &req.shouxufei, req.guadan_cishu)
-        .map_err(|err| err.to_string())
+    fee::baobenjia(req.chengben, &req.shouxufei, req.guadan_cishu).map_err(|err| err.to_string())
 }
 
 /// 单配方成本利润。

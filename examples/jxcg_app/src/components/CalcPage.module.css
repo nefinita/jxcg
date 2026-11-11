@@ -1,0 +1,36 @@
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.paramGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.paramDivider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 2px 0;
+}
+
+.range {
+  flex: 1;
+  min-width: 90px;
+  accent-color: var(--primary-500);
+}
+
+.recipeName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resultStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}

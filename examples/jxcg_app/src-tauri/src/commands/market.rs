@@ -33,8 +33,7 @@ pub fn upsert_price(
     danjia: Tong,
 ) -> Result<(), String> {
     let dir = app_data_dir(&app)?;
-    jxcg_market::upsert_price(&dir, &fuwuqi_id, &wupin_id, danjia)
-        .map_err(|err| err.to_string())
+    jxcg_market::upsert_price(&dir, &fuwuqi_id, &wupin_id, danjia).map_err(|err| err.to_string())
 }
 
 /// 联网刷新行情；失败自动回落最后一次拉取价（last-known-good）。
