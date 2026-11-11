@@ -56,7 +56,7 @@ function visiblePageText(): string {
   return visible.map((element) => element.textContent ?? "").join("\n");
 }
 
-describe("JXCG 应用壳与四页面（浏览器 mock）", () => {
+describe("JXCG 应用壳与五页面（浏览器 mock）", () => {
   it("启动加载 mock 目录，默认进入计算页并可展开/收起导航", async () => {
     await mount();
     expect(host.textContent).toContain("JXCG · 剑网3 交易行计算器");
@@ -72,7 +72,7 @@ describe("JXCG 应用壳与四页面（浏览器 mock）", () => {
     expect(host.querySelector('button[title="收起导航"]')).not.toBeNull();
   });
 
-  it("四个页面可切换、页面保活，主题切换生效", async () => {
+  it("五个页面可切换、页面保活，主题切换生效", async () => {
     await mount();
 
     // 计算页输入配方搜索
@@ -89,6 +89,12 @@ describe("JXCG 应用壳与四页面（浏览器 mock）", () => {
     expect(visiblePageText()).toContain("物品价格");
     expect(visiblePageText()).toContain("珠贝母");
     expect(visiblePageText()).toContain("保存快照");
+
+    // 五行石页（mock 精炼计算）
+    await clickButton("五行石");
+    expect(visiblePageText()).toContain("转换配方");
+    expect(visiblePageText()).toContain("期望投入次数");
+    expect(visiblePageText()).toContain("精炼结果");
 
     // 排行页（mock 排名计算 + 图表）
     await clickButton("排行");

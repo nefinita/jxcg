@@ -449,6 +449,14 @@ export interface MarketPrefs {
   selected_wupin_id: string;
 }
 
+/** 五行石页偏好（本地持久化）。 */
+export interface WuxingshiPrefs {
+  /** 选中的转换配方 id（catalog.wuxingshi[].id） */
+  zhuanhuan_id: string;
+  /** 目标成功次数（cishu；期望投入 = cishu / 成功率） */
+  cishu: number;
+}
+
 /** 排行页偏好（本地持久化）。 */
 export interface RankPrefs {
   zhibiao: PaihangZhibiao;

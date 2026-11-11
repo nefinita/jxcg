@@ -52,6 +52,16 @@ export function IconRank(props: IconProps) {
   );
 }
 
+/** 五行石 / 宝石 */
+export function IconGem(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M7 3.5h10l4 5.5-9 11.5L3 9z" />
+      <path d="M3 9h18M7 9l5 11.5M17 9l-5 11.5M7 3.5 5 9M17 3.5 19 9" />
+    </svg>
+  );
+}
+
 /** 设置 / 齿轮 */
 export function IconGear(props: IconProps) {
   return (

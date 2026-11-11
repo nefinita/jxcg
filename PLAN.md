@@ -226,14 +226,15 @@ baoguanfei = 8000         # 铜 / 24h
 - **版本**：root workspace version 从 `0.1.0` 起；数据 `[version]{level, season, modified}`；值集 id（如 `live-130`）。
 - **测试**：core 金标准用例如 §6.4 口径（金额解析/格式化、5% HALF_UP 取整边界、保管费、保本价 ±1 铜、概率期望产出、缺价配方、排行稳定性）；
   市场层用录制的 JSON fixture 做 provider 解析测试；前端 vitest 覆盖 MoneyInput、结果卡、持久化。
-- **窗口/包体**：`withGlobalTauri: true`、CSP 参考 jpcg；先出 macOS 本机可跑，Windows/Linux 打包放 P4。
+- **窗口/包体**：`withGlobalTauri: true`、CSP 参考 jpcg；macOS `.app` 已可打包（`bun run tauri build --bundles app`，数据经 `bundle.resources` 映射到 `Contents/Resources/data`）；Windows/Linux 打包/签名公证放后续。
 - **数据合规**：README 标注数据来自 JX3BOX / 游戏数据；若上游反对，改为「运行时拉取」或「用户导入」模式（参考 jpcg PLAN M2）。
 
 ## 9. 里程碑
 
 > 进度快照（2026-11-12）：P1 ✅ 骨架/核心计算；P2 ✅ 全量数据导出（1036 配方/1361 物品/22 服务器）+ 配方引擎；
-> P3 ✅ 行情缓存/降级、Tauri 命令、前端四页、排行/设置全部完成（`make check-all` 全绿，debug 启动冒烟通过）；
-> P4 进行中：五行石 UI、快照后端化、打包/更新通道待做。
+> P3 ✅ 行情缓存/降级、Tauri 命令、前端四页、排行/设置全部完成；
+> P4 ✅ 五行石 UI、应用图标、macOS `.app` 打包（资源目录映射 + 启动冒烟）、Makefile/CI/changes/README/AGENTS；
+> 后续（可选）：Windows 安装包、签名公证、更新通道、值集费率/快照后端持久化。`make check-all` 全绿。
 
 
 | 阶段 | 内容 | 验收 |

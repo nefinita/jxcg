@@ -15,6 +15,7 @@ import type {
   Settings,
   Shouxufei,
   Tong,
+  WuxingshiPrefs,
 } from "../types";
 import { DEFAULT_SETTINGS } from "../utils/constants";
 
@@ -214,3 +215,22 @@ export function isRankPrefs(value: unknown): value is RankPrefs {
 export const calcPrefsSchema: PersistentSchema<CalcPrefs> = { version: 1, validate: isCalcPrefs };
 export const marketPrefsSchema: PersistentSchema<MarketPrefs> = { version: 1, validate: isMarketPrefs };
 export const rankPrefsSchema: PersistentSchema<RankPrefs> = { version: 1, validate: isRankPrefs };
+
+// ---------------------------------------------------------------------------
+// 五行石页偏好
+// ---------------------------------------------------------------------------
+
+export const DEFAULT_WUXINGSHI_PREFS: WuxingshiPrefs = {
+  zhuanhuan_id: "",
+  cishu: 1,
+};
+
+export function isWuxingshiPrefs(value: unknown): value is WuxingshiPrefs {
+  if (!isRecord(value)) return false;
+  return typeof value.zhuanhuan_id === "string" && isFiniteNumber(value.cishu);
+}
+
+export const wuxingshiPrefsSchema: PersistentSchema<WuxingshiPrefs> = {
+  version: 1,
+  validate: isWuxingshiPrefs,
+};

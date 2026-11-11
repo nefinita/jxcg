@@ -5,6 +5,7 @@ import CalcPage from "./components/CalcPage";
 import MarketPage from "./components/MarketPage";
 import RankPage from "./components/RankPage";
 import SettingsPage from "./components/SettingsPage";
+import WuxingshiPage from "./components/WuxingshiPage";
 import StatusBar from "./components/StatusBar";
 import Toast from "./components/Toast";
 import ThemeToggle from "./components/ThemeToggle";
@@ -496,6 +497,21 @@ export default function App() {
                     refreshing={refreshing}
                     progress={refreshProgress}
                     addToast={addToast}
+                    setStatus={setStatus}
+                  />
+                </div>
+              )}
+              {visitedPages.has("wuxingshi") && (
+                <div className={styles.residentPage} hidden={page !== "wuxingshi"}>
+                  <WuxingshiPage
+                    catalog={catalog}
+                    settings={settings}
+                    updateSettings={updateSettings}
+                    shouxufei={shouxufei}
+                    prices={prices}
+                    fuwuqiId={fuwuqiId}
+                    fuwuqiName={fuwuqi?.mingcheng ?? fuwuqiId}
+                    onOpenMarket={() => navigate("market")}
                     setStatus={setStatus}
                   />
                 </div>

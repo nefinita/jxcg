@@ -61,7 +61,10 @@ pub fn resolve_data_dir(app: &tauri::AppHandle) -> Result<PathBuf, String> {
         if path.is_dir() {
             return Ok(path);
         }
-        return Err(format!("JXCG_DATA_DIR 指向的目录不存在：{}", path.display()));
+        return Err(format!(
+            "JXCG_DATA_DIR 指向的目录不存在：{}",
+            path.display()
+        ));
     }
     if let Ok(resource_dir) = app.path().resource_dir() {
         let candidate = resource_dir.join("data");

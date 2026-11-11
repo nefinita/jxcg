@@ -6,11 +6,12 @@ import {
   IconChevronRight,
   IconCoin,
   IconGear,
+  IconGem,
   IconRank,
 } from "./icons";
 import styles from "./ActivityBar.module.css";
 
-export type Page = "calc" | "market" | "rank" | "settings";
+export type Page = "calc" | "market" | "wuxingshi" | "rank" | "settings";
 
 interface Props {
   currentPage: Page;
@@ -20,6 +21,7 @@ interface Props {
 const ITEMS: ReadonlyArray<{ page: Page; Icon: typeof IconCalc; label: string }> = [
   { page: "calc", Icon: IconCalc, label: "计算" },
   { page: "market", Icon: IconCoin, label: "行情" },
+  { page: "wuxingshi", Icon: IconGem, label: "五行石" },
   { page: "rank", Icon: IconRank, label: "排行" },
   { page: "settings", Icon: IconGear, label: "设置" },
 ];

@@ -14,14 +14,20 @@ describe("行情刷新范围", () => {
     expect(firstMaterial).toBeGreaterThanOrEqual(0);
     expect(firstOutput).toBeGreaterThanOrEqual(0);
     expect(firstMaterial).toBeLessThan(firstOutput);
+    // 五行石转换的两种石必须在刷新范围内（精炼页依赖它们定价）
+    expect(ids).toContain("5_24423");
+    expect(ids).toContain("5_24425");
+    expect(ids).toContain("5_24426");
   });
 
-  it("支持 limit 截断，空配方退回物品列表", () => {
+  it("支持 limit 截断；无配方时只刷五行石，全空退回物品列表", () => {
     const catalog = mockCatalog();
     expect(collectRefreshWupinIds(catalog, 3)).toHaveLength(3);
-    const empty = { ...catalog, peifang: [] };
-    const ids = collectRefreshWupinIds(empty, 5);
-    expect(ids).toHaveLength(5);
-    expect(ids).toEqual(catalog.wupin.slice(0, 5).map((wupin) => wupin.id));
+    // 没有配方：五行石转换的两种石仍然要刷新
+    const noRecipe = { ...catalog, peifang: [] };
+    expect(collectRefreshWupinIds(noRecipe, 5)).toEqual(["5_24423", "5_24425", "5_24426"]);
+    // 配方和五行石都没有：退回目录物品
+    const empty = { ...catalog, peifang: [], wuxingshi: [] };
+    expect(collectRefreshWupinIds(empty, 5)).toEqual(catalog.wupin.slice(0, 5).map((wupin) => wupin.id));
   });
 });

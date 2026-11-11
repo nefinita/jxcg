@@ -16,6 +16,8 @@ export const STORAGE_KEYS = {
   calcOverrides: "jxcg_calc_price_overrides",
   marketPrefs: "jxcg_market_prefs",
   rankPrefs: "jxcg_rank_prefs",
+  wuxingshiPrefs: "jxcg_wuxingshi_prefs",
+  wuxingshiOverrides: "jxcg_wuxingshi_overrides",
 } as const;
 
 /** 生活技艺显示名（顺序与 jxcg_api::Jiyi::ALL 一致）。 */
