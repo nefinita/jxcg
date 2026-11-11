@@ -54,6 +54,8 @@ make data-export    # P2：jx3box-export 重新导出 data/
 - **Tauri commands**：`calculate_net` / `calculate_baoben` / `calculate_recipe` / `rank_recipes` / `calculate_convert` /
   `load_catalog` / `reload_catalog` / `load_prices` / `upsert_price` / `refresh_prices` / `load_settings` / `save_settings` / `ping`。
 - **前端**：React 19 + TS + Vite + CSS Modules；`window.__TAURI__` 调用，浏览器下走 `api/commands.ts` 的 mock。
+- **行情刷新**：Tauri 命令 `refresh_prices` 通过事件 `refresh-progress` 回传 `RefreshProgress { done, total, failed }`；
+  JX3BOX 的 server 参数必须是**服务器中文名**（`catalog.fuwuqi[].mingcheng`），传 pinyin id 会被误判缺价；服务器 id 用完整 pinyin（如 `changancheng`）。
 - **目录缓存**：`AppState` 进程内缓存 `Arc<Catalog>`（启动后 data/ 不变），`reload_catalog` 清缓存重载。
 - **Tauri 配置**：`withGlobalTauri: true`、CSP `null`、`frontendDist: ../dist`、`beforeDevCommand: bun run dev`。
 - **库代码禁止 `unwrap/expect`**：统一 `Result<_, JxcgError>`，Tauri 命令返回中文错误串。
