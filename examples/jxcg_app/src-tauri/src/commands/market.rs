@@ -44,7 +44,7 @@ pub async fn refresh_prices(
     fuwuqi_id: String,
     wupin_ids: Vec<String>,
 ) -> Result<RefreshResult, String> {
-    let catalog = state.catalog()?;
+    let catalog = state.catalog(&app)?;
     let fuwuqi = catalog
         .fuwuqi
         .iter()

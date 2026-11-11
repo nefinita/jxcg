@@ -47,7 +47,7 @@ make data-export    # P2：jx3box-export 重新导出 data/
 - **费用口径**：手续费 5%（`shuilv_bp = 500`，默认 HALF_UP 到铜）+ 保管费 80 银/24h（`baoguanfei = 8000`）；
   全部在值集 `data/values.toml`，界面可改。依据见 PLAN.md §6.2。
 - **产出概率**：权重分母 `QUANZHONG_FENMU = 1_048_576`（2^20）；普通/精制 = 1006633/41943。
-- **数据目录**：`JXCG_DATA_DIR` > exe 同目录 `data/` > debug 时仓库 `data/`。
+- **数据目录**：`JXCG_DATA_DIR`（无效即报错）> Tauri `resource_dir()/data`（打包后的 .app/安装包）> exe 同目录 `data/` > debug 时仓库 `data/`；见 `src-tauri/src/state.rs`。
 - **用户数据**：行情/快照/设置放应用数据目录，不进仓库（`.gitignore` 已排除 `hangqing/`、`settings.toml`）。
 - **行情源**：JX3BOX `https://next2.jx3box.com/api/item-price/{id}/detail?server=`（非官方、无 SLA）。
   请求统一在 `jxcg_market`，缓存/并发上限/失败降级（last-known-good）在 P3 实现。
