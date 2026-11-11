@@ -1,57 +1,484 @@
-# 物品（样例，P2 由 JX3BOX 全量导出替换）
+# 物品（自动生成；来源：JX3BOX item_merged + craft/price）
+# 生成日期：2026-11-12（北京时间）
+# pinlei 为粗分（cailiao/chengpin/xiaohao/wuxingshi）；不确定的按材料处理并标 laiyuan=jx3box(粗分)
+# shangdianjia 只取 NPC 售卖价（craft/price）；物品表 Price 是卖给商店的价，不能当成本兜底，未采用
+# dui（一组堆叠数）上游接口未提供，暂时缺省；需要按组购买时由前端/设置兜底
 
 [[wupin]]
-id = "5_30853"
-mingcheng = "珠贝母"
+id = "5_1829"
+mingcheng = "竹叶青"
 pinlei = "cailiao"
-dui = 20
-shangdianjia = 1000
+shangdianjia = 120000
 laiyuan = "jx3box"
 
 [[wupin]]
-id = "5_30845"
-mingcheng = "云芝"
+id = "5_1830"
+mingcheng = "郎官清"
 pinlei = "cailiao"
-dui = 20
-shangdianjia = 1000
+shangdianjia = 120000
 laiyuan = "jx3box"
 
 [[wupin]]
-id = "5_89970"
-mingcheng = "酱料"
+id = "5_1831"
+mingcheng = "西市腔"
 pinlei = "cailiao"
-dui = 20
-shangdianjia = 1
+shangdianjia = 120000
 laiyuan = "jx3box"
 
 [[wupin]]
-id = "5_89167"
-mingcheng = "竹沥"
+id = "5_1832"
+mingcheng = "富水"
 pinlei = "cailiao"
-dui = 20
-shangdianjia = 20
+shangdianjia = 120000
 laiyuan = "jx3box"
 
 [[wupin]]
-id = "5_31984"
-mingcheng = "老豆腐"
-pinlei = "cailiao"
-dui = 20
-shangdianjia = 55
-laiyuan = "jx3box"
-
-[[wupin]]
-id = "5_89346"
-mingcheng = "云芝竹沥羹"
+id = "5_2189"
+mingcheng = "铜镜"
 pinlei = "chengpin"
-dui = 20
 laiyuan = "jx3box"
 
 [[wupin]]
-id = "5_89347"
-mingcheng = "云芝竹沥羹·精"
+id = "5_2292"
+mingcheng = "腻味的杂碎面"
 pinlei = "chengpin"
-dui = 20
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2299"
+mingcheng = "没有酒的任侠餐"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2300"
+mingcheng = "不够兄弟的兄弟宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2302"
+mingcheng = "肥腻血肠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2303"
+mingcheng = "真正的鸿门宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2304"
+mingcheng = "杂味宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2305"
+mingcheng = "不地道的三头宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2433"
+mingcheng = "绣花香包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2466"
+mingcheng = "山水刺绣手绢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2467"
+mingcheng = "山水丹青染布画"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2578"
+mingcheng = "铜偶"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2589"
+mingcheng = "连心锁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2594"
+mingcheng = "精致铜盒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2603"
+mingcheng = "铁偶"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2631"
+mingcheng = "银精巧饰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_2871"
+mingcheng = "五彩墨"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3236"
+mingcheng = "咬不动的蹄筋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3485"
+mingcheng = "带酸味的包子"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3505"
+mingcheng = "不太香的栗子烧肉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3573"
+mingcheng = "水纹纸"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3574"
+mingcheng = "浣花笺"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3779"
+mingcheng = "小香包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3782"
+mingcheng = "彩锦香包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3797"
+mingcheng = "水波绫香袋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3810"
+mingcheng = "蹴鞠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3811"
+mingcheng = "绫罗绣球"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3819"
+mingcheng = "刺绣手绢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3820"
+mingcheng = "丹青染布画"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_3843"
+mingcheng = "徽墨"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5044"
+mingcheng = "精巧铁印"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5229"
+mingcheng = "煮烂的盘龙饺子"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5230"
+mingcheng = "盘龙饺"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5231"
+mingcheng = "煮烂的戏凤饺子"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5232"
+mingcheng = "戏凤饺"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5245"
+mingcheng = "五彩球·赤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5246"
+mingcheng = "五彩球·蓝"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5269"
+mingcheng = "饺子皮"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_5270"
+mingcheng = "饺子馅"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6024"
+mingcheng = "年年有鱼灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6066"
+mingcheng = "元宝灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6067"
+mingcheng = "桃花灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6068"
+mingcheng = "龙凤呈祥"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6069"
+mingcheng = "火树银花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6070"
+mingcheng = "窜天猴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6072"
+mingcheng = "鞭炮"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6073"
+mingcheng = "焰火棒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6076"
+mingcheng = "熠熠生辉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6077"
+mingcheng = "彩云逐月"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6246"
+mingcheng = "青铜钥匙"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6247"
+mingcheng = "锡制钥匙"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6248"
+mingcheng = "精铁钥匙"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6249"
+mingcheng = "青铜钥匙模"
+pinlei = "cailiao"
+shangdianjia = 1800
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6250"
+mingcheng = "锡制钥匙模"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6251"
+mingcheng = "精铁钥匙模"
+pinlei = "cailiao"
+shangdianjia = 9000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6646"
+mingcheng = "药料"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_6648"
+mingcheng = "药用黄丹"
+pinlei = "cailiao"
+shangdianjia = 12000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_7165"
+mingcheng = "挂件包·背部"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_7166"
+mingcheng = "挂件包·腰部"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10027"
+mingcheng = "素银钥匙"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10028"
+mingcheng = "鎏金钥匙"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10029"
+mingcheng = "素银钥匙模"
+pinlei = "cailiao"
+shangdianjia = 60000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10030"
+mingcheng = "鎏金钥匙模"
+pinlei = "cailiao"
+shangdianjia = 120000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10172"
+mingcheng = "旦火油"
+pinlei = "cailiao"
+shangdianjia = 300000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10173"
+mingcheng = "百股线"
+pinlei = "cailiao"
+shangdianjia = 300000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10175"
+mingcheng = "百染线"
+pinlei = "cailiao"
+shangdianjia = 30000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_10176"
+mingcheng = "炼火石"
+pinlei = "cailiao"
+shangdianjia = 30000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_11521"
+mingcheng = "辣酱肉片"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_20971"
+mingcheng = "咸鱼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_22145"
+mingcheng = "挂件包·面部"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_22917"
+mingcheng = "衣饰包·披风"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_22981"
+mingcheng = "衣饰包·肩饰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_24212"
+mingcheng = "炼狱水煮鱼"
+pinlei = "chengpin"
 laiyuan = "jx3box"
 
 [[wupin]]
@@ -88,4 +515,7731 @@ laiyuan = "jx3box"
 id = "5_24428"
 mingcheng = "五行石（六级）"
 pinlei = "wuxingshi"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_26057"
+mingcheng = "膘然心动"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_26231"
+mingcheng = "如意饺"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_26232"
+mingcheng = "煮烂的如意饺"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30674"
+mingcheng = "铜矿"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30675"
+mingcheng = "锡矿"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30676"
+mingcheng = "铅锌矿"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30677"
+mingcheng = "铁矿"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30678"
+mingcheng = "银矿"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30679"
+mingcheng = "硼砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30680"
+mingcheng = "青石"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30681"
+mingcheng = "金沙"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30682"
+mingcheng = "杂碎"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30823"
+mingcheng = "碎肉"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30824"
+mingcheng = "精肉"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30825"
+mingcheng = "血"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30826"
+mingcheng = "骨头"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30827"
+mingcheng = "鱼肉"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30828"
+mingcheng = "宝石"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30829"
+mingcheng = "蛋"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30830"
+mingcheng = "甘草"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30831"
+mingcheng = "大黄"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30832"
+mingcheng = "千里香"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30833"
+mingcheng = "枸杞"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30834"
+mingcheng = "川贝"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30835"
+mingcheng = "五味子"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30836"
+mingcheng = "虫草"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30837"
+mingcheng = "芍药"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30838"
+mingcheng = "彼岸花"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30839"
+mingcheng = "珊瑚"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30840"
+mingcheng = "露水"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30841"
+mingcheng = "荷叶"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30842"
+mingcheng = "紫苏"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30843"
+mingcheng = "鱼腥草"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30844"
+mingcheng = "黄花菜"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30845"
+mingcheng = "云芝"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30846"
+mingcheng = "玛瑙"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30847"
+mingcheng = "银鳞"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30848"
+mingcheng = "紫檀"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30849"
+mingcheng = "人参"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30850"
+mingcheng = "辉石"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30851"
+mingcheng = "兽皮胶"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30852"
+mingcheng = "猫眼石"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30853"
+mingcheng = "珠贝母"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30854"
+mingcheng = "蜂王浆"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30855"
+mingcheng = "沉香木"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30856"
+mingcheng = "鸡血石"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30873"
+mingcheng = "羊皮"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30874"
+mingcheng = "羊肉"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_30875"
+mingcheng = "羊杂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31012"
+mingcheng = "佛跳墙"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31013"
+mingcheng = "转神餐"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31050"
+mingcheng = "百味宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31051"
+mingcheng = "山河宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31052"
+mingcheng = "汉宫宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31053"
+mingcheng = "南山宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31054"
+mingcheng = "东海宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31055"
+mingcheng = "任侠宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31056"
+mingcheng = "兄弟宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31057"
+mingcheng = "贵妃宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31058"
+mingcheng = "欢庆宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31059"
+mingcheng = "三头宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31060"
+mingcheng = "洗尘宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31061"
+mingcheng = "迎客宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31062"
+mingcheng = "结缘宴"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31099"
+mingcheng = "金针·烟"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31100"
+mingcheng = "金针·影"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31101"
+mingcheng = "截元丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31102"
+mingcheng = "飞鱼丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31103"
+mingcheng = "佳·纳元丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31104"
+mingcheng = "逍遥散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31105"
+mingcheng = "中品风身丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31106"
+mingcheng = "忘情水"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31107"
+mingcheng = "化功散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31108"
+mingcheng = "健胃散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31114"
+mingcheng = "绝世下装·【寒】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31118"
+mingcheng = "绝世头饰·【寒】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31122"
+mingcheng = "绝世腰带·【寒】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31126"
+mingcheng = "珠·蓬莱"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31139"
+mingcheng = "龙血磨石"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31140"
+mingcheng = "寻踪觅宝·武器"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31141"
+mingcheng = "寻踪觅宝·下装"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31142"
+mingcheng = "寻踪觅宝·头部"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31143"
+mingcheng = "寻踪觅宝·腰带"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31208"
+mingcheng = "珠·锋"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31209"
+mingcheng = "绝世下装·【兹】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31210"
+mingcheng = "绝世头饰·【兹】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31211"
+mingcheng = "绝世腰带·【兹】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31212"
+mingcheng = "绝世下装·【宿】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31213"
+mingcheng = "绝世头饰·【宿】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31214"
+mingcheng = "绝世腰带·【宿】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31215"
+mingcheng = "珠·凌雪"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31216"
+mingcheng = "珠·结庐"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31217"
+mingcheng = "绝世下装·【引】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31218"
+mingcheng = "绝世头饰·【引】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31219"
+mingcheng = "绝世腰带·【引】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31231"
+mingcheng = "绝世上衣·【寒】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31235"
+mingcheng = "绝世护腕·【寒】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31239"
+mingcheng = "绝世鞋子·【寒】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31243"
+mingcheng = "璧·蓬莱"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31252"
+mingcheng = "寻踪觅宝·上衣"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31253"
+mingcheng = "寻踪觅宝·护手"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31254"
+mingcheng = "寻踪觅宝·鞋子"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31302"
+mingcheng = "璧·锋"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31303"
+mingcheng = "绝世上衣·【兹】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31304"
+mingcheng = "绝世护腕·【兹】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31305"
+mingcheng = "绝世鞋子·【兹】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31306"
+mingcheng = "绝世上衣·【宿】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31307"
+mingcheng = "绝世护腕·【宿】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31308"
+mingcheng = "绝世鞋子·【宿】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31309"
+mingcheng = "璧·凌雪"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31310"
+mingcheng = "璧·结庐"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31311"
+mingcheng = "绝世上衣·【引】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31312"
+mingcheng = "绝世护腕·【引】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31313"
+mingcheng = "绝世鞋子·【引】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31321"
+mingcheng = "珠·药宗"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31322"
+mingcheng = "璧·药宗"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31324"
+mingcheng = "珠·江湖"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31325"
+mingcheng = "璧·江湖"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31397"
+mingcheng = "蜃楼珠"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31967"
+mingcheng = "新鲜冬瓜"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31968"
+mingcheng = "菌菇"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31969"
+mingcheng = "老姜"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31970"
+mingcheng = "大葱"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31971"
+mingcheng = "莲藕"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31973"
+mingcheng = "精制面粉"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31974"
+mingcheng = "料酒"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31975"
+mingcheng = "白糖"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31976"
+mingcheng = "调料"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31977"
+mingcheng = "生粉"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31978"
+mingcheng = "胡椒粉"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31979"
+mingcheng = "青瓜"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31980"
+mingcheng = "粟米"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31981"
+mingcheng = "红萝卜"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31982"
+mingcheng = "蒜苗"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31983"
+mingcheng = "青菜"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31984"
+mingcheng = "老豆腐"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31985"
+mingcheng = "红辣椒"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31991"
+mingcheng = "火墨"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31992"
+mingcheng = "木炭"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31993"
+mingcheng = "煤炭"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31994"
+mingcheng = "菜籽油"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31995"
+mingcheng = "药罐"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31996"
+mingcheng = "药囊"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31997"
+mingcheng = "葫芦"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31998"
+mingcheng = "金针"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_31999"
+mingcheng = "银针"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32000"
+mingcheng = "棉线"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32001"
+mingcheng = "纺丝"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32002"
+mingcheng = "金线"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32003"
+mingcheng = "百花线"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32004"
+mingcheng = "石灰"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32007"
+mingcheng = "黄酒"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32008"
+mingcheng = "秋露白"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32009"
+mingcheng = "干和"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32010"
+mingcheng = "土窟春"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32011"
+mingcheng = "新丰酒"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32012"
+mingcheng = "若下"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32014"
+mingcheng = "今朝醉"
+pinlei = "cailiao"
+shangdianjia = 1200000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_32787"
+mingcheng = "切玉骨"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_34184"
+mingcheng = "连金泥"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35004"
+mingcheng = "红荣素·臻"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35005"
+mingcheng = "鸦青素·臻"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35006"
+mingcheng = "曦晖素·臻"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35007"
+mingcheng = "寒信素·臻"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35008"
+mingcheng = "黑玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35009"
+mingcheng = "蓝玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35010"
+mingcheng = "绿玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35011"
+mingcheng = "黄玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35012"
+mingcheng = "粉玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35013"
+mingcheng = "红玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35014"
+mingcheng = "紫玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35015"
+mingcheng = "白玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35016"
+mingcheng = "混色玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35017"
+mingcheng = "橙玫瑰"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35018"
+mingcheng = "粉百合"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35019"
+mingcheng = "橙百合"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35020"
+mingcheng = "白百合"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35021"
+mingcheng = "黄百合"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35022"
+mingcheng = "绿百合"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35023"
+mingcheng = "蓝色绣球花"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35024"
+mingcheng = "粉色绣球花"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35025"
+mingcheng = "红色绣球花"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35026"
+mingcheng = "紫色绣球花"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35027"
+mingcheng = "白色绣球花"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35028"
+mingcheng = "金色绣球花"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35029"
+mingcheng = "粉色郁金香"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35030"
+mingcheng = "混色郁金香"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35031"
+mingcheng = "红色郁金香"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35032"
+mingcheng = "白色郁金香"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35033"
+mingcheng = "金色郁金香"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35034"
+mingcheng = "蓝锦牵牛"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35035"
+mingcheng = "绯锦牵牛"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35036"
+mingcheng = "红锦牵牛"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35037"
+mingcheng = "紫锦牵牛"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35038"
+mingcheng = "黄锦牵牛"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35039"
+mingcheng = "荧光菌·蓝"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35040"
+mingcheng = "荧光菌·红"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35041"
+mingcheng = "荧光菌·紫"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35042"
+mingcheng = "荧光菌·白"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35043"
+mingcheng = "荧光菌·黄"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35044"
+mingcheng = "沉夜素·臻"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35193"
+mingcheng = "柳叶水甘草·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35194"
+mingcheng = "紫色石竹花·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35195"
+mingcheng = "六瓣葱莲·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35196"
+mingcheng = "麦仙翁·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35197"
+mingcheng = "铃兰·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35198"
+mingcheng = "橙色葵百合·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35199"
+mingcheng = "无名芳蕨·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35200"
+mingcheng = "蓝紫混色似秋英·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35201"
+mingcheng = "射干·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35202"
+mingcheng = "紫花地丁·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35203"
+mingcheng = "粉色野花·芜杂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35365"
+mingcheng = "厕所的产物"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35566"
+mingcheng = "木料"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35567"
+mingcheng = "芦苇杆"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35568"
+mingcheng = "竹子"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35701"
+mingcheng = "石材"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35702"
+mingcheng = "黏土"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35703"
+mingcheng = "绳索"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35704"
+mingcheng = "油布"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35705"
+mingcheng = "楔子"
+pinlei = "cailiao"
+shangdianjia = 6000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35707"
+mingcheng = "清漆"
+pinlei = "cailiao"
+shangdianjia = 60000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35708"
+mingcheng = "皮革"
+pinlei = "cailiao"
+shangdianjia = 60000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35712"
+mingcheng = "木板"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35713"
+mingcheng = "卯榫"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35714"
+mingcheng = "雕花"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35715"
+mingcheng = "篾条"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35716"
+mingcheng = "鱼胶"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35717"
+mingcheng = "阎家样"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35718"
+mingcheng = "麻絮"
+pinlei = "cailiao"
+shangdianjia = 150000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35719"
+mingcheng = "滑石粉"
+pinlei = "cailiao"
+shangdianjia = 300000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35771"
+mingcheng = "绿竹墙·套件"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35772"
+mingcheng = "兖石地墁·套件"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35773"
+mingcheng = "翠泠竹篱·套件"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35774"
+mingcheng = "杂色竹篱·套件"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35775"
+mingcheng = "青竹篱·套件"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35780"
+mingcheng = "密陀油"
+pinlei = "cailiao"
+shangdianjia = 60000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35786"
+mingcheng = "观日玉"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_35998"
+mingcheng = "羽扇豆花·白"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_35999"
+mingcheng = "羽扇豆花·红"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36000"
+mingcheng = "羽扇豆花·紫"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36001"
+mingcheng = "羽扇豆花·黄"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36002"
+mingcheng = "羽扇豆花·粉"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36003"
+mingcheng = "羽扇豆花·蓝"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36004"
+mingcheng = "羽扇豆花·蓝白"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36005"
+mingcheng = "羽扇豆花·黄粉"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36345"
+mingcheng = "白葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36349"
+mingcheng = "红葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36350"
+mingcheng = "橙葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36351"
+mingcheng = "黄葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36352"
+mingcheng = "绿葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36353"
+mingcheng = "青葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36354"
+mingcheng = "蓝葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36355"
+mingcheng = "紫葫芦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36356"
+mingcheng = "普通麦子"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36357"
+mingcheng = "绿麦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36358"
+mingcheng = "紫麦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36359"
+mingcheng = "黑麦"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36360"
+mingcheng = "普通青菜"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36361"
+mingcheng = "紫冠青菜"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36362"
+mingcheng = "芜菁·白"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36363"
+mingcheng = "芜菁·青白"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36364"
+mingcheng = "芜菁·紫红"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_36460"
+mingcheng = "乾元上衣·【归】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36461"
+mingcheng = "乾元鞋子·【归】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36462"
+mingcheng = "乾元护腕·【归】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36463"
+mingcheng = "乾元头饰·【归】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36464"
+mingcheng = "乾元腰带·【归】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36465"
+mingcheng = "乾元下装·【归】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36466"
+mingcheng = "璧·奉天"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36467"
+mingcheng = "珠·奉天"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_36491"
+mingcheng = "流波玉"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_38122"
+mingcheng = "积木·木质标准弧料包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_38127"
+mingcheng = "地下室·木质标准包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_38373"
+mingcheng = "积木·木质标准包·优"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_38374"
+mingcheng = "积木·木质标准补充包·优"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_38831"
+mingcheng = "器物令"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_38927"
+mingcheng = "驯兽密语笺"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39206"
+mingcheng = "乾元上衣·【寂】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39207"
+mingcheng = "乾元鞋子·【寂】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39208"
+mingcheng = "乾元护腕·【寂】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39209"
+mingcheng = "乾元头饰·【寂】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39210"
+mingcheng = "乾元腰带·【寂】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39211"
+mingcheng = "乾元下装·【寂】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39212"
+mingcheng = "珠·白帝"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39213"
+mingcheng = "璧·白帝"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_39235"
+mingcheng = "五元砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_40232"
+mingcheng = "竹篾篱·套件"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_40538"
+mingcheng = "鉴影散"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_40539"
+mingcheng = "乌银刺"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_40562"
+mingcheng = "砭石"
+pinlei = "cailiao"
+shangdianjia = 300000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_41550"
+mingcheng = "乾元上衣·【暖】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_41551"
+mingcheng = "乾元鞋子·【暖】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_41552"
+mingcheng = "乾元护腕·【暖】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_41553"
+mingcheng = "乾元头饰·【暖】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_41554"
+mingcheng = "乾元腰带·【暖】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_41555"
+mingcheng = "乾元下装·【暖】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_41556"
+mingcheng = "雷墨砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_44396"
+mingcheng = "乾元上衣·【晴】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_44397"
+mingcheng = "乾元鞋子·【晴】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_44398"
+mingcheng = "乾元护腕·【晴】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_44399"
+mingcheng = "乾元头饰·【晴】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_44400"
+mingcheng = "乾元腰带·【晴】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_44401"
+mingcheng = "乾元下装·【晴】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_44402"
+mingcheng = "龙堂砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_45716"
+mingcheng = "铃兰·白"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_45717"
+mingcheng = "铃兰·粉"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_45718"
+mingcheng = "铃兰·蓝"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_45719"
+mingcheng = "铃兰·紫"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_45720"
+mingcheng = "铃兰·橙"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_45721"
+mingcheng = "铃兰·混彩"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_47749"
+mingcheng = "卓殊上衣·【暮】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47750"
+mingcheng = "卓殊鞋子·【暮】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47751"
+mingcheng = "卓殊护腕·【暮】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47752"
+mingcheng = "卓殊头饰·【暮】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47753"
+mingcheng = "卓殊腰带·【暮】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47754"
+mingcheng = "卓殊下装·【暮】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47755"
+mingcheng = "珠·断浪"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47756"
+mingcheng = "璧·断浪"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47758"
+mingcheng = "星汉砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47775"
+mingcheng = "珠·群侠"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_47776"
+mingcheng = "璧·群侠"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_50736"
+mingcheng = "玄黄砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_50737"
+mingcheng = "卓殊上衣·【雪】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_50738"
+mingcheng = "卓殊鞋子·【雪】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_50739"
+mingcheng = "卓殊护腕·【雪】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_50740"
+mingcheng = "卓殊头饰·【雪】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_50741"
+mingcheng = "卓殊腰带·【雪】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_50742"
+mingcheng = "卓殊下装·【雪】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_52337"
+mingcheng = "地下室·8米木质标准包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54056"
+mingcheng = "珠·万灵"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54057"
+mingcheng = "璧·万灵"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54059"
+mingcheng = "泣麟砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54060"
+mingcheng = "卓殊上衣·【风】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54061"
+mingcheng = "卓殊鞋子·【风】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54062"
+mingcheng = "卓殊护腕·【风】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54063"
+mingcheng = "卓殊头饰·【风】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54064"
+mingcheng = "卓殊腰带·【风】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54065"
+mingcheng = "卓殊下装·【风】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_54537"
+mingcheng = "碎空石"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68118"
+mingcheng = "珠·寻龙"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68119"
+mingcheng = "璧·寻龙"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68121"
+mingcheng = "龙朔砂"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68122"
+mingcheng = "卓殊上衣·【水】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68123"
+mingcheng = "卓殊鞋子·【水】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68124"
+mingcheng = "卓殊护腕·【水】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68125"
+mingcheng = "卓殊头饰·【水】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68126"
+mingcheng = "卓殊腰带·【水】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_68127"
+mingcheng = "卓殊下装·【水】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71129"
+mingcheng = "风语·瀑沙熔锭（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71130"
+mingcheng = "风语·坠宵熔锭（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71131"
+mingcheng = "风语·絮泊熔锭（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71132"
+mingcheng = "风语·巨灵熔锭（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71133"
+mingcheng = "风语·兵·铸（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71134"
+mingcheng = "风语·兵·铸（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71135"
+mingcheng = "风语·兵·铸（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71136"
+mingcheng = "风语·兵·铸（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71137"
+mingcheng = "风语·兵·铸（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71138"
+mingcheng = "风语·裤·铸（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71139"
+mingcheng = "风语·裤·铸（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71140"
+mingcheng = "风语·裤·铸（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71141"
+mingcheng = "风语·裤·铸（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71142"
+mingcheng = "风语·裤·铸（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71143"
+mingcheng = "风语·裤·铸（外破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71144"
+mingcheng = "风语·裤·铸（内破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71145"
+mingcheng = "风语·裤·铸（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71146"
+mingcheng = "风语·裤·铸（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71147"
+mingcheng = "风语·头·铸（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71148"
+mingcheng = "风语·头·铸（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71149"
+mingcheng = "风语·头·铸（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71150"
+mingcheng = "风语·头·铸（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71151"
+mingcheng = "风语·头·铸（急速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71152"
+mingcheng = "风语·腰·铸（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71153"
+mingcheng = "风语·腰·铸（气血）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71154"
+mingcheng = "风语·腰·铸（格挡）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71155"
+mingcheng = "风语·腰·铸（闪避）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71156"
+mingcheng = "风语·腰·铸（外防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71157"
+mingcheng = "风语·腰·铸（内防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71158"
+mingcheng = "风语·腰·铸（招架）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71159"
+mingcheng = "风语·腰·铸（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71160"
+mingcheng = "风语·腰·铸（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71161"
+mingcheng = "风语·裤·甲（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71162"
+mingcheng = "风语·裤·甲（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71163"
+mingcheng = "风语·裤·甲（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71164"
+mingcheng = "风语·裤·甲（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71165"
+mingcheng = "风语·裤·甲（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71166"
+mingcheng = "风语·裤·甲（外破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71167"
+mingcheng = "风语·裤·甲（内破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71168"
+mingcheng = "风语·裤·甲（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71169"
+mingcheng = "风语·裤·甲（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71170"
+mingcheng = "风语·头·甲（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71171"
+mingcheng = "风语·头·甲（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71172"
+mingcheng = "风语·头·甲（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71173"
+mingcheng = "风语·头·甲（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71174"
+mingcheng = "风语·头·甲（急速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71175"
+mingcheng = "风语·腰·甲（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71176"
+mingcheng = "风语·腰·甲（气血）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71177"
+mingcheng = "风语·腰·甲（格挡）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71178"
+mingcheng = "风语·腰·甲（闪避）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71179"
+mingcheng = "风语·腰·甲（外防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71180"
+mingcheng = "风语·腰·甲（内防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71181"
+mingcheng = "风语·腰·甲（招架）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71182"
+mingcheng = "风语·腰·甲（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71183"
+mingcheng = "风语·腰·甲（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71184"
+mingcheng = "风语·兵·甲（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71185"
+mingcheng = "风语·兵·甲（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71186"
+mingcheng = "风语·兵·甲（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71187"
+mingcheng = "风语·兵·甲（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71188"
+mingcheng = "风语·兵·甲（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71189"
+mingcheng = "风语·瀑沙磨石（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71190"
+mingcheng = "风语·坠宵磨石（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71191"
+mingcheng = "风语·絮泊磨石（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71192"
+mingcheng = "风语·巨灵磨石（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71193"
+mingcheng = "风语·腕·绣（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71194"
+mingcheng = "风语·腕·绣（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71195"
+mingcheng = "风语·腕·绣（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71196"
+mingcheng = "风语·腕·绣（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71197"
+mingcheng = "风语·腕·绣（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71198"
+mingcheng = "风语·腕·绣（外破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71199"
+mingcheng = "风语·腕·绣（内破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71200"
+mingcheng = "风语·腕·绣（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71201"
+mingcheng = "风语·腕·绣（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71202"
+mingcheng = "风语·鞋·绣（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71203"
+mingcheng = "风语·鞋·绣（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71204"
+mingcheng = "风语·鞋·绣（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71205"
+mingcheng = "风语·鞋·绣（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71206"
+mingcheng = "风语·鞋·绣（急速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71207"
+mingcheng = "风语·衣·绣（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71208"
+mingcheng = "风语·衣·绣（气血）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71209"
+mingcheng = "风语·衣·绣（格挡）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71210"
+mingcheng = "风语·衣·绣（闪避）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71211"
+mingcheng = "风语·衣·绣（外防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71212"
+mingcheng = "风语·衣·绣（内防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71213"
+mingcheng = "风语·衣·绣（招架）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71214"
+mingcheng = "风语·衣·绣（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71215"
+mingcheng = "风语·衣·绣（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71216"
+mingcheng = "风语·腕·染（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71217"
+mingcheng = "风语·腕·染（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71218"
+mingcheng = "风语·腕·染（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71219"
+mingcheng = "风语·腕·染（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71220"
+mingcheng = "风语·腕·染（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71221"
+mingcheng = "风语·腕·染（外破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71222"
+mingcheng = "风语·腕·染（内破）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71223"
+mingcheng = "风语·腕·染（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71224"
+mingcheng = "风语·腕·染（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71225"
+mingcheng = "风语·鞋·染（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71226"
+mingcheng = "风语·鞋·染（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71227"
+mingcheng = "风语·鞋·染（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71228"
+mingcheng = "风语·鞋·染（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71229"
+mingcheng = "风语·鞋·染（急速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71230"
+mingcheng = "风语·衣·染（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71231"
+mingcheng = "风语·衣·染（气血）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71232"
+mingcheng = "风语·衣·染（格挡）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71233"
+mingcheng = "风语·衣·染（闪避）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71234"
+mingcheng = "风语·衣·染（外防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71235"
+mingcheng = "风语·衣·染（内防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71236"
+mingcheng = "风语·衣·染（招架）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71237"
+mingcheng = "风语·衣·染（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71238"
+mingcheng = "风语·衣·染（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71239"
+mingcheng = "风语·鞋·染（跑速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71240"
+mingcheng = "风语·上品万灵丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71241"
+mingcheng = "风语·中品万灵丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71242"
+mingcheng = "风语·上品玉璃散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71243"
+mingcheng = "风语·上品破秽散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71244"
+mingcheng = "风语·上品凝神散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71245"
+mingcheng = "风语·上品活气散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71246"
+mingcheng = "风语·上品亢龙散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71247"
+mingcheng = "风语·上品展凤散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71248"
+mingcheng = "风语·上品益气散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71249"
+mingcheng = "风语·上品长恨散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71250"
+mingcheng = "风语·中品玉璃散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71251"
+mingcheng = "风语·中品破秽散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71252"
+mingcheng = "风语·中品凝神散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71253"
+mingcheng = "风语·中品活气散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71254"
+mingcheng = "风语·中品亢龙散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71255"
+mingcheng = "风语·中品展凤散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71256"
+mingcheng = "风语·中品益气散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71257"
+mingcheng = "风语·中品长恨散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71258"
+mingcheng = "风语·上品健体丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71259"
+mingcheng = "风语·上品轻身丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71260"
+mingcheng = "风语·上品聚魂丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71261"
+mingcheng = "风语·上品大力丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71262"
+mingcheng = "风语·上品静心丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71263"
+mingcheng = "风语·中品健体丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71264"
+mingcheng = "风语·中品轻身丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71265"
+mingcheng = "风语·中品聚魂丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71266"
+mingcheng = "风语·中品大力丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71267"
+mingcheng = "风语·中品静心丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71268"
+mingcheng = "风语·酸菜鱼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71269"
+mingcheng = "风语·红烧排骨"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71270"
+mingcheng = "风语·白肉血肠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71271"
+mingcheng = "风语·红烧扣肉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71272"
+mingcheng = "风语·太后饼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71273"
+mingcheng = "风语·灌汤包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71274"
+mingcheng = "风语·骨肉相连"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71275"
+mingcheng = "风语·炸酱面"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71276"
+mingcheng = "风语·鱼香肉丝"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71277"
+mingcheng = "风语·水煮肉片"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71278"
+mingcheng = "风语·毛血旺"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71279"
+mingcheng = "风语·栗子烧肉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71280"
+mingcheng = "风语·煎饼果子"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71281"
+mingcheng = "风语·鲜肉包子"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71282"
+mingcheng = "风语·白汁芦筋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71283"
+mingcheng = "风语·杂碎面"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71284"
+mingcheng = "风语·皮蛋瘦肉粥"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71285"
+mingcheng = "风语·杂锦鱼球粥"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71286"
+mingcheng = "风语·鱼片砂锅粥"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71287"
+mingcheng = "风语·三鲜粥"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71288"
+mingcheng = "风语·咸骨粥"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71289"
+mingcheng = "风语·贡丸汤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71290"
+mingcheng = "风语·杂碎汤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71291"
+mingcheng = "风语·鱼头豆腐汤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71292"
+mingcheng = "风语·三鲜汤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71293"
+mingcheng = "风语·老火骨汤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71294"
+mingcheng = "风语·水晶芙蓉宴（通用）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71295"
+mingcheng = "风语·玉笛谁家听落梅（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71296"
+mingcheng = "风语·二十四桥明月夜（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71297"
+mingcheng = "风语·鸳鸯烩珍宴（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71298"
+mingcheng = "风语·蜀味烘焙宴（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71299"
+mingcheng = "风语·鸿门宴（防御）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71300"
+mingcheng = "风语·团圆宴（恢复）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71393"
+mingcheng = "传说上衣·【花】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71394"
+mingcheng = "传说鞋子·【花】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71395"
+mingcheng = "传说护腕·【花】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71396"
+mingcheng = "传说头饰·【花】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71397"
+mingcheng = "传说腰带·【花】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71398"
+mingcheng = "传说下装·【花】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71399"
+mingcheng = "珠·风语"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71400"
+mingcheng = "璧·风语"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71402"
+mingcheng = "阳燧珠"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_71422"
+mingcheng = "隔音帐"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_76622"
+mingcheng = "路菜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78155"
+mingcheng = "传说上衣·【月】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78156"
+mingcheng = "传说鞋子·【月】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78157"
+mingcheng = "传说护腕·【月】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78158"
+mingcheng = "传说头饰·【月】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78159"
+mingcheng = "传说腰带·【月】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78160"
+mingcheng = "传说下装·【月】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78161"
+mingcheng = "珠·太极"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78162"
+mingcheng = "璧·太极"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_78164"
+mingcheng = "玉龙子"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81653"
+mingcheng = "传说上衣·【江】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81654"
+mingcheng = "传说鞋子·【江】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81655"
+mingcheng = "传说护腕·【江】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81656"
+mingcheng = "传说头饰·【江】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81657"
+mingcheng = "传说腰带·【江】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81658"
+mingcheng = "传说下装·【江】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81659"
+mingcheng = "珠·山海"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81660"
+mingcheng = "璧·山海"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_81662"
+mingcheng = "天山碧髓"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85646"
+mingcheng = "珠·暗影"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85647"
+mingcheng = "璧·暗影"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85649"
+mingcheng = "传说上衣·【尧】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85650"
+mingcheng = "传说鞋子·【尧】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85651"
+mingcheng = "传说护腕·【尧】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85652"
+mingcheng = "传说头饰·【尧】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85653"
+mingcheng = "传说腰带·【尧】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85654"
+mingcheng = "传说下装·【尧】"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_85795"
+mingcheng = "阆风炎魄"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87804"
+mingcheng = "拼布黄3补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87805"
+mingcheng = "拼布黄4补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87806"
+mingcheng = "拼布黄6补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87807"
+mingcheng = "拼布黄7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87808"
+mingcheng = "拼布黄10补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87809"
+mingcheng = "拼布黄11补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87810"
+mingcheng = "拼布黄13补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87811"
+mingcheng = "拼布绿3补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87812"
+mingcheng = "拼布绿5补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87813"
+mingcheng = "拼布绿7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87814"
+mingcheng = "拼布绿8补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87815"
+mingcheng = "拼布绿10补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87816"
+mingcheng = "拼布绿12补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87817"
+mingcheng = "拼布绿14补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87818"
+mingcheng = "拼布绿17补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87819"
+mingcheng = "拼布绿18补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87820"
+mingcheng = "拼布绿19补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87821"
+mingcheng = "拼布绿20补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87822"
+mingcheng = "拼布蓝2补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87823"
+mingcheng = "拼布蓝3补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87824"
+mingcheng = "拼布蓝5补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87825"
+mingcheng = "拼布蓝6补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87826"
+mingcheng = "拼布蓝7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87827"
+mingcheng = "拼布蓝8补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87828"
+mingcheng = "拼布蓝10补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87829"
+mingcheng = "拼布蓝11补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87830"
+mingcheng = "拼布蓝13补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87831"
+mingcheng = "拼布蓝16补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87832"
+mingcheng = "拼布紫2补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87833"
+mingcheng = "拼布紫3补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87834"
+mingcheng = "拼布紫6补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87835"
+mingcheng = "拼布紫7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87836"
+mingcheng = "拼布紫8补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87837"
+mingcheng = "拼布紫9补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87838"
+mingcheng = "拼布紫11补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87839"
+mingcheng = "拼布紫12补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87840"
+mingcheng = "拼布紫13补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87841"
+mingcheng = "拼布紫14补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87842"
+mingcheng = "拼布紫15补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87843"
+mingcheng = "拼布紫16补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87844"
+mingcheng = "拼布紫18补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87845"
+mingcheng = "拼布紫19补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87846"
+mingcheng = "拼布紫20补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87847"
+mingcheng = "拼布紫21补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87848"
+mingcheng = "拼布粉1补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87849"
+mingcheng = "拼布粉2补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87850"
+mingcheng = "拼布粉3补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87851"
+mingcheng = "拼布粉4补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87852"
+mingcheng = "拼布粉5补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87853"
+mingcheng = "拼布粉7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87854"
+mingcheng = "拼布粉8补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87855"
+mingcheng = "拼布粉12补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87856"
+mingcheng = "拼布粉13补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87857"
+mingcheng = "拼布红5补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87858"
+mingcheng = "拼布红7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87859"
+mingcheng = "拼布红8补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87860"
+mingcheng = "拼布红10补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87861"
+mingcheng = "拼布红13补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87862"
+mingcheng = "拼布褐1补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87863"
+mingcheng = "拼布褐2补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87864"
+mingcheng = "拼布褐3补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87865"
+mingcheng = "拼布褐5补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87866"
+mingcheng = "拼布褐7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87867"
+mingcheng = "拼布褐8补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87868"
+mingcheng = "拼布褐9补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87869"
+mingcheng = "拼布褐13补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87870"
+mingcheng = "拼布灰1补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87871"
+mingcheng = "拼布灰2补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87872"
+mingcheng = "拼布灰3补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87873"
+mingcheng = "拼布灰4补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87874"
+mingcheng = "拼布灰5补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87875"
+mingcheng = "拼布灰7补充包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87881"
+mingcheng = "拼布72色全包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_87917"
+mingcheng = "拼布自选包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89165"
+mingcheng = "绢带"
+pinlei = "cailiao"
+shangdianjia = 100000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89166"
+mingcheng = "黄蜡"
+pinlei = "cailiao"
+shangdianjia = 200000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89167"
+mingcheng = "竹沥"
+pinlei = "cailiao"
+shangdianjia = 100000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89168"
+mingcheng = "药曲"
+pinlei = "cailiao"
+shangdianjia = 200000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89169"
+mingcheng = "松脂"
+pinlei = "cailiao"
+shangdianjia = 100000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89170"
+mingcheng = "熟矾"
+pinlei = "cailiao"
+shangdianjia = 200000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89171"
+mingcheng = "藤椒"
+pinlei = "cailiao"
+shangdianjia = 100000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89172"
+mingcheng = "酥油"
+pinlei = "cailiao"
+shangdianjia = 200000
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89260"
+mingcheng = "归营旌"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89298"
+mingcheng = "青魄玉"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89303"
+mingcheng = "巴渝珍馐宴（通用）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89304"
+mingcheng = "巴山夜雨宴（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89305"
+mingcheng = "嘉陵月夜宴（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89306"
+mingcheng = "椒香暖玉宴（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89307"
+mingcheng = "红汤沸鼎宴（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89308"
+mingcheng = "朝天门宴（防御）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89309"
+mingcheng = "长安珍馐宴（通用）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89310"
+mingcheng = "华岳开锋宴（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89311"
+mingcheng = "未央宫庭宴（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89312"
+mingcheng = "渭水清和宴（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89313"
+mingcheng = "秦川鼎烹宴（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89314"
+mingcheng = "函谷关宴（防御）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89315"
+mingcheng = "云中珍馐宴（通用）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89316"
+mingcheng = "雁门猎风宴（外攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89317"
+mingcheng = "胡笳月夜宴（内攻）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89318"
+mingcheng = "塞外暖羊宴（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89319"
+mingcheng = "黄云牧火宴（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89320"
+mingcheng = "云中关宴（防御）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89321"
+mingcheng = "百炼水煮鱼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89322"
+mingcheng = "竹沥清心露"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89323"
+mingcheng = "竹沥清心露·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89324"
+mingcheng = "竹沥凝心饮"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89325"
+mingcheng = "五气归元丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89326"
+mingcheng = "五气归元丹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89327"
+mingcheng = "五气培元丸"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89328"
+mingcheng = "巴山凝神丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89329"
+mingcheng = "渝州摧锋丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89330"
+mingcheng = "函谷疾咏丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89331"
+mingcheng = "中原破阵丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89332"
+mingcheng = "河洛生息丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89333"
+mingcheng = "云州固阵丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89334"
+mingcheng = "巴山凝神丹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89335"
+mingcheng = "渝州摧锋丹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89336"
+mingcheng = "函谷疾咏丹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89337"
+mingcheng = "中原破阵丹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89338"
+mingcheng = "河洛生息丹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89339"
+mingcheng = "云州固阵丹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89340"
+mingcheng = "巴山凝神散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89341"
+mingcheng = "渝州摧锋散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89342"
+mingcheng = "函谷疾咏散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89343"
+mingcheng = "中原破阵散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89344"
+mingcheng = "河洛生息散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89345"
+mingcheng = "云州固阵散"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89346"
+mingcheng = "云芝竹沥羹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89347"
+mingcheng = "云芝竹沥羹·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89348"
+mingcheng = "开锅豆腐"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89349"
+mingcheng = "渝州小面"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89350"
+mingcheng = "山城毛血旺"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89351"
+mingcheng = "藤椒鱼片"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89352"
+mingcheng = "云州刀削面"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89353"
+mingcheng = "酥油烧饼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89354"
+mingcheng = "菹菜拌腱肉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89355"
+mingcheng = "渝州小面·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89356"
+mingcheng = "山城毛血旺·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89357"
+mingcheng = "藤椒鱼片·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89358"
+mingcheng = "云州刀削面·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89359"
+mingcheng = "酥油烧饼·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89360"
+mingcheng = "菹菜拌腱肉·精"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89361"
+mingcheng = "渝州酸辣粉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89362"
+mingcheng = "灵宝羊肉汤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89363"
+mingcheng = "蒸河鱼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89364"
+mingcheng = "羊肉烩面"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89365"
+mingcheng = "酥油烙馍"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89366"
+mingcheng = "曲香蒸肉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89367"
+mingcheng = "苍生·瀑沙熔锭（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89368"
+mingcheng = "苍生·坠宵熔锭（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89369"
+mingcheng = "苍生·絮泊熔锭（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89370"
+mingcheng = "苍生·巨灵熔锭（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89371"
+mingcheng = "苍生·瀑沙焠晶（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89372"
+mingcheng = "苍生·坠宵焠晶（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89373"
+mingcheng = "苍生·絮泊焠晶（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89374"
+mingcheng = "苍生·巨灵焠晶（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89375"
+mingcheng = "苍生·瀑沙磨石（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89376"
+mingcheng = "苍生·坠宵磨石（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89377"
+mingcheng = "苍生·絮泊磨石（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89378"
+mingcheng = "苍生·巨灵磨石（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89379"
+mingcheng = "峡金铸·兵（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89380"
+mingcheng = "峡金铸·兵（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89381"
+mingcheng = "峡金铸·兵（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89382"
+mingcheng = "峡金铸·兵（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89383"
+mingcheng = "峡金铸·裤（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89384"
+mingcheng = "峡金铸·裤（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89385"
+mingcheng = "峡金铸·裤（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89386"
+mingcheng = "峡金铸·裤（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89387"
+mingcheng = "峡金铸·裤（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89388"
+mingcheng = "峡金铸·裤（破防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89389"
+mingcheng = "峡金铸·裤（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89390"
+mingcheng = "峡金铸·裤（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89391"
+mingcheng = "峡金铸·头（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89392"
+mingcheng = "峡金铸·头（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89393"
+mingcheng = "峡金铸·头（加速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89394"
+mingcheng = "峡金铸·腰（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89395"
+mingcheng = "峡金铸·腰（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89396"
+mingcheng = "峡金铸·腰（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89397"
+mingcheng = "峡金焠·兵（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89398"
+mingcheng = "峡金焠·兵（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89399"
+mingcheng = "峡金焠·兵（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89400"
+mingcheng = "峡金焠·兵（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89401"
+mingcheng = "峡金焠·裤（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89402"
+mingcheng = "峡金焠·裤（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89403"
+mingcheng = "峡金焠·裤（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89404"
+mingcheng = "峡金焠·裤（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89405"
+mingcheng = "峡金焠·裤（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89406"
+mingcheng = "峡金焠·裤（破防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89407"
+mingcheng = "峡金焠·裤（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89408"
+mingcheng = "峡金焠·裤（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89409"
+mingcheng = "峡金焠·头（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89410"
+mingcheng = "峡金焠·头（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89411"
+mingcheng = "峡金焠·头（加速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89412"
+mingcheng = "峡金焠·腰（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89413"
+mingcheng = "峡金焠·腰（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89414"
+mingcheng = "峡金焠·腰（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89415"
+mingcheng = "云冈石·裤（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89416"
+mingcheng = "云冈石·裤（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89417"
+mingcheng = "云冈石·裤（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89418"
+mingcheng = "云冈石·裤（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89419"
+mingcheng = "云冈石·裤（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89420"
+mingcheng = "云冈石·裤（破防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89421"
+mingcheng = "云冈石·裤（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89422"
+mingcheng = "云冈石·裤（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89423"
+mingcheng = "云冈石·头（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89424"
+mingcheng = "云冈石·头（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89425"
+mingcheng = "云冈石·头（加速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89426"
+mingcheng = "云冈石·腰（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89427"
+mingcheng = "云冈石·腰（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89428"
+mingcheng = "云冈石·腰（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89429"
+mingcheng = "云冈石·兵（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89430"
+mingcheng = "云冈石·兵（疗伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89431"
+mingcheng = "云冈石·兵（武伤）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89432"
+mingcheng = "云冈石·兵（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89433"
+mingcheng = "蜀锦绣·腕（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89434"
+mingcheng = "蜀锦绣·腕（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89435"
+mingcheng = "蜀锦绣·腕（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89436"
+mingcheng = "蜀锦绣·腕（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89437"
+mingcheng = "蜀锦绣·腕（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89438"
+mingcheng = "蜀锦绣·腕（破防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89439"
+mingcheng = "蜀锦绣·腕（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89440"
+mingcheng = "蜀锦绣·腕（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89441"
+mingcheng = "蜀锦绣·鞋（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89442"
+mingcheng = "蜀锦绣·鞋（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89443"
+mingcheng = "蜀锦绣·鞋（加速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89444"
+mingcheng = "蜀锦绣·衣（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89445"
+mingcheng = "蜀锦绣·衣（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89446"
+mingcheng = "蜀锦绣·衣（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89447"
+mingcheng = "云锦绣·腕（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89448"
+mingcheng = "云锦绣·腕（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89449"
+mingcheng = "云锦绣·腕（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89450"
+mingcheng = "云锦绣·腕（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89451"
+mingcheng = "云锦绣·腕（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89452"
+mingcheng = "云锦绣·腕（破防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89453"
+mingcheng = "云锦绣·腕（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89454"
+mingcheng = "云锦绣·腕（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89455"
+mingcheng = "云锦绣·鞋（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89456"
+mingcheng = "云锦绣·鞋（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89457"
+mingcheng = "云锦绣·鞋（加速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89458"
+mingcheng = "云锦绣·衣（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89459"
+mingcheng = "云锦绣·衣（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89460"
+mingcheng = "云锦绣·衣（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89461"
+mingcheng = "河洛纹·腕（身法）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89462"
+mingcheng = "河洛纹·腕（元气）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89463"
+mingcheng = "河洛纹·腕（力道）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89464"
+mingcheng = "河洛纹·腕（根骨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89465"
+mingcheng = "河洛纹·腕（仇恨）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89466"
+mingcheng = "河洛纹·腕（破防）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89467"
+mingcheng = "河洛纹·腕（会心）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89468"
+mingcheng = "河洛纹·腕（无双）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89469"
+mingcheng = "河洛纹·鞋（攻击）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89470"
+mingcheng = "河洛纹·鞋（治疗）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89471"
+mingcheng = "河洛纹·鞋（加速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89472"
+mingcheng = "河洛纹·衣（体质）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89473"
+mingcheng = "河洛纹·衣（化劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89474"
+mingcheng = "河洛纹·衣（御劲）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89475"
+mingcheng = "河洛纹·鞋（跑速）"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89566"
+mingcheng = "地脉玄元"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89567"
+mingcheng = "珠·苍生"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89568"
+mingcheng = "璧·苍生"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89724"
+mingcheng = "引元丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89956"
+mingcheng = "百花布"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89957"
+mingcheng = "蜀染布"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89958"
+mingcheng = "五色石"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89959"
+mingcheng = "银丝缎"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89960"
+mingcheng = "七彩线"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89961"
+mingcheng = "熟铁锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89962"
+mingcheng = "密银锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89963"
+mingcheng = "黄铜锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89964"
+mingcheng = "青铜锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89965"
+mingcheng = "锡锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89966"
+mingcheng = "镔铁锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89967"
+mingcheng = "生铁锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89968"
+mingcheng = "铅锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89969"
+mingcheng = "馅料"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89970"
+mingcheng = "酱料"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89971"
+mingcheng = "卤料"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89972"
+mingcheng = "药引"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89973"
+mingcheng = "药丸"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_89974"
+mingcheng = "药膏"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90029"
+mingcheng = "回神丹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90032"
+mingcheng = "定营铁桩"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_90033"
+mingcheng = "同袍营幡"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_90034"
+mingcheng = "安营炊鼎"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_90035"
+mingcheng = "定魂丹砂"
+pinlei = "cailiao"
+laiyuan = "jx3box(粗分)"
+
+[[wupin]]
+id = "5_90205"
+mingcheng = "哼唧伪装"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90206"
+mingcheng = "踏波露"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90210"
+mingcheng = "驾驾伪装"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90211"
+mingcheng = "飞毛腿伪装"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90212"
+mingcheng = "黑山伪装"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90213"
+mingcheng = "飞爪"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90257"
+mingcheng = "飞高高"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90289"
+mingcheng = "勘宝秘囊"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90338"
+mingcheng = "境华"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90353"
+mingcheng = "同门饕餮鼎"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90436"
+mingcheng = "青石锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "5_90437"
+mingcheng = "镀金锭"
+pinlei = "cailiao"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112555"
+mingcheng = "玄元风鹤护腕"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112556"
+mingcheng = "玄元赤地护腕"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112557"
+mingcheng = "玄元烽火护腕"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112558"
+mingcheng = "玄元松绿护腕"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112559"
+mingcheng = "玄元木声护腕"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112560"
+mingcheng = "玄元星平护腕"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112561"
+mingcheng = "玄元风鹤护腰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112562"
+mingcheng = "玄元赤地护腰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112563"
+mingcheng = "玄元烽火护腰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112564"
+mingcheng = "玄元松绿护腰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112565"
+mingcheng = "玄元木声护腰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112566"
+mingcheng = "玄元星平护腰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112567"
+mingcheng = "玄元风鹤鞋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112568"
+mingcheng = "玄元赤地鞋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112569"
+mingcheng = "玄元烽火鞋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112570"
+mingcheng = "玄元松绿鞋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112571"
+mingcheng = "玄元木声鞋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112572"
+mingcheng = "玄元星平鞋"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112573"
+mingcheng = "玄元风鹤裤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112574"
+mingcheng = "玄元赤地裤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112575"
+mingcheng = "玄元烽火裤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112576"
+mingcheng = "玄元松绿裤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112577"
+mingcheng = "玄元木声裤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112578"
+mingcheng = "玄元星平裤"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112579"
+mingcheng = "玄元风鹤帽"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112580"
+mingcheng = "玄元赤地帽"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112581"
+mingcheng = "玄元烽火帽"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112582"
+mingcheng = "玄元松绿帽"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112583"
+mingcheng = "玄元木声帽"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112584"
+mingcheng = "玄元星平帽"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112585"
+mingcheng = "玄元风鹤衫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112586"
+mingcheng = "玄元赤地衫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112587"
+mingcheng = "玄元烽火衫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112588"
+mingcheng = "玄元松绿衫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112589"
+mingcheng = "玄元木声衫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112590"
+mingcheng = "玄元星平衫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112783"
+mingcheng = "无观冠·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112784"
+mingcheng = "无观冠·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112785"
+mingcheng = "无观冠·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112786"
+mingcheng = "无观冠·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112787"
+mingcheng = "无观冠·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112788"
+mingcheng = "无观冠·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112789"
+mingcheng = "无观鞋·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112790"
+mingcheng = "无观鞋·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112791"
+mingcheng = "无观鞋·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112792"
+mingcheng = "无观鞋·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112793"
+mingcheng = "无观鞋·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_112794"
+mingcheng = "无观鞋·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114853"
+mingcheng = "无观冠·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114854"
+mingcheng = "无观冠·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114855"
+mingcheng = "无观冠·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114856"
+mingcheng = "无观冠·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114857"
+mingcheng = "无观冠·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114858"
+mingcheng = "无观冠·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114859"
+mingcheng = "无观鞋·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114860"
+mingcheng = "无观鞋·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114861"
+mingcheng = "无观鞋·内·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114862"
+mingcheng = "无观鞋·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114863"
+mingcheng = "无观鞋·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "7_114864"
+mingcheng = "无观鞋·外·荒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_19"
+mingcheng = "棉布包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_20"
+mingcheng = "丝绸皮包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_21"
+mingcheng = "彩锦皮包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_22"
+mingcheng = "绫罗草药包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_23"
+mingcheng = "绫罗金石包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_24"
+mingcheng = "绫罗皮包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_25"
+mingcheng = "轻容纱草药包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_26"
+mingcheng = "轻容纱金石包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_28"
+mingcheng = "轻容百花包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_30"
+mingcheng = "百纳包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_31"
+mingcheng = "天工锦缎皮包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_37"
+mingcheng = "百花草药包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_38"
+mingcheng = "百编金石包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_53"
+mingcheng = "蜀染布包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_69"
+mingcheng = "梨绒落绢包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_70"
+mingcheng = "落花碧绒包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_614"
+mingcheng = "灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_615"
+mingcheng = "风筝"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_616"
+mingcheng = "大红花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_617"
+mingcheng = "风车"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_618"
+mingcheng = "箭囊"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_621"
+mingcheng = "娃娃"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_622"
+mingcheng = "香囊"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_623"
+mingcheng = "水囊"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_624"
+mingcheng = "包裹"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_625"
+mingcheng = "手帕"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_626"
+mingcheng = "冷月伞"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_627"
+mingcheng = "烟雨伞"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_629"
+mingcheng = "烟斗"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_630"
+mingcheng = "锅铲"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_631"
+mingcheng = "铃铛"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_632"
+mingcheng = "玄武腰刀"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_633"
+mingcheng = "白虎腰刀"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_634"
+mingcheng = "青龙腰刀"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_635"
+mingcheng = "朱雀腰刀"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_636"
+mingcheng = "麒麟腰刀"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17538"
+mingcheng = "铁纹鞍具"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17539"
+mingcheng = "铁纹兽皮笼套"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17540"
+mingcheng = "铁纹蹄铁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17541"
+mingcheng = "银龙笼套"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17542"
+mingcheng = "银龙蹄铁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17543"
+mingcheng = "银龙鞍具"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17544"
+mingcheng = "银风笼套"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17545"
+mingcheng = "银风蹄铁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17546"
+mingcheng = "银风鞍具"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17547"
+mingcheng = "黑云笼套"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17548"
+mingcheng = "黑云蹄铁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_17549"
+mingcheng = "黑云鞍具"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_25762"
+mingcheng = "寄青荷"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_36148"
+mingcheng = "彩缕花绫包"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "8_36275"
+mingcheng = "锦缝春山囊"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_6"
+mingcheng = "铃兰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_7"
+mingcheng = "柳叶水甘草"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_8"
+mingcheng = "紫色石竹花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_9"
+mingcheng = "六瓣葱莲"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_10"
+mingcheng = "麦仙翁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_11"
+mingcheng = "橙色葵百合"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_12"
+mingcheng = "无名芳蕨"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_13"
+mingcheng = "蓝紫混色似秋英"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_14"
+mingcheng = "射干"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_15"
+mingcheng = "紫花地丁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_16"
+mingcheng = "粉色野花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_17"
+mingcheng = "蓝瓣八仙花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_18"
+mingcheng = "绯色八仙花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_19"
+mingcheng = "红荣八仙花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_20"
+mingcheng = "紫瓣八仙花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_21"
+mingcheng = "纯白八仙花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_22"
+mingcheng = "黄蕊八仙花"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_23"
+mingcheng = "碧华百合"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_24"
+mingcheng = "灿晖百合"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_25"
+mingcheng = "绯色百合"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_26"
+mingcheng = "白花百合"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_27"
+mingcheng = "黄蕊百合"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_28"
+mingcheng = "蓝锦牵牛"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_29"
+mingcheng = "绯锦牵牛"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_30"
+mingcheng = "红锦牵牛"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_31"
+mingcheng = "紫锦牵牛"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_32"
+mingcheng = "黄锦牵牛"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_33"
+mingcheng = "夜雨玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_34"
+mingcheng = "湖风玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_35"
+mingcheng = "涵春玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_36"
+mingcheng = "灿晖玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_37"
+mingcheng = "粉团玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_38"
+mingcheng = "朱楼玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_39"
+mingcheng = "禁彩玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_40"
+mingcheng = "素信玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_41"
+mingcheng = "虹霞玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_42"
+mingcheng = "曦晖玫瑰"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_43"
+mingcheng = "彩色郁金香"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_44"
+mingcheng = "绯色郁金香"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_45"
+mingcheng = "红郁金香"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_46"
+mingcheng = "白郁金香"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_47"
+mingcheng = "黄郁金香"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_48"
+mingcheng = "荧蓝菌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_49"
+mingcheng = "荧红菌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_50"
+mingcheng = "荧紫菌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_51"
+mingcheng = "荧白菌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_52"
+mingcheng = "荧黄菌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_93"
+mingcheng = "葵草席"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_94"
+mingcheng = "低矮木榻"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_95"
+mingcheng = "桑木架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_96"
+mingcheng = "榧木架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_97"
+mingcheng = "花梨木矮柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_98"
+mingcheng = "花梨木曲柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_99"
+mingcheng = "赤漆铜平脱药柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_100"
+mingcheng = "赤漆药柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_101"
+mingcheng = "回字平脱案"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_103"
+mingcheng = "桑木榻足几"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_104"
+mingcheng = "赤漆台案"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_105"
+mingcheng = "桐木凳"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_106"
+mingcheng = "芦苇蒲团"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_107"
+mingcheng = "火毛团花绣舞筵"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_108"
+mingcheng = "旧时帘"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_109"
+mingcheng = "故窗忆·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_110"
+mingcheng = "故窗忆·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_111"
+mingcheng = "桐木灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_112"
+mingcheng = "木桶·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_113"
+mingcheng = "篾编竹篮·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_114"
+mingcheng = "赤漆妆奁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_115"
+mingcheng = "古怪坐垫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_116"
+mingcheng = "蓝染布卷"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_117"
+mingcheng = "织锦席"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_118"
+mingcheng = "赤漆柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_119"
+mingcheng = "赤漆木几"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_120"
+mingcheng = "葵草台案"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_121"
+mingcheng = "葵草坐垫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_122"
+mingcheng = "桑木长凳"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_123"
+mingcheng = "绮罗人物四牒屏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_124"
+mingcheng = "彩锦半拢·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_125"
+mingcheng = "彩锦半拢·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_126"
+mingcheng = "彩锦半拢·三"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_127"
+mingcheng = "彩锦半拢·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_128"
+mingcheng = "彩锦半拢·五"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_129"
+mingcheng = "彩锦半拢·六"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_130"
+mingcheng = "扁青涂花梨木书灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_131"
+mingcheng = "桐木书灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_132"
+mingcheng = "桐木灯檠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_133"
+mingcheng = "荼蘼灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_134"
+mingcheng = "细布灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_135"
+mingcheng = "悬铜铃灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_136"
+mingcheng = "锡灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_137"
+mingcheng = "长系锡灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_139"
+mingcheng = "板车"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_140"
+mingcheng = "明霞锦被褥"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_141"
+mingcheng = "莞草茵席"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_142"
+mingcheng = "桑木柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_143"
+mingcheng = "云石台案"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_144"
+mingcheng = "棋局几·展"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_145"
+mingcheng = "雕枋桌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_146"
+mingcheng = "铜平脱扶手椅"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_147"
+mingcheng = "榧木椅"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_148"
+mingcheng = "蕉叶酒胡椅"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_149"
+mingcheng = "溪山图立屏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_150"
+mingcheng = "二君子五牒屏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_151"
+mingcheng = "竹挂幔·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_152"
+mingcheng = "潮思篾编灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_153"
+mingcheng = "三叠锡灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_154"
+mingcheng = "榧木帨架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_155"
+mingcheng = "沉香木帨架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_156"
+mingcheng = "素髹桐木笔架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_157"
+mingcheng = "邢窑白瓷罗合"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_158"
+mingcheng = "铸铁煎壶"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_159"
+mingcheng = "木兰花妆奁"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_160"
+mingcheng = "涂胡粉坐障"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_161"
+mingcheng = "金线影枝毡"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_162"
+mingcheng = "鱼牙映园"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_163"
+mingcheng = "桑木灯檠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_164"
+mingcheng = "素髹桑木灯檠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_165"
+mingcheng = "天竺石仿仓楼灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_166"
+mingcheng = "零陵石灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_167"
+mingcheng = "赤漆灯檠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_168"
+mingcheng = "鎏金香浮屠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_169"
+mingcheng = "溶溶月"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_170"
+mingcheng = "竹制风灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_171"
+mingcheng = "溪山图经瓶·菡萏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_172"
+mingcheng = "跃龙兵器架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_192"
+mingcheng = "混栽八仙花·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_193"
+mingcheng = "混栽八仙花·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_355"
+mingcheng = "羽扇豆花·白"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_356"
+mingcheng = "羽扇豆花·红"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_357"
+mingcheng = "羽扇豆花·紫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_358"
+mingcheng = "羽扇豆花·黄"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_359"
+mingcheng = "羽扇豆花·粉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_360"
+mingcheng = "羽扇豆花·蓝"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_361"
+mingcheng = "羽扇豆花·蓝白"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_362"
+mingcheng = "羽扇豆花·黄粉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_402"
+mingcheng = "蓝葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_403"
+mingcheng = "绿葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_404"
+mingcheng = "青葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_405"
+mingcheng = "橙葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_406"
+mingcheng = "红葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_407"
+mingcheng = "紫葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_408"
+mingcheng = "白葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_409"
+mingcheng = "黄葫芦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_410"
+mingcheng = "芜菁·紫红"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_411"
+mingcheng = "芜菁·白"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_412"
+mingcheng = "芜菁·青白"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_413"
+mingcheng = "黑麦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_414"
+mingcheng = "绿麦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_415"
+mingcheng = "麦子"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_416"
+mingcheng = "紫麦"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_417"
+mingcheng = "青菜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_418"
+mingcheng = "紫冠青菜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_421"
+mingcheng = "飒飒黄叶席"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_427"
+mingcheng = "原木牌桌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_429"
+mingcheng = "主位壸门凳"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_433"
+mingcheng = "毛竹无脚椅"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_434"
+mingcheng = "黄杨木椅"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_436"
+mingcheng = "黄杨立屏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_437"
+mingcheng = "曲面黄杨立屏·左"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_438"
+mingcheng = "曲面黄杨立屏·右"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_444"
+mingcheng = "仿官制团花毡"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_446"
+mingcheng = "丝绸挂幔·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_447"
+mingcheng = "丝绸挂幔·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_450"
+mingcheng = "秋宵长时"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_469"
+mingcheng = "云深处"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_470"
+mingcheng = "三叶红"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_471"
+mingcheng = "天泽灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_478"
+mingcheng = "沧海泪·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_479"
+mingcheng = "沧海泪·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_490"
+mingcheng = "遗世仙灯檠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_492"
+mingcheng = "赤漆灯联"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_493"
+mingcheng = "福光临门"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_504"
+mingcheng = "贡案"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_671"
+mingcheng = "红木矮柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_672"
+mingcheng = "红日升山竹木几"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_673"
+mingcheng = "夕暮流云椅"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_674"
+mingcheng = "祥云纹水蓝纱屏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_675"
+mingcheng = "靛蓝麻布毯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_676"
+mingcheng = "驼绒绣毯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_677"
+mingcheng = "方正书灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_678"
+mingcheng = "纹竹灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_679"
+mingcheng = "点梅灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_680"
+mingcheng = "红木凤头三叠灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_681"
+mingcheng = "故纸堆"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_682"
+mingcheng = "望南屏图"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_683"
+mingcheng = "飞瀑图"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_684"
+mingcheng = "竹排庭灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_685"
+mingcheng = "雕花仿楼灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_686"
+mingcheng = "红陶炉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_687"
+mingcheng = "木檐旧立牌"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_688"
+mingcheng = "新竹小架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_943"
+mingcheng = "悠然自得床"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_944"
+mingcheng = "明棠灯笼"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_945"
+mingcheng = "自华屏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_946"
+mingcheng = "一线牵幔"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_947"
+mingcheng = "简素台"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_948"
+mingcheng = "简素椅"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_949"
+mingcheng = "简素摆灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_950"
+mingcheng = "伴茶碟"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_951"
+mingcheng = "封螯盏"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_952"
+mingcheng = "方纹纱格挂落·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_953"
+mingcheng = "榉木转角柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_954"
+mingcheng = "锦葵和露"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_955"
+mingcheng = "幽华一枝岚"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_956"
+mingcheng = "簇篷庭灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_957"
+mingcheng = "燃木庭灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1082"
+mingcheng = "木制花池架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1083"
+mingcheng = "碧海锦帘"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1084"
+mingcheng = "承流云锦帘"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1085"
+mingcheng = "旧铡刀"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1086"
+mingcheng = "迷沼枯藤·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1087"
+mingcheng = "迷沼枯藤·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1088"
+mingcheng = "迷沼枯藤·三"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1089"
+mingcheng = "迷沼枯藤·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1090"
+mingcheng = "迷沼枯藤·五"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1162"
+mingcheng = "铃兰·白"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1163"
+mingcheng = "铃兰·粉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1164"
+mingcheng = "铃兰·蓝"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1165"
+mingcheng = "铃兰·紫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1166"
+mingcheng = "铃兰·橙"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1167"
+mingcheng = "铃兰·混彩"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1277"
+mingcheng = "匾额·古董"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1278"
+mingcheng = "匾额·书院"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1279"
+mingcheng = "匾额·书库"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1280"
+mingcheng = "匾额·钱庄"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1281"
+mingcheng = "匾额·布坊"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1282"
+mingcheng = "招牌·马商"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1283"
+mingcheng = "招牌·铁匠"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1284"
+mingcheng = "招牌·钱庄"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1285"
+mingcheng = "招牌·药店"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1286"
+mingcheng = "招牌·茶馆"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1453"
+mingcheng = "缘东窗"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1454"
+mingcheng = "香辞·红"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1455"
+mingcheng = "香辞·白"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1456"
+mingcheng = "香辞·粉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1457"
+mingcheng = "香辞·紫"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1458"
+mingcheng = "香辞·蓝"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1459"
+mingcheng = "声声慢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1460"
+mingcheng = "松风寒"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1461"
+mingcheng = "梧桐月"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1462"
+mingcheng = "望春风"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1463"
+mingcheng = "飞骏庭灯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1464"
+mingcheng = "悬壶问世"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1465"
+mingcheng = "香料鹿车"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1477"
+mingcheng = "武器架·展开"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1570"
+mingcheng = "半日归园"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1571"
+mingcheng = "玲珑多宝赤漆柜·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1572"
+mingcheng = "玲珑多宝赤漆柜·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1573"
+mingcheng = "素皎瓷器·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1574"
+mingcheng = "素皎瓷器·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1575"
+mingcheng = "素皎瓷器·三"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1576"
+mingcheng = "素皎瓷器·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1577"
+mingcheng = "素皎瓷器·五"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1578"
+mingcheng = "素皎瓷器·六"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1587"
+mingcheng = "菡萏池灯·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1605"
+mingcheng = "黑山冥蛇·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1606"
+mingcheng = "黑山冥蛇·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1607"
+mingcheng = "黑山冥蛇·三"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1772"
+mingcheng = "章草"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1773"
+mingcheng = "偶作"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1774"
+mingcheng = "清漆矮柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1775"
+mingcheng = "清漆素纹架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1776"
+mingcheng = "清漆博古架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1777"
+mingcheng = "夏风晚荷架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1778"
+mingcheng = "清漆药柜"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1779"
+mingcheng = "锻炉"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1780"
+mingcheng = "絮语飘铃"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1879"
+mingcheng = "绀云霞照毯"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1880"
+mingcheng = "残烛柜架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1881"
+mingcheng = "彩饰宝幢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1882"
+mingcheng = "禅心悬旗"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1894"
+mingcheng = "槿花茵·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1895"
+mingcheng = "槿花茵·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1896"
+mingcheng = "槿花茵·三"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1897"
+mingcheng = "槿花茵·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_1898"
+mingcheng = "槿花茵·五"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2028"
+mingcheng = "鹰鳐纸鸢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2029"
+mingcheng = "飞燕纸鸢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2030"
+mingcheng = "要努力纸鸢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2031"
+mingcheng = "大眼萌纸鸢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2032"
+mingcheng = "刚买的纸鸢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2033"
+mingcheng = "一串纸鸢"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2034"
+mingcheng = "矩形回纹格"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2035"
+mingcheng = "大满格"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2036"
+mingcheng = "铜雕踩球对狮·左"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2037"
+mingcheng = "铜雕踩球对狮·右"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2097"
+mingcheng = "双层杂木架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2098"
+mingcheng = "三层杂木架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2099"
+mingcheng = "杂木长架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2100"
+mingcheng = "木桁架"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2101"
+mingcheng = "绿叶红荷"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2102"
+mingcheng = "田田莲叶·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2103"
+mingcheng = "田田莲叶·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2104"
+mingcheng = "菡萏香莲"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2105"
+mingcheng = "芰荷含苞"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2106"
+mingcheng = "独支莲叶·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2107"
+mingcheng = "独支莲叶·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2229"
+mingcheng = "暮春落花·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2230"
+mingcheng = "暮春落花·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2231"
+mingcheng = "暮春落花·三"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2232"
+mingcheng = "暮春落花·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2233"
+mingcheng = "暮春落花·五"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2234"
+mingcheng = "报春花落·一"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2235"
+mingcheng = "报春花落·二"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2236"
+mingcheng = "报春花落·三"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2237"
+mingcheng = "报春花落·四"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2238"
+mingcheng = "报春花落·五"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2241"
+mingcheng = "须弥座方柱"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2242"
+mingcheng = "云雷槽纹方柱"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2243"
+mingcheng = "兽座槽纹圆柱"
+pinlei = "chengpin"
+laiyuan = "jx3box"
+
+[[wupin]]
+id = "10_2244"
+mingcheng = "云纹莲座圆柱"
+pinlei = "chengpin"
 laiyuan = "jx3box"

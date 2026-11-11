@@ -1,26 +1,112 @@
-# 服务器（样例；P2 从 JX3BOX/jx3box-data data/server 全量导出）
+# 服务器（自动生成；来源：JX3BOX/jx3box-data data/server/*.json）
+# 生成日期：2026-11-12（北京时间）
+# id 是本地稳定键（行情缓存文件名/设置项）；JX3BOX 行情接口的 server 参数要用 mingcheng（中文名）
+
+[[fuwuqi]]
+id = "tianeiping"
+mingcheng = "天鹅坪"
+daju = "双线一区"
+
+[[fuwuqi]]
+id = "pozhenzi"
+mingcheng = "破阵子"
+daju = "双线一区"
+
+[[fuwuqi]]
+id = "feilongzaitian"
+mingcheng = "飞龙在天"
+daju = "双线二区"
+
+[[fuwuqi]]
+id = "aoxuezhenyi"
+mingcheng = "傲血戰意"
+daju = "国际服"
+
+[[fuwuqi]]
+id = "gongjielaiyuan"
+mingcheng = "共結來緣"
+daju = "国际服"
+
+[[fuwuqi]]
+id = "dianfengzaiqi"
+mingcheng = "巔峰再起"
+daju = "国际服"
+
+[[fuwuqi]]
+id = "jianghaiyunmeng"
+mingcheng = "江海雲夢"
+daju = "国际服"
+
+[[fuwuqi]]
+id = "jiutian"
+mingcheng = "九天"
+daju = "电信一区"
+
+[[fuwuqi]]
+id = "dielianhua"
+mingcheng = "蝶恋花"
+daju = "电信一区"
+
+[[fuwuqi]]
+id = "changancheng"
+mingcheng = "长安城"
+daju = "电信一区"
+
+[[fuwuqi]]
+id = "longzhenghudou"
+mingcheng = "龙争虎斗"
+daju = "电信一区"
+
+[[fuwuqi]]
+id = "qiankunyizhi"
+mingcheng = "乾坤一掷"
+daju = "电信五区"
 
 [[fuwuqi]]
 id = "jiandanqinxin"
 mingcheng = "剑胆琴心"
-daju = "电信区"
+daju = "电信五区"
 
 [[fuwuqi]]
-id = "changan"
-mingcheng = "长安城"
-daju = "电信区"
-
-[[fuwuqi]]
-id = "weiwo"
+id = "weiwoduzun"
 mingcheng = "唯我独尊"
-daju = "电信区"
+daju = "电信五区"
 
 [[fuwuqi]]
-id = "shanhai"
-mingcheng = "山海相逢"
-daju = "无界区"
+id = "youyuelun"
+mingcheng = "幽月轮"
+daju = "电信五区"
 
 [[fuwuqi]]
-id = "meijianxue"
-mingcheng = "眉间雪"
-daju = "无界区"
+id = "douzhuanxingyi"
+mingcheng = "斗转星移"
+daju = "电信五区"
+
+[[fuwuqi]]
+id = "mengjiangnan"
+mingcheng = "梦江南"
+daju = "电信五区"
+
+[[fuwuqi]]
+id = "juedaitianjiao"
+mingcheng = "绝代天骄"
+daju = "电信八区"
+
+[[fuwuqi]]
+id = "jianxiaojianghu"
+mingcheng = "剑啸江湖"
+daju = "缘起大区"
+
+[[fuwuqi]]
+id = "tianbaoshengshi"
+mingcheng = "天宝盛世"
+daju = "缘起大区"
+
+[[fuwuqi]]
+id = "yuanqidaoxiang"
+mingcheng = "缘起稻香"
+daju = "缘起大区"
+
+[[fuwuqi]]
+id = "hengdaoduanlang"
+mingcheng = "横刀断浪"
