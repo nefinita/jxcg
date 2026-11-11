@@ -335,7 +335,7 @@ pub struct NetResult {
     pub feiyong: Tong,
     /// 保管费合计（铜）
     pub baoguanfei: Tong,
-    /// 到手（铜）
+    /// 到手（铜）= 成交总额 − 手续费 − 保管费（可为负，提示不划算）
     pub daoshou: Tong,
 }
 
@@ -353,10 +353,10 @@ pub struct BaobenRequest {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct JisuanRequest {
     pub peifang_id: String,
-    /// 制作次数
+    /// 制作次数（>= 1；批量按期望线性累计）
     #[serde(default = "one")]
     pub cishu: u32,
-    /// 每次制作的挂单次数（保管费按次计）
+    /// 每批产出的挂单次数（保管费按次计；0 = 不计保管费）
     #[serde(default = "one")]
     pub guadan_cishu: u32,
     /// 每点精力折合金额（铜）
@@ -448,6 +448,9 @@ pub struct PaihangRequest {
     /// 最多返回条数；None = 全部
     #[serde(default)]
     pub limit: Option<usize>,
+    /// 是否包含缺价配方（默认 false = 排除；true 时缺价行排在末尾并置 `quejia = true`）
+    #[serde(default)]
+    pub baohan_quejia: bool,
 }
 
 /// 排行行。
@@ -468,6 +471,7 @@ pub struct PaihangRow {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ZhuanhuanRequest {
     pub zhuanhuan_id: String,
+    /// 目标成功次数（产出高阶石个数，>= 1）；期望投入次数 = cishu × 1/p
     #[serde(default = "one")]
     pub cishu: u32,
     #[serde(default)]
@@ -482,11 +486,11 @@ pub struct ZhuanhuanRequest {
 pub struct ZhuanhuanResult {
     pub zhuanhuan_id: String,
     pub mingcheng: String,
-    /// 期望投入次数（1 / 成功率）
+    /// 期望投入总次数（cishu × 1/p，p = chenggonglv_bp / 10000）
     pub qiwang_cishu: f64,
-    /// 期望总成本（铜）
+    /// 期望总成本（铜）= 单次投入成本 × cishu / p
     pub zong_chengben: Tong,
-    /// 期望产出价值（扣手续费前）
+    /// 期望产出价值（扣手续费前，铜）= cishu × 高阶石单价
     pub shouru: Tong,
     /// 净利润（铜）
     pub lirun: Tong,
@@ -551,4 +555,290 @@ pub struct RefreshResult {
     pub chenggong: u32,
     pub shibai: u32,
     pub jiage: Vec<JiageJilu>,
+}
+
+// ============================================================================
+// DTO 契约测试（冻结前后端/命令共享的序列化形状与默认值）
+//
+// 这些测试是「向后兼容」的红线：
+// - 旧前端不传可选字段时必须能反序列化（serde default）；
+// - 枚举的 snake_case 序列化名是 Tauri 命令与前端类型的共同协议；
+// - Catalog 全字段 JSON 往返必须一致。
+// ============================================================================
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn sample_catalog() -> Catalog {
+        Catalog {
+            banben: Banben {
+                level: 130,
+                season: 3,
+                modified: 20261112,
+                note: "测试".into(),
+            },
+            wupin: vec![Wupin {
+                id: "5_1".into(),
+                mingcheng: "材料".into(),
+                pinlei: Pinlei::Cailiao,
+                dui: Some(20),
+                shangdianjia: Some(100),
+                laiyuan: Some("jx3box".into()),
+            }],
+            peifang: vec![Peifang {
+                id: "cooking_1".into(),
+                mingcheng: "测试配方".into(),
+                jiyi: Jiyi::Pengren,
+                dengji: 10,
+                jingli: 5,
+                zhizuofei: 100,
+                cailiao: vec![Cailiao {
+                    wupin_id: "5_1".into(),
+                    shuliang: 2,
+                }],
+                chuchan: vec![Chuchan {
+                    wupin_id: "5_2".into(),
+                    min: 1,
+                    max: 2,
+                    quanzhong: QUANZHONG_FENMU,
+                }],
+                laiyuan: Some("jx3box".into()),
+            }],
+            wuxingshi: vec![Zhuanhuan {
+                id: "w1".into(),
+                mingcheng: "转换".into(),
+                cong: "5_1".into(),
+                dao: "5_2".into(),
+                xuyao: 3,
+                jingli: 10,
+                jinbi: 100,
+                chenggonglv_bp: 4_878,
+                laiyuan: Some("shequ".into()),
+            }],
+            fuwuqi: vec![Fuwuqi {
+                id: "jiandanqinxin".into(),
+                mingcheng: "剑胆琴心".into(),
+                daju: Some("电信区".into()),
+            }],
+            zhiji: vec![Zhiji {
+                id: "live-130".into(),
+                mingcheng: "正式服".into(),
+                note: "备注".into(),
+                shouxufei: Shouxufei::default(),
+            }],
+        }
+    }
+
+    #[test]
+    fn money_unit_contract() {
+        // 金额一律 i64 铜（8 字节），权重分母固定 2^20
+        assert_eq!(std::mem::size_of::<Tong>(), 8);
+        let _: Tong = i64::MAX;
+        assert_eq!(QUANZHONG_FENMU, 1_048_576);
+        assert_eq!(QUANZHONG_FENMU, 1 << 20);
+        // 常见换算：1 金 = 100 银 = 10_000 铜；1 砖 = 10_000 金 = 100_000_000 铜
+        assert_eq!(10_000 / 100, 100);
+        assert_eq!(100_000_000 / 10_000, 10_000);
+    }
+
+    #[test]
+    fn shouxufei_default() {
+        let cfg = Shouxufei::default();
+        assert_eq!(cfg.shuilv_bp, 500); // 5%
+        assert_eq!(cfg.quzheng, Quzheng::HalfUp);
+        assert_eq!(cfg.baoguanfei, 8_000); // 80 银
+    }
+
+    #[test]
+    fn enum_serde_names() {
+        // 枚举的 snake_case 名是命令参数协议，不能随意变更
+        assert_eq!(
+            serde_json::to_string(&Jiyi::Pengren).unwrap(),
+            "\"pengren\""
+        );
+        assert_eq!(serde_json::to_string(&Jiyi::Zhiyao).unwrap(), "\"zhiyao\"");
+        assert_eq!(
+            serde_json::from_str::<Jiyi>("\"zijiang\"").unwrap(),
+            Jiyi::Zijiang
+        );
+        assert_eq!(
+            serde_json::to_string(&Pinlei::Wuxingshi).unwrap(),
+            "\"wuxingshi\""
+        );
+        assert_eq!(
+            serde_json::to_string(&Quzheng::HalfUp).unwrap(),
+            "\"half_up\""
+        );
+        assert_eq!(serde_json::to_string(&Quzheng::Floor).unwrap(), "\"floor\"");
+        assert_eq!(
+            serde_json::to_string(&PaihangZhibiao::MeiJingli).unwrap(),
+            "\"mei_jingli\""
+        );
+        assert_eq!(
+            serde_json::from_str::<PaihangZhibiao>("\"lirunlv\"").unwrap(),
+            PaihangZhibiao::Lirunlv
+        );
+    }
+
+    #[test]
+    fn jiyi_helpers() {
+        assert_eq!(Jiyi::ALL.len(), 5);
+        for jiyi in Jiyi::ALL {
+            assert_eq!(Jiyi::from_id(jiyi.id()), Some(jiyi));
+            assert!(!jiyi.mingcheng().is_empty());
+        }
+        assert_eq!(Jiyi::from_id("unknown"), None);
+    }
+
+    #[test]
+    fn request_defaults_are_backward_compatible() {
+        let shouxufei = r#"{"shuilv_bp":500,"quzheng":"half_up","baoguanfei":8000}"#;
+
+        // NetRequest：缺省 shuliang/guadan_cishu 默认 1
+        let net: NetRequest =
+            serde_json::from_str(&format!(r#"{{"shoujia":100,"shouxufei":{shouxufei}}}"#)).unwrap();
+        assert_eq!(net.shuliang, 1);
+        assert_eq!(net.guadan_cishu, 1);
+
+        // JisuanRequest：缺省批量/精力单价/价格表/技艺等级
+        let jisuan: JisuanRequest =
+            serde_json::from_str(&format!(r#"{{"peifang_id":"p1","shouxufei":{shouxufei}}}"#))
+                .unwrap();
+        assert_eq!(jisuan.cishu, 1);
+        assert_eq!(jisuan.guadan_cishu, 1);
+        assert_eq!(jisuan.jingli_danjia, 0);
+        assert!(jisuan.jiage.is_empty());
+        assert_eq!(jisuan.jiyi_dengji, 0);
+
+        // PaihangRequest：缺省 jiyi/limit/jiyi_dengji/jiage，且新增 baohan_quejia 默认 false
+        let paihang: PaihangRequest =
+            serde_json::from_str(&format!(r#"{{"shouxufei":{shouxufei},"zhibiao":"lirun"}}"#))
+                .unwrap();
+        assert_eq!(paihang.jiyi, None);
+        assert_eq!(paihang.limit, None);
+        assert_eq!(paihang.jiyi_dengji, 0);
+        assert!(paihang.jiage.is_empty());
+        assert!(!paihang.baohan_quejia, "新增字段必须默认 false（缺价排除）");
+
+        // ZhuanhuanRequest：缺省 cishu/精力单价/价格表
+        let zhuanhuan: ZhuanhuanRequest = serde_json::from_str(&format!(
+            r#"{{"zhuanhuan_id":"w1","shouxufei":{shouxufei}}}"#
+        ))
+        .unwrap();
+        assert_eq!(zhuanhuan.cishu, 1);
+        assert_eq!(zhuanhuan.jingli_danjia, 0);
+        assert!(zhuanhuan.jiage.is_empty());
+
+        // BaobenRequest
+        let baoben: BaobenRequest =
+            serde_json::from_str(&format!(r#"{{"chengben":100,"shouxufei":{shouxufei}}}"#))
+                .unwrap();
+        assert_eq!(baoben.guadan_cishu, 1);
+    }
+
+    #[test]
+    fn optional_fields_default() {
+        let wupin: Wupin =
+            serde_json::from_str(r#"{"id":"x","mingcheng":"y","pinlei":"cailiao"}"#).unwrap();
+        assert_eq!(wupin.dui, None);
+        assert_eq!(wupin.shangdianjia, None);
+        assert_eq!(wupin.laiyuan, None);
+
+        let peifang: Peifang = serde_json::from_str(
+            r#"{"id":"p","mingcheng":"n","jiyi":"pengren","dengji":1,"jingli":0}"#,
+        )
+        .unwrap();
+        assert_eq!(peifang.zhizuofei, 0);
+        assert!(peifang.cailiao.is_empty());
+        assert!(peifang.chuchan.is_empty());
+        assert_eq!(peifang.laiyuan, None);
+
+        let chuchan: Chuchan = serde_json::from_str(r#"{"wupin_id":"x","min":1,"max":2}"#).unwrap();
+        assert_eq!(chuchan.quanzhong, 0);
+
+        let zhuanhuan: Zhuanhuan = serde_json::from_str(
+            r#"{"id":"w","mingcheng":"n","cong":"a","dao":"b","xuyao":1,"jingli":1,"chenggonglv_bp":5000}"#,
+        )
+        .unwrap();
+        assert_eq!(zhuanhuan.jinbi, 0);
+        assert_eq!(zhuanhuan.laiyuan, None);
+
+        let jiage: JiageJilu = serde_json::from_str(r#"{"wupin_id":"x","fuwuqi_id":"s"}"#).unwrap();
+        assert!(jiage.guadan.is_empty());
+        assert_eq!(jiage.gengxin_shijian, 0);
+        assert_eq!(jiage.laiyuan, "");
+        assert!(!jiage.shoudong);
+    }
+
+    #[test]
+    fn catalog_roundtrip() {
+        let catalog = sample_catalog();
+        let json = serde_json::to_string(&catalog).unwrap();
+        let back: Catalog = serde_json::from_str(&json).unwrap();
+        assert_eq!(back, catalog);
+        // 嵌套结构确实被序列化（不是依赖 serde skip）
+        assert!(json.contains("\"peifang\""));
+        assert!(json.contains("\"shouxufei\""));
+        assert!(json.contains("\"quanzhong\""));
+    }
+
+    #[test]
+    fn result_roundtrip() {
+        let result = JisuanResult {
+            peifang_id: "p".into(),
+            peifang_mingcheng: "配方".into(),
+            chengben_cailiao: 1,
+            chengben_jingli: 2,
+            zhizuofei: 3,
+            baoguanfei: 4,
+            zong_chengben: 10,
+            shouru: 20,
+            jingshouru: 19,
+            lirun: 9,
+            lirunlv_bp: 9_000,
+            mei_jingli: 3,
+            baobenjia: 11,
+            jingli: 5,
+            chuchan_qiwang: 1.5,
+            cailiao: vec![],
+            chuchan: vec![ChuchanMingxi {
+                wupin_id: "x".into(),
+                mingcheng: "产物".into(),
+                qiwang: 1.5,
+                danjia: 7,
+            }],
+            quejia: vec!["x".into()],
+        };
+        let back: JisuanResult =
+            serde_json::from_str(&serde_json::to_string(&result).unwrap()).unwrap();
+        assert_eq!(back, result);
+
+        let zhuanhuan = ZhuanhuanResult {
+            zhuanhuan_id: "w".into(),
+            mingcheng: "转换".into(),
+            qiwang_cishu: 2.0,
+            zong_chengben: 100,
+            shouru: 200,
+            lirun: 90,
+            lirunlv_bp: 9_000,
+            quejia: vec![],
+        };
+        let back: ZhuanhuanResult =
+            serde_json::from_str(&serde_json::to_string(&zhuanhuan).unwrap()).unwrap();
+        assert_eq!(back, zhuanhuan);
+    }
+
+    #[test]
+    fn settings_default() {
+        let s = Settings::default();
+        assert_eq!(s.fuwuqi_id, "jiandanqinxin");
+        assert_eq!(s.zhiji_id, "live-130");
+        assert_eq!(s.jingli_danjia, 0);
+        assert_eq!(s.jiyi_dengji, 0);
+        assert!(s.auto_refresh);
+        // 缺字段时 auto_refresh 默认 true
+        let s: Settings = serde_json::from_str(r#"{"fuwuqi_id":"a","zhiji_id":"b"}"#).unwrap();
+        assert!(s.auto_refresh);
+    }
 }
