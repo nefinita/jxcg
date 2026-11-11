@@ -3,9 +3,11 @@
 // ============================================================================
 
 mod commands;
+mod state;
 
 pub fn run() {
     let result = tauri::Builder::default()
+        .manage(state::AppState::default())
         .invoke_handler(tauri::generate_handler![
             commands::ping,
             commands::calc::calculate_net,
@@ -14,6 +16,7 @@ pub fn run() {
             commands::calc::rank_recipes,
             commands::calc::calculate_convert,
             commands::data::load_catalog,
+            commands::data::reload_catalog,
             commands::market::load_prices,
             commands::market::upsert_price,
             commands::market::refresh_prices,

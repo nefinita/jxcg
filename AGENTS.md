@@ -52,8 +52,9 @@ make data-export    # P2：jx3box-export 重新导出 data/
 - **行情源**：JX3BOX `https://next2.jx3box.com/api/item-price/{id}/detail?server=`（非官方、无 SLA）。
   请求统一在 `jxcg_market`，缓存/并发上限/失败降级（last-known-good）在 P3 实现。
 - **Tauri commands**：`calculate_net` / `calculate_baoben` / `calculate_recipe` / `rank_recipes` / `calculate_convert` /
-  `load_catalog` / `load_prices` / `upsert_price` / `refresh_prices` / `load_settings` / `save_settings` / `ping`。
+  `load_catalog` / `reload_catalog` / `load_prices` / `upsert_price` / `refresh_prices` / `load_settings` / `save_settings` / `ping`。
 - **前端**：React 19 + TS + Vite + CSS Modules；`window.__TAURI__` 调用，浏览器下走 `api/commands.ts` 的 mock。
+- **目录缓存**：`AppState` 进程内缓存 `Arc<Catalog>`（启动后 data/ 不变），`reload_catalog` 清缓存重载。
 - **Tauri 配置**：`withGlobalTauri: true`、CSP `null`、`frontendDist: ../dist`、`beforeDevCommand: bun run dev`。
 - **库代码禁止 `unwrap/expect`**：统一 `Result<_, JxcgError>`，Tauri 命令返回中文错误串。
 
