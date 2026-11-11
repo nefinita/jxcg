@@ -1,31 +1,72 @@
-//! 行情命令：本地价格读取/覆盖/刷新。
+//! 行情命令：本地价格读取/手动覆盖/联网刷新（JX3BOX）。
 //!
-//! P1 先给契约与空实现，P3 接入 jxcg_market（JX3BOX）+ 本地行情档案。
+//! 刷新流程（P3）：读本地 last-known-good → 并发拉 JX3BOX → 成功覆盖缓存、失败回落旧价 →
+//! 写回 `应用数据目录/hangqing/{服务器}.toml`，通过 `refresh-progress` 事件回报进度。
 
-use jxcg_api::{JiageJilu, RefreshResult, Tong};
+use std::path::PathBuf;
 
-/// 读取本地行情（P1：空）。
-#[tauri::command]
-pub fn load_prices(_fuwuqi_id: String) -> Result<Vec<JiageJilu>, String> {
-    Ok(Vec::new())
+use jxcg_api::{JiageJilu, RefreshProgress, RefreshResult, Tong};
+use jxcg_market::{Jx3BoxProvider, ProviderConfig};
+use tauri::{Emitter, Manager};
+
+use crate::state::AppState;
+
+fn app_data_dir(app: &tauri::AppHandle) -> Result<PathBuf, String> {
+    app.path()
+        .app_data_dir()
+        .map_err(|err| format!("获取应用数据目录失败：{err}"))
 }
 
-/// 手动覆盖一条物品价格（P1：占位）。
+/// 读取本地行情档案（无档案返回空列表）。
+#[tauri::command]
+pub fn load_prices(app: tauri::AppHandle, fuwuqi_id: String) -> Result<Vec<JiageJilu>, String> {
+    let dir = app_data_dir(&app)?;
+    jxcg_market::load_prices(&dir, &fuwuqi_id).map_err(|err| err.to_string())
+}
+
+/// 手动覆盖一条物品价格（用户手动价优先于自动价，刷新时保留）。
 #[tauri::command]
 pub fn upsert_price(
-    _fuwuqi_id: String,
-    _wupin_id: String,
-    _danjia: Tong,
+    app: tauri::AppHandle,
+    fuwuqi_id: String,
+    wupin_id: String,
+    danjia: Tong,
 ) -> Result<(), String> {
-    Err("行情写入待 P3 实现".to_string())
+    let dir = app_data_dir(&app)?;
+    jxcg_market::upsert_price(&dir, &fuwuqi_id, &wupin_id, danjia)
+        .map_err(|err| err.to_string())
 }
 
-/// 联网刷新行情（P1：占位；P3 接 JX3BOX + 并发/缓存/降级）。
+/// 联网刷新行情；失败自动回落最后一次拉取价（last-known-good）。
 #[tauri::command]
-pub fn refresh_prices(
+pub async fn refresh_prices(
+    app: tauri::AppHandle,
+    state: tauri::State<'_, AppState>,
     fuwuqi_id: String,
-    _wupin_ids: Vec<String>,
+    wupin_ids: Vec<String>,
 ) -> Result<RefreshResult, String> {
-    let _ = fuwuqi_id;
-    Err("自动拉价待 P3 实现".to_string())
+    let catalog = state.catalog()?;
+    let fuwuqi = catalog
+        .fuwuqi
+        .iter()
+        .find(|fuwuqi| fuwuqi.id == fuwuqi_id)
+        .ok_or_else(|| format!("未知服务器：{fuwuqi_id}"))?;
+    let fuwuqi_mingcheng = fuwuqi.mingcheng.clone();
+    let dir = app_data_dir(&app)?;
+    let provider = Jx3BoxProvider::new(ProviderConfig::default())
+        .map_err(|err| format!("行情客户端初始化失败：{err}"))?;
+    let app_for_progress = app.clone();
+    let outcome = jxcg_market::refresh_prices(
+        &provider,
+        &dir,
+        &fuwuqi_id,
+        &fuwuqi_mingcheng,
+        &wupin_ids,
+        move |progress: RefreshProgress| {
+            let _ = app_for_progress.emit("refresh-progress", progress);
+        },
+    )
+    .await
+    .map_err(|err| err.to_string())?;
+    Ok(outcome.into_result())
 }
