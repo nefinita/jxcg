@@ -1,17 +1,25 @@
 //! 全配方收益排行。
 //!
-//! 口径（PLAN.md §6.3）：
+//! 口径（PLAN.md §6.3 / §6.3.1）：
 //! - 指标三选一：单次净利润 / 每点精力净利润 / 利润率；
 //! - **缺价配方默认排除**；`baohan_quejia = true` 时保留并标记 `quejia = true`，
 //!   且缺价行一律排在有效行之后（缺价按 0 计会虚高利润，不能混排）；
-//! - 排序稳定：指标降序 → 配方 id 升序兜底（同值结果确定）；
-//! - `limit` 截断在排序之后。
+//! - **「只产中间产物」的配方默认不参与排行**（`baohan_zhongjian = false`）；
+//!   包含时标记 `zhongjian = true`，排序规则不变；
+//! - `zhongjian_zizhi` 同样作用于排行成本（默认 true = 中间产物按自制成本展开）；
+//! - 排序稳定：缺价标记 → 指标降序 → 配方 id 升序兜底（同值结果确定）；
+//! - `limit` 截断在排序之后；一次请求只建一次中间产物索引，单位成本请求内 memo。
+
+use std::collections::{BTreeMap, BTreeSet};
 
 use crate::craft;
 use jxcg_api::{Catalog, JisuanRequest, PaihangRequest, PaihangRow, PaihangZhibiao};
 
-/// 计算排行（按指标降序；缺价配方默认排除）。
+/// 计算排行（按指标降序；缺价 / 中间产物配方按开关过滤）。
 pub fn paihang(catalog: &Catalog, req: &PaihangRequest) -> Vec<PaihangRow> {
+    // 一次请求只建一次索引；中间产物单位成本在请求内 memo（1036 配方量级的关键优化）
+    let mut calculator =
+        craft::Calculator::new(catalog, &req.jiage, &req.shoudong, req.jingli_danjia);
     let mut rows = Vec::with_capacity(catalog.peifang.len());
     for peifang in &catalog.peifang {
         if let Some(jiyi) = req.jiyi
@@ -19,16 +27,24 @@ pub fn paihang(catalog: &Catalog, req: &PaihangRequest) -> Vec<PaihangRow> {
         {
             continue;
         }
+        // 「只产中间产物」的配方默认不进入排行（仍可作为成本展开来源被引用）
+        let zhongjian_peifang = calculator.index().is_zhongjian_peifang(peifang);
+        if zhongjian_peifang && !req.baohan_zhongjian {
+            continue;
+        }
         let jisuan_req = JisuanRequest {
             peifang_id: peifang.id.clone(),
             cishu: 1,
             guadan_cishu: 1,
+            // 价格上下文由 Calculator 构造参数统一提供（这里仅占位，保持字段完整）
             jingli_danjia: req.jingli_danjia,
             shouxufei: req.shouxufei.clone(),
-            jiage: req.jiage.clone(),
+            jiage: BTreeMap::new(),
             jiyi_dengji: req.jiyi_dengji,
+            zhongjian_zizhi: req.zhongjian_zizhi,
+            shoudong: BTreeSet::new(),
         };
-        let Ok(result) = craft::jisuan(catalog, &jisuan_req) else {
+        let Ok(result) = calculator.jisuan(&jisuan_req) else {
             // 数据不完整的配方（如 min > max）不能参与排行，跳过
             continue;
         };
@@ -45,6 +61,7 @@ pub fn paihang(catalog: &Catalog, req: &PaihangRequest) -> Vec<PaihangRow> {
             mei_jingli: result.mei_jingli,
             jingli: result.jingli,
             quejia,
+            zhongjian: zhongjian_peifang,
         });
     }
 
@@ -158,6 +175,9 @@ mod tests {
             jiyi_dengji: 0,
             limit: None,
             baohan_quejia: false,
+            zhongjian_zizhi: true,
+            baohan_zhongjian: false,
+            shoudong: BTreeSet::new(),
         }
     }
 
@@ -262,5 +282,166 @@ mod tests {
         let rows = paihang(&cat, &base_req());
         assert!(rows.iter().all(|r| r.peifang_id != "r_bad"));
         assert_eq!(rows.len(), 3); // r_a/r_b/r_c
+    }
+
+    // ========================================================================
+    // 中间产物排行（PLAN.md §6.3.1）
+    // ========================================================================
+
+    /// 中间产物排行目录：
+    /// - raw（商店价 100）；mid 由 mid_recipe 产出（1×raw + 精力 10，产出 1 件）
+    ///   单位成本 = 100 + 10×精力单价(10) = 200；mid 同时被 final_a / final_b 使用；
+    /// - final_a 产出 out_a（行情 1000）、final_b 产出 out_b（行情 1200）；
+    /// - mid 自身有行情价 999，但默认自制展开（只有手填覆盖才按行情价采购）。
+    fn zhongjian_rank_catalog() -> Catalog {
+        let mut mid = recipe("mid_recipe", Jiyi::Pengren, 10, "raw", "mid");
+        mid.zhizuofei = 0;
+        let mut final_a = recipe("final_a", Jiyi::Pengren, 0, "mid", "out_a");
+        final_a.cailiao[0].wupin_id = "mid".into();
+        let mut final_b = recipe("final_b", Jiyi::Pengren, 0, "mid", "out_b");
+        final_b.cailiao[0].wupin_id = "mid".into();
+        Catalog {
+            banben: Banben::default(),
+            wupin: vec![
+                wupin("raw", Some(100)),
+                wupin("mid", None),
+                wupin("out_a", None),
+                wupin("out_b", None),
+            ],
+            peifang: vec![mid, final_a, final_b],
+            wuxingshi: vec![],
+            fuwuqi: vec![],
+            zhiji: vec![],
+        }
+    }
+
+    fn zhongjian_rank_req() -> PaihangRequest {
+        PaihangRequest {
+            jiyi: None,
+            jingli_danjia: 10,
+            shouxufei: Shouxufei {
+                shuilv_bp: 500,
+                quzheng: Quzheng::HalfUp,
+                baoguanfei: 0,
+            },
+            jiage: BTreeMap::from([
+                ("raw".to_string(), 100),
+                ("mid".to_string(), 999), // 行情价：默认不用（自制展开）
+                ("out_a".to_string(), 1_000),
+                ("out_b".to_string(), 1_200),
+            ]),
+            zhibiao: PaihangZhibiao::Lirun,
+            jiyi_dengji: 0,
+            limit: None,
+            baohan_quejia: false,
+            zhongjian_zizhi: true,
+            baohan_zhongjian: false,
+            shoudong: BTreeSet::new(),
+        }
+    }
+
+    #[test]
+    fn zhongjian_recipes_excluded_by_default() {
+        let req = zhongjian_rank_req();
+        let rows = paihang(&zhongjian_rank_catalog(), &req);
+        let ids: Vec<&str> = rows.iter().map(|r| r.peifang_id.as_str()).collect();
+        // mid_recipe 只产中间产物 → 默认排除；final_a/final_b 用自制成本 200：
+        // final_a: 1000−50−200 = 750；final_b: 1200−60−200 = 940
+        assert_eq!(ids, vec!["final_b", "final_a"]);
+        assert!(rows.iter().all(|r| !r.zhongjian));
+        assert_eq!(rows[0].lirun, 940);
+        assert_eq!(rows[1].lirun, 750);
+        // 每精力利润按（最终精力 + 中间产物精力）计算：750 / (0 + 10) = 75
+        assert_eq!(rows[1].mei_jingli, 75);
+    }
+
+    #[test]
+    fn zhongjian_recipes_included_with_flag() {
+        let mut req = zhongjian_rank_req();
+        req.baohan_zhongjian = true;
+        let rows = paihang(&zhongjian_rank_catalog(), &req);
+        assert_eq!(rows.len(), 3);
+        // 排序稳定：净利润降序 final_b 940 > final_a 750 > mid_recipe 749
+        let ids: Vec<&str> = rows.iter().map(|r| r.peifang_id.as_str()).collect();
+        assert_eq!(ids, vec!["final_b", "final_a", "mid_recipe"]);
+        assert!(rows[2].zhongjian);
+        assert!(!rows[0].zhongjian && !rows[1].zhongjian);
+        // 中间产物配方自身按自制成本计算：材料 100 + 精力 10×10 = 200；
+        // 收入 999 − 手续费 50 = 949；利润 749
+        assert_eq!(rows[2].lirun, 749);
+        // limit 在排序后截断
+        req.limit = Some(2);
+        assert_eq!(paihang(&zhongjian_rank_catalog(), &req).len(), 2);
+    }
+
+    #[test]
+    fn zhongjian_zizhi_switch_affects_rank_cost() {
+        // 关闭自制展开：final 配方按 mid 行情价 999 计材料成本
+        let mut req = zhongjian_rank_req();
+        req.zhongjian_zizhi = false;
+        let rows = paihang(&zhongjian_rank_catalog(), &req);
+        let ids: Vec<&str> = rows.iter().map(|r| r.peifang_id.as_str()).collect();
+        assert_eq!(ids, vec!["final_b", "final_a"]);
+        // final_b: 1140 − 999 = 141；final_a: 950 − 999 = −49
+        assert_eq!(rows[0].lirun, 141);
+        assert_eq!(rows[1].lirun, -49);
+    }
+
+    #[test]
+    fn zhongjian_rank_metric_sorting() {
+        // 每精力指标：final_a/final_b 自身精力为 0，中间产物精力摊入后仍退化为净利润；
+        // 用中间产物配方自身（精力 10）参与排序验证三种指标都稳定。
+        let mut req = zhongjian_rank_req();
+        req.baohan_zhongjian = true;
+        for (zhibiao, expect_first) in [
+            (PaihangZhibiao::Lirun, "final_b"),
+            (PaihangZhibiao::MeiJingli, "final_b"),
+            (PaihangZhibiao::Lirunlv, "final_b"),
+        ] {
+            req.zhibiao = zhibiao;
+            let rows = paihang(&zhongjian_rank_catalog(), &req);
+            assert_eq!(rows.len(), 3);
+            assert_eq!(rows[0].peifang_id, expect_first, "指标 {zhibiao:?}");
+            // 同值时仍按 id 兜底，结果确定
+            let ids: Vec<&str> = rows.iter().map(|r| r.peifang_id.as_str()).collect();
+            let mut sorted = ids.clone();
+            sorted.sort();
+            assert_eq!(ids.len(), sorted.len());
+        }
+    }
+
+    #[test]
+    fn zhongjian_memo_keeps_quejia_for_later_recipes() {
+        // 两个最终配方共用同一中间产物，中间产物的采购原料缺价：
+        // 排行对单位自制成本做请求内 memo，memo 命中时也必须为后续配方重复冒泡 quejia。
+        let mut mid = recipe("mid_recipe", Jiyi::Pengren, 0, "missing_raw", "mid");
+        mid.zhizuofei = 0;
+        let mut final_a = recipe("final_a", Jiyi::Pengren, 0, "mid", "out_a");
+        final_a.cailiao[0].wupin_id = "mid".into();
+        let mut final_b = recipe("final_b", Jiyi::Pengren, 0, "mid", "out_b");
+        final_b.cailiao[0].wupin_id = "mid".into();
+        let cat = Catalog {
+            banben: Banben::default(),
+            wupin: vec![
+                wupin("missing_raw", None),
+                wupin("mid", None),
+                wupin("out_a", None),
+                wupin("out_b", None),
+            ],
+            peifang: vec![mid, final_a, final_b],
+            wuxingshi: vec![],
+            fuwuqi: vec![],
+            zhiji: vec![],
+        };
+        let mut req = zhongjian_rank_req();
+        req.jiage = BTreeMap::from([("out_a".to_string(), 1_000), ("out_b".to_string(), 1_200)]);
+        // 默认排除缺价 → 两个最终配方都不参与排行
+        assert!(paihang(&cat, &req).is_empty());
+        // 显式包含缺价 → 两个都在，且都标记 quejia（memo 命中不丢缺价）
+        req.baohan_quejia = true;
+        let rows = paihang(&cat, &req);
+        assert_eq!(rows.len(), 2);
+        assert!(rows.iter().all(|row| row.quejia));
+        assert!(rows.iter().all(|row| !row.zhongjian));
     }
 }

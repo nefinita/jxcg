@@ -3,7 +3,7 @@
 //! 与各模块单测互补：这里覆盖「UI 实际调用路径」的端到端数字，
 //! 数据用测试内合成目录（不依赖 data/ 随包数据，避免数据导出后测试漂移）。
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use jxcg_api::{
     Banben, Cailiao, Catalog, Chuchan, JisuanRequest, Jiyi, NetRequest, PaihangRequest,
@@ -121,6 +121,8 @@ fn plan_6_4_recipe_profit() {
         shouxufei: cfg(),
         jiage: plan_prices(),
         jiyi_dengji: 0,
+        zhongjian_zizhi: true,
+        shoudong: BTreeSet::new(),
     };
     let r = craft::jisuan(&catalog, &req).expect("配方利润计算");
     // 成本构成：材料 800 金 + 精力 200 金 = 1000 金；保管费 80 银
@@ -243,6 +245,9 @@ fn rank_default_excludes_missing_price() {
         jiyi_dengji: 0,
         limit: Some(10),
         baohan_quejia: false,
+        zhongjian_zizhi: true,
+        baohan_zhongjian: false,
+        shoudong: BTreeSet::new(),
     };
     let rows = rank::paihang(&catalog, &req);
     assert_eq!(rows.len(), 1);
@@ -258,4 +263,105 @@ fn rank_default_excludes_missing_price() {
     let rows = rank::paihang(&catalog, &missing);
     assert_eq!(rows.len(), 1);
     assert!(rows[0].quejia);
+}
+
+#[test]
+fn plan_6_3_1_middle_product_self_made() {
+    // PLAN §6.3.1：中间产物不按交易行价，而是自制展开（材料递归 + 精力 + 制作费，按期望产出折算）
+    let mid_recipe = Peifang {
+        id: "mid_recipe".into(),
+        mingcheng: "中间产物配方".into(),
+        jiyi: Jiyi::Pengren,
+        dengji: 10,
+        jingli: 10,
+        zhizuofei: 500,
+        cailiao: vec![
+            Cailiao {
+                wupin_id: "5_raw_a".into(),
+                shuliang: 2,
+            },
+            Cailiao {
+                wupin_id: "5_raw_b".into(),
+                shuliang: 1,
+            },
+        ],
+        chuchan: vec![Chuchan {
+            wupin_id: "5_mid".into(),
+            min: 2,
+            max: 3,
+            quanzhong: QUANZHONG_FENMU,
+        }],
+        laiyuan: None,
+    };
+    let final_recipe = Peifang {
+        id: "final_recipe".into(),
+        mingcheng: "最终配方".into(),
+        jiyi: Jiyi::Pengren,
+        dengji: 20,
+        jingli: 20,
+        zhizuofei: 0,
+        cailiao: vec![Cailiao {
+            wupin_id: "5_mid".into(),
+            shuliang: 3,
+        }],
+        chuchan: vec![Chuchan {
+            wupin_id: "5_out".into(),
+            min: 1,
+            max: 1,
+            quanzhong: QUANZHONG_FENMU,
+        }],
+        laiyuan: None,
+    };
+    let catalog = Catalog {
+        banben: Banben::default(),
+        wupin: vec![
+            wupin("5_raw_a", "原料A", Pinlei::Cailiao, Some(100)),
+            wupin("5_raw_b", "原料B", Pinlei::Cailiao, Some(150)),
+            wupin("5_mid", "中间产物", Pinlei::Cailiao, None),
+            wupin("5_out", "成品", Pinlei::Chengpin, None),
+        ],
+        peifang: vec![mid_recipe, final_recipe],
+        wuxingshi: vec![],
+        fuwuqi: vec![],
+        zhiji: vec![],
+    };
+    let req = JisuanRequest {
+        peifang_id: "final_recipe".into(),
+        cishu: 1,
+        guadan_cishu: 1,
+        jingli_danjia: 10,
+        shouxufei: cfg(),
+        jiage: BTreeMap::from([
+            ("5_raw_a".to_string(), 100),
+            ("5_raw_b".to_string(), 200),
+            ("5_mid".to_string(), 999), // 行情价不参与中间产物成本（默认自制）
+            ("5_out".to_string(), 5_000),
+        ]),
+        jiyi_dengji: 0,
+        zhongjian_zizhi: true,
+        shoudong: BTreeSet::new(),
+    };
+    let r = craft::jisuan(&catalog, &req).expect("中间产物展开计算");
+    // 中间产物单位成本 = (2×100 + 200 + 10×10 + 500) / 2.5 = 400
+    assert_eq!(r.chengben_cailiao, 1_200);
+    assert_eq!(r.chengben_zhongjian, 1_200);
+    assert_eq!(r.jingli_zhongjian, 12);
+    assert_eq!(r.chengben_jingli, 200);
+    assert_eq!(r.baoguanfei, 8_000);
+    assert_eq!(
+        r.zong_chengben,
+        r.chengben_cailiao + r.chengben_jingli + r.zhizuofei + r.baoguanfei
+    );
+    assert_eq!(r.zong_chengben, 9_400);
+    assert_eq!(r.zhongjian.len(), 1);
+    assert_eq!(r.zhongjian[0].peifang_id, "mid_recipe");
+    assert_eq!(r.zhongjian[0].danjia, 400);
+    assert_eq!(r.zhongjian[0].jingli, 12);
+    // 关闭开关 = 旧行为：中间产物按行情价 999 计
+    let mut old = req.clone();
+    old.zhongjian_zizhi = false;
+    let r_old = craft::jisuan(&catalog, &old).expect("旧行为计算");
+    assert_eq!(r_old.chengben_cailiao, 2_997);
+    assert!(r_old.zhongjian.is_empty());
+    assert_eq!(r_old.jingli_zhongjian, 0);
 }

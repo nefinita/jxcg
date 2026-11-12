@@ -19,5 +19,6 @@ mod math;
 pub mod money;
 pub mod rank;
 pub mod store;
+mod zhongjian;
 
 pub use error::{JxcgError, Result};

@@ -9,7 +9,7 @@
 // ============================================================================
 
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// 金额：铜。1 金 = 100 银 = 10_000 铜；1 砖 = 10_000 金 = 100_000_000 铜。
 pub type Tong = i64;
@@ -326,6 +326,11 @@ fn one() -> u32 {
     1
 }
 
+/// serde 默认值：`true`（新增开关默认开启，保证旧请求获得新口径）。
+fn true_default() -> bool {
+    true
+}
+
 /// 交易行净收入结果。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NetResult {
@@ -363,12 +368,20 @@ pub struct JisuanRequest {
     #[serde(default)]
     pub jingli_danjia: Tong,
     pub shouxufei: Shouxufei,
-    /// 物品 id -> 单价（铜）；缺失表示缺价
+    /// 物品 id -> 单价（铜）：该服**全量**行情价 + 手填价，仅供「采购」取价（递归任意深度）；
+    /// 缺失表示缺价（缺价按 0 计并汇总 `quejia`）。
     #[serde(default)]
     pub jiage: BTreeMap<String, Tong>,
     /// 技艺等级（0-50，暂只影响展示加成，默认 0）
     #[serde(default)]
     pub jiyi_dengji: u32,
+    /// 中间产物按自制成本展开（默认 true）；false = 旧行为，按行情价
+    #[serde(default = "true_default")]
+    pub zhongjian_zizhi: bool,
+    /// 手填覆盖的物品 id 集合：命中中间产物时按 `jiage` 手填价采购、不再自制展开；
+    /// 空集 = 全部按自制展开（`zhongjian_zizhi=true` 时）
+    #[serde(default)]
+    pub shoudong: BTreeSet<String>,
 }
 
 /// 材料明细行。
@@ -379,8 +392,11 @@ pub struct CailiaoMingxi {
     pub shuliang: u32,
     pub danjia: Tong,
     pub xiaojia: Tong,
-    /// hangqing / shangdian / shoudong / quejia
+    /// hangqing / shangdian / shoudong / zizhi / quejia
     pub laiyuan: String,
+    /// 该材料行是否为「自制展开」的中间产物（danjia 为单位自制成本）
+    #[serde(default)]
+    pub zhongjian: bool,
 }
 
 /// 产物明细行。
@@ -393,20 +409,45 @@ pub struct ChuchanMingxi {
     pub danjia: Tong,
 }
 
+/// 中间产物自制成本明细（顶层材料行按自制展开时的一条记录）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ZhongjianMingxi {
+    pub wupin_id: String,
+    pub mingcheng: String,
+    /// 采用的产出配方 id（同物品多配方取 (dengji, id) 最小者）
+    pub peifang_id: String,
+    /// 顶层需求数量（材料需求量 × 制作次数）
+    pub shuliang: u32,
+    /// 单位自制成本（含材料 + 精力 + 制作费，HALF_UP 到铜）
+    pub danjia: Tong,
+    /// 摊入小计 = danjia × shuliang
+    pub xiaojia: Tong,
+    /// 该中间产物链路消耗的精力合计（按顶层需求数量折算）
+    pub jingli: u32,
+    /// 其一层采购原料（供 UI 展开；可含更深中间产物行，数量按顶层需求折算）
+    pub cailiao: Vec<CailiaoMingxi>,
+}
+
 /// 单配方成本利润结果。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct JisuanResult {
     pub peifang_id: String,
     pub peifang_mingcheng: String,
-    /// 材料成本合计（铜）
+    /// 材料成本合计（铜）= Σ 顶层材料行小计；自制中间产物行按「单位自制成本 × 数量」计入
     pub chengben_cailiao: Tong,
-    /// 精力成本（铜）
+    /// 最终配方自身精力成本（铜，不含中间产物链路精力）
     pub chengben_jingli: Tong,
-    /// 制作费（铜）
+    /// 最终配方自身制作费（铜，不含中间产物）
     pub zhizuofei: Tong,
     /// 保管费合计（铜）
     pub baoguanfei: Tong,
-    /// 总成本（铜）
+    /// 材料成本中「自制中间产物」部分（展示用；已含在 chengben_cailiao，不重复加总）
+    #[serde(default)]
+    pub chengben_zhongjian: Tong,
+    /// 中间产物链路消耗的精力合计（不含最终配方自身精力）
+    #[serde(default)]
+    pub jingli_zhongjian: u32,
+    /// 总成本（铜）= chengben_cailiao + chengben_jingli + zhizuofei + baoguanfei
     pub zong_chengben: Tong,
     /// 期望产出价值（扣手续费前，铜）
     pub shouru: Tong,
@@ -416,15 +457,18 @@ pub struct JisuanResult {
     pub lirun: Tong,
     /// 利润率（万分比）
     pub lirunlv_bp: i64,
-    /// 每精力净利润（铜，可能为负）
+    /// 每精力净利润（铜，可能为负）= 净利润 / (最终精力 + 中间产物精力)
     pub mei_jingli: Tong,
     /// 保本单价（铜/件，按期望产出折算）
     pub baobenjia: Tong,
-    /// 精力消耗合计
+    /// 最终配方自身精力消耗合计（不含中间产物；中间产物精力见 `jingli_zhongjian`）
     pub jingli: u32,
     /// 期望产出件数
     pub chuchan_qiwang: f64,
     pub cailiao: Vec<CailiaoMingxi>,
+    /// 自制展开的中间产物明细
+    #[serde(default)]
+    pub zhongjian: Vec<ZhongjianMingxi>,
     pub chuchan: Vec<ChuchanMingxi>,
     /// 缺价物品 id 列表（非空表示结果不完整）
     #[serde(default)]
@@ -440,6 +484,7 @@ pub struct PaihangRequest {
     #[serde(default)]
     pub jingli_danjia: Tong,
     pub shouxufei: Shouxufei,
+    /// 物品 id -> 单价（铜）：该服**全量**行情价 + 手填价（采购取价；中间产物默认自制展开）
     #[serde(default)]
     pub jiage: BTreeMap<String, Tong>,
     pub zhibiao: PaihangZhibiao,
@@ -451,6 +496,15 @@ pub struct PaihangRequest {
     /// 是否包含缺价配方（默认 false = 排除；true 时缺价行排在末尾并置 `quejia = true`）
     #[serde(default)]
     pub baohan_quejia: bool,
+    /// 中间产物按自制成本展开（默认 true）
+    #[serde(default = "true_default")]
+    pub zhongjian_zizhi: bool,
+    /// 是否包含「只产中间产物」的配方（默认 false = 不参与排行）
+    #[serde(default)]
+    pub baohan_zhongjian: bool,
+    /// 手填覆盖的物品 id 集合（语义同 JisuanRequest.shoudong）
+    #[serde(default)]
+    pub shoudong: BTreeSet<String>,
 }
 
 /// 排行行。
@@ -465,6 +519,9 @@ pub struct PaihangRow {
     pub jingli: u32,
     /// 是否缺价（缺价的默认不参与排行，但结果里保留供提示）
     pub quejia: bool,
+    /// 该配方是否只产中间产物（baohan_zhongjian=true 时返回）
+    #[serde(default)]
+    pub zhongjian: bool,
 }
 
 /// 五行石转换请求。
@@ -518,6 +575,9 @@ pub struct Settings {
     /// 是否联网自动拉价
     #[serde(default = "yes")]
     pub auto_refresh: bool,
+    /// 中间产物按自制成本展开（默认 true）
+    #[serde(default = "true_default")]
+    pub zhongjian_zizhi: bool,
 }
 
 fn yes() -> bool {
@@ -532,6 +592,7 @@ impl Default for Settings {
             jingli_danjia: 0,
             jiyi_dengji: 0,
             auto_refresh: true,
+            zhongjian_zizhi: true,
         }
     }
 }
@@ -710,6 +771,8 @@ mod tests {
         assert_eq!(jisuan.jingli_danjia, 0);
         assert!(jisuan.jiage.is_empty());
         assert_eq!(jisuan.jiyi_dengji, 0);
+        assert!(jisuan.zhongjian_zizhi, "新增开关默认 true");
+        assert!(jisuan.shoudong.is_empty(), "手填集合默认空");
 
         // PaihangRequest：缺省 jiyi/limit/jiyi_dengji/jiage，且新增 baohan_quejia 默认 false
         let paihang: PaihangRequest =
@@ -720,6 +783,12 @@ mod tests {
         assert_eq!(paihang.jiyi_dengji, 0);
         assert!(paihang.jiage.is_empty());
         assert!(!paihang.baohan_quejia, "新增字段必须默认 false（缺价排除）");
+        assert!(paihang.zhongjian_zizhi, "新增开关默认 true");
+        assert!(
+            !paihang.baohan_zhongjian,
+            "新增开关默认 false（中间产物配方排除）"
+        );
+        assert!(paihang.shoudong.is_empty());
 
         // ZhuanhuanRequest：缺省 cishu/精力单价/价格表
         let zhuanhuan: ZhuanhuanRequest = serde_json::from_str(&format!(
@@ -757,6 +826,13 @@ mod tests {
         let chuchan: Chuchan = serde_json::from_str(r#"{"wupin_id":"x","min":1,"max":2}"#).unwrap();
         assert_eq!(chuchan.quanzhong, 0);
 
+        // 材料明细新增的 zhongjian 标记缺省为 false（旧数据/旧前端兼容）
+        let cailiao: CailiaoMingxi = serde_json::from_str(
+            r#"{"wupin_id":"x","mingcheng":"y","shuliang":1,"danjia":2,"xiaojia":2,"laiyuan":"hangqing"}"#,
+        )
+        .unwrap();
+        assert!(!cailiao.zhongjian);
+
         let zhuanhuan: Zhuanhuan = serde_json::from_str(
             r#"{"id":"w","mingcheng":"n","cong":"a","dao":"b","xuyao":1,"jingli":1,"chenggonglv_bp":5000}"#,
         )
@@ -792,6 +868,8 @@ mod tests {
             chengben_jingli: 2,
             zhizuofei: 3,
             baoguanfei: 4,
+            chengben_zhongjian: 6,
+            jingli_zhongjian: 2,
             zong_chengben: 10,
             shouru: 20,
             jingshouru: 19,
@@ -802,6 +880,24 @@ mod tests {
             jingli: 5,
             chuchan_qiwang: 1.5,
             cailiao: vec![],
+            zhongjian: vec![ZhongjianMingxi {
+                wupin_id: "zj".into(),
+                mingcheng: "中间产物".into(),
+                peifang_id: "p_zj".into(),
+                shuliang: 2,
+                danjia: 3,
+                xiaojia: 6,
+                jingli: 2,
+                cailiao: vec![CailiaoMingxi {
+                    wupin_id: "5_1".into(),
+                    mingcheng: "原料".into(),
+                    shuliang: 1,
+                    danjia: 2,
+                    xiaojia: 2,
+                    laiyuan: "hangqing".into(),
+                    zhongjian: false,
+                }],
+            }],
             chuchan: vec![ChuchanMingxi {
                 wupin_id: "x".into(),
                 mingcheng: "产物".into(),
@@ -837,8 +933,10 @@ mod tests {
         assert_eq!(s.jingli_danjia, 0);
         assert_eq!(s.jiyi_dengji, 0);
         assert!(s.auto_refresh);
+        assert!(s.zhongjian_zizhi, "中间产物自制开关默认 true");
         // 缺字段时 auto_refresh 默认 true
         let s: Settings = serde_json::from_str(r#"{"fuwuqi_id":"a","zhiji_id":"b"}"#).unwrap();
         assert!(s.auto_refresh);
+        assert!(s.zhongjian_zizhi);
     }
 }
