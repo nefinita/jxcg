@@ -47,6 +47,12 @@ make data-export    # P2：jx3box-export 重新导出 data/
 - **费用口径**：手续费 5%（`shuilv_bp = 500`，默认 HALF_UP 到铜）+ 保管费 80 银/24h（`baoguanfei = 8000`）；
   全部在值集 `data/values.toml`，界面可改。依据见 PLAN.md §6.2。
 - **产出概率**：权重分母 `QUANZHONG_FENMU = 1_048_576`（2^20）；普通/精制 = 1006633/41943。
+- **中间产物**：同时是某配方产物与某配方材料的物品（Catalog 派生，当前 32 个）；成本按自制展开
+  （材料递归 + 精力×精力单价 + 制作费，按期望产出折算）摊入最终产物；只产中间产物的配方默认不进入排行
+  （`baohan_zhongjian` 可切换）。开关 `zhongjian_zizhi` 在 JisuanRequest/PaihangRequest/Settings，默认 true，
+  关闭时回退「按行情价」。DTO 字段：`JisuanResult.{chengben_zhongjian,jingli_zhongjian,zhongjian[]}`、
+  `CailiaoMingxi.zhongjian`、`PaihangRow.zhongjian`。
+
 - **数据目录**：`JXCG_DATA_DIR`（无效即报错）> Tauri `resource_dir()/data`（打包后的 .app/安装包）> exe 同目录 `data/` > debug 时仓库 `data/`；见 `src-tauri/src/state.rs`。
 - **用户数据**：行情/快照/设置放应用数据目录，不进仓库（`.gitignore` 已排除 `hangqing/`、`settings.toml`）。
 - **行情源**：JX3BOX `https://next2.jx3box.com/api/item-price/{id}/detail?server=`（非官方、无 SLA）。
