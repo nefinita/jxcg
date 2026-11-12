@@ -28,6 +28,9 @@ import type {
   Settings,
   Shouxufei,
   Tong,
+  WuxingshiHecheng,
+  WuxingshiLianRequest,
+  WuxingshiLianResult,
   ZhongjianMingxi,
   ZhuanhuanRequest,
   ZhuanhuanResult,
@@ -201,21 +204,35 @@ function chuchanQiwang(chuchan: Chuchan[]): number {
   );
 }
 
-/** 材料/产物单价：行情 > 商店价 > 缺价。 */
+/** 空手填集合（convert/wuxingshi 等请求没有 shoudong 字段时使用）。 */
+const EMPTY_SHOUDONG: ReadonlySet<string> = new Set<string>();
+
+/**
+ * 材料/产物单价（与后端 jxcg_core::price 同口径）：手填 > NPC 商店价 > 行情 > 缺价。
+ * 手填仅在「id 在手填集合且 jiage 有值」时生效；商店价不做与行情的取低。
+ */
 function chuchanDanjia(
   catalog: Catalog,
   jiage: Record<string, Tong>,
   wupinId: string,
   quejia: string[],
+  shoudong: ReadonlySet<string> = EMPTY_SHOUDONG,
 ): { danjia: Tong; laiyuan: string } {
   const jiageValue = jiage[wupinId];
-  if (typeof jiageValue === "number" && jiageValue > 0) {
-    return { danjia: jiageValue, laiyuan: "hangqing" };
+  // 1) 手填覆盖（必须同时有手填价，否则回落下一级）
+  if (shoudong.has(wupinId) && typeof jiageValue === "number" && jiageValue > 0) {
+    return { danjia: jiageValue, laiyuan: "shoudong" };
   }
+  // 2) NPC 商店价（> 0 才视为有售）
   const wupin = findWupin(catalog, wupinId);
   if (wupin?.shangdianjia && wupin.shangdianjia > 0) {
     return { danjia: wupin.shangdianjia, laiyuan: "shangdian" };
   }
+  // 3) 行情
+  if (typeof jiageValue === "number" && jiageValue > 0) {
+    return { danjia: jiageValue, laiyuan: "hangqing" };
+  }
+  // 4) 缺价
   if (!quejia.includes(wupinId)) quejia.push(wupinId);
   return { danjia: 0, laiyuan: "quejia" };
 }
@@ -268,7 +285,7 @@ interface ZizhiContext {
   jingli_danjia: Tong;
   quejia: string[];
   /** 手填价物品：不按中间产物展开，直接用 jiage 里的手填价采购 */
-  shoudong: Set<string>;
+  shoudong: ReadonlySet<string>;
   cache: Map<string, ZizhiCost | null>;
   visiting: Set<string>;
 }
@@ -292,10 +309,10 @@ function zizhiUnitCost(wupinId: string, ctx: ZizhiContext): ZizhiCost | null {
     let laiyuan: string;
     let zhongjian = false;
     if (ctx.shoudong.has(item.wupin_id)) {
-      // 手填价优先：不再递归展开，直接用 jiage 里的手填价（缺价则按商店价兜底）。
-      const manual = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia);
+      // 手填价优先：不再递归展开，直接用 jiage 里的手填价（缺值则回落商店/行情/缺价）。
+      const manual = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia, ctx.shoudong);
       danjia = manual.danjia;
-      laiyuan = manual.danjia > 0 ? "shoudong" : manual.laiyuan;
+      laiyuan = manual.laiyuan;
     } else if (ZHONGJIAN_IDS.has(item.wupin_id)) {
       const nested = zizhiUnitCost(item.wupin_id, ctx);
       if (nested) {
@@ -304,12 +321,12 @@ function zizhiUnitCost(wupinId: string, ctx: ZizhiContext): ZizhiCost | null {
         zhongjian = true;
         nestedJingli += nested.jingli_per_unit * item.shuliang;
       } else {
-        const fallback = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia);
+        const fallback = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia, ctx.shoudong);
         danjia = fallback.danjia;
         laiyuan = fallback.laiyuan;
       }
     } else {
-      const found = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia);
+      const found = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia, ctx.shoudong);
       danjia = found.danjia;
       laiyuan = found.laiyuan;
     }
@@ -333,12 +350,22 @@ function wupinMingcheng(wupinId: string): string {
   return findWupin(MOCK_CATALOG, wupinId)?.mingcheng ?? wupinId;
 }
 
+/** 从缺价列表筛「不可获得」材料：是配方材料、但没有任何配方产出它（与 craft.rs 同口径）。 */
+function bukedeWupin(quejia: readonly string[]): string[] {
+  const isCailiao = (id: string) =>
+    MOCK_CATALOG.peifang.some((peifang) => peifang.cailiao.some((item) => item.wupin_id === id));
+  const isChanchu = (id: string) =>
+    MOCK_CATALOG.peifang.some((peifang) => peifang.chuchan.some((slot) => slot.wupin_id === id));
+  return quejia.filter((id) => isCailiao(id) && !isChanchu(id));
+}
+
 function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
   const peifang = MOCK_CATALOG.peifang.find((p) => p.id === req.peifang_id);
   if (!peifang) throw new Error(`配方不存在：${req.peifang_id}`);
   const cishu = Math.max(1, Math.trunc(req.cishu));
   const zhongjianZizhi = req.zhongjian_zizhi !== false;
-  const shoudong = new Set(req.shoudong ?? []);
+  // zhongjian_zizhi=false 时严格旧行为：shoudong 不参与取价（对齐 craft.rs）。
+  const shoudong: ReadonlySet<string> = zhongjianZizhi ? new Set(req.shoudong ?? []) : EMPTY_SHOUDONG;
   const quejia: string[] = [];
   const ctx: ZizhiContext = {
     jiage: req.jiage,
@@ -401,7 +428,7 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
       });
       continue;
     }
-    const { danjia, laiyuan } = chuchanDanjia(MOCK_CATALOG, req.jiage, item.wupin_id, quejia);
+    const { danjia, laiyuan } = chuchanDanjia(MOCK_CATALOG, req.jiage, item.wupin_id, quejia, shoudong);
     const xiaojia = danjia * need;
     chengbenCailiao += xiaojia;
     cailiao.push({
@@ -410,8 +437,7 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
       shuliang: item.shuliang,
       danjia,
       xiaojia,
-      // zhongjian_zizhi=false 时严格旧行为（shoudong 不生效）；开启时手填价行显示「手填」。
-      laiyuan: zhongjianZizhi && shoudong.has(item.wupin_id) && danjia > 0 ? "shoudong" : laiyuan,
+      laiyuan,
       zhongjian: false,
     });
   }
@@ -429,7 +455,7 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
   for (const slot of peifang.chuchan) {
     const p = slot.quanzhong / QUANZHONG_FENMU;
     const qiwang = p * ((slot.min + slot.max) / 2) * cishu;
-    const { danjia } = chuchanDanjia(MOCK_CATALOG, req.jiage, slot.wupin_id, quejia);
+    const { danjia } = chuchanDanjia(MOCK_CATALOG, req.jiage, slot.wupin_id, quejia, shoudong);
     shouru += Math.round(qiwang * danjia);
     chuchan.push({
       wupin_id: slot.wupin_id,
@@ -445,8 +471,11 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
   const jingshouru = shouru - feiyong;
   const lirun = jingshouru - zongChengben;
   const lirunlvBp = zongChengben > 0 ? Math.round((lirun / zongChengben) * 10_000) : 0;
+  // 单件成本 = 总成本 / 期望产出（HALF_UP；无产出时退化为总成本）。
+  const danjiaChengben = chuchanQiwangTotal > 0 ? Math.round(zongChengben / chuchanQiwangTotal) : zongChengben;
   const jingliTotal = jingli + Math.round(jingliZhongjian);
   const meiJingli = jingliTotal > 0 ? Math.trunc(lirun / jingliTotal) : lirun;
+  const quejiaSorted = [...new Set(quejia)].sort();
   const baobenTotal = mockBaobenValue(zongChengben, req.shouxufei);
   const baobenjia =
     chuchanQiwangTotal > 0 ? Math.ceil(baobenTotal / chuchanQiwangTotal) : baobenTotal;
@@ -459,6 +488,7 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
     zhizuofei,
     baoguanfei,
     zong_chengben: zongChengben,
+    danjia_chengben: danjiaChengben,
     shouru,
     jingshouru,
     lirun,
@@ -469,7 +499,8 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
     chuchan_qiwang: chuchanQiwangTotal,
     cailiao,
     chuchan,
-    quejia: [...new Set(quejia)].sort(),
+    quejia: quejiaSorted,
+    bukede: bukedeWupin(quejiaSorted),
     chengben_zhongjian: chengbenZhongjian,
     jingli_zhongjian: Math.round(jingliZhongjian),
     zhongjian,
@@ -541,10 +572,8 @@ function mockCalculateConvert(req: ZhuanhuanRequest): ZhuanhuanResult {
   if (!zhuanhuan) throw new Error(`转换配方不存在：${req.zhuanhuan_id}`);
   const cishu = Math.max(1, Math.trunc(req.cishu));
   const quejia: string[] = [];
-  const conga = req.jiage[zhuanhuan.cong] ?? 0;
-  const daojia = req.jiage[zhuanhuan.dao] ?? 0;
-  if (!conga) quejia.push(zhuanhuan.cong);
-  if (!daojia) quejia.push(zhuanhuan.dao);
+  const conga = chuchanDanjia(MOCK_CATALOG, req.jiage, zhuanhuan.cong, quejia).danjia;
+  const daojia = chuchanDanjia(MOCK_CATALOG, req.jiage, zhuanhuan.dao, quejia).danjia;
   const chenggonglvBp = Math.min(10_000, Math.max(1, zhuanhuan.chenggonglv_bp));
   const p = chenggonglvBp / 10_000;
   const qiwangCishu = (1 / p) * cishu;
@@ -565,6 +594,198 @@ function mockCalculateConvert(req: ZhuanhuanRequest): ZhuanhuanResult {
     lirun,
     lirunlv_bp: lirunlvBp,
     quejia: [...new Set(quejia)].sort(),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// 五行石一键合成（面板配方链，镜像 WuxingshiLianResult 契约）
+// ---------------------------------------------------------------------------
+
+interface LianContext {
+  jiage: Record<string, Tong>;
+  jingli_danjia: Tong;
+  baoji_bp: number | null;
+  byChanpin: Map<string, WuxingshiHecheng>;
+  quejia: string[];
+  /** 原料期望用量（无配方可展开的一级石等） */
+  cailiao: Map<string, number>;
+  /** 副产物期望用量（2/5/6/8 级） */
+  fuchanpin: Map<string, number>;
+  /** 每步期望合成次数 */
+  buzhou: Map<string, { hecheng: WuxingshiHecheng; cishu: number }>;
+  visiting: Set<string>;
+}
+
+/** 行情/商店/缺价取价（缺价按 0 计并记入 quejia）。 */
+function lianPriceInfo(ctx: LianContext, wupinId: string): { danjia: Tong; laiyuan: string } {
+  // wuxingshi 请求没有手填字段：商店价 > 行情 > 缺价（与 craft 同一 helper）
+  return chuchanDanjia(MOCK_CATALOG, ctx.jiage, wupinId, ctx.quejia, EMPTY_SHOUDONG);
+}
+
+function lianPrice(ctx: LianContext, wupinId: string): Tong {
+  return lianPriceInfo(ctx, wupinId).danjia;
+}
+
+function lianPriceLaiyuan(ctx: LianContext, wupinId: string): string {
+  return lianPriceInfo(ctx, wupinId).laiyuan;
+}
+
+/** 按期望递归展开：主产物概率 <100% 时按 1/p 放大投入，副产物按概率累计。 */
+function needLianItem(chanpinId: string, qty: number, ctx: LianContext) {
+  if (qty <= 0) return;
+  const hecheng = ctx.byChanpin.get(chanpinId);
+  if (!hecheng) {
+    // 无合成配方：一级石等直接作为采购原料
+    ctx.cailiao.set(chanpinId, (ctx.cailiao.get(chanpinId) ?? 0) + qty);
+    return;
+  }
+  if (ctx.visiting.has(chanpinId)) {
+    // 数据成环时降级为采购，避免死循环
+    ctx.cailiao.set(chanpinId, (ctx.cailiao.get(chanpinId) ?? 0) + qty);
+    return;
+  }
+  const mainBp = hecheng.jieguo
+    .filter((jieguo) => jieguo.wupin_id === chanpinId)
+    .reduce((sum, jieguo) => sum + jieguo.bp * (jieguo.shuliang ?? 1), 0);
+  if (mainBp <= 0) throw new Error(`合成配方「${hecheng.id}」缺少主产物概率`);
+  const attempts = (qty * 10_000) / mainBp;
+  const previous = ctx.buzhou.get(hecheng.id);
+  ctx.buzhou.set(hecheng.id, { hecheng, cishu: (previous?.cishu ?? 0) + attempts });
+  ctx.visiting.add(chanpinId);
+  for (const item of hecheng.cailiao) {
+    needLianItem(item.wupin_id, attempts * item.shuliang, ctx);
+  }
+  for (const jieguo of hecheng.jieguo) {
+    if (jieguo.wupin_id === chanpinId) continue;
+    let bp = jieguo.bp;
+    // 合 6 出 8 级：数据里 bp=0 占位，由请求 baoji_bp 覆盖（None = 保持数据值）
+    if (bp === 0 && ctx.baoji_bp !== null) bp = ctx.baoji_bp;
+    if (bp <= 0) continue;
+    const qiwang = attempts * (bp / 10_000) * (jieguo.shuliang ?? 1);
+    ctx.fuchanpin.set(jieguo.wupin_id, (ctx.fuchanpin.get(jieguo.wupin_id) ?? 0) + qiwang);
+  }
+  ctx.visiting.delete(chanpinId);
+}
+
+function mockCalculateWuxingshi(req: WuxingshiLianRequest): WuxingshiLianResult {
+  const fangan = MOCK_CATALOG.wuxingshi_fangan.find((item) => item.id === req.fangan_id);
+  if (!fangan) throw new Error(`合成方案不存在：${req.fangan_id}`);
+  const shuliang = Math.max(1, Math.trunc(req.shuliang));
+  const mubiao = findWupin(MOCK_CATALOG, req.mubiao_wupin_id);
+  const hechengs = MOCK_CATALOG.wuxingshi_hecheng.filter((item) => item.fangan === fangan.id);
+  const byChanpin = new Map<string, WuxingshiHecheng>();
+  for (const hecheng of hechengs) {
+    if (!byChanpin.has(hecheng.chanpin)) byChanpin.set(hecheng.chanpin, hecheng);
+  }
+  if (!byChanpin.has(req.mubiao_wupin_id)) {
+    throw new Error(
+      `方案「${fangan.mingcheng}」没有「${mubiao?.mingcheng ?? req.mubiao_wupin_id}」的合成配方（数据待补）`,
+    );
+  }
+  const baojiBp =
+    typeof req.baoji_bp === "number" && Number.isFinite(req.baoji_bp)
+      ? Math.max(0, Math.min(10_000, Math.trunc(req.baoji_bp)))
+      : null;
+  const ctx: LianContext = {
+    jiage: req.jiage,
+    jingli_danjia: req.jingli_danjia,
+    baoji_bp: baojiBp,
+    byChanpin,
+    quejia: [],
+    cailiao: new Map(),
+    fuchanpin: new Map(),
+    buzhou: new Map(),
+    visiting: new Set(),
+  };
+  needLianItem(req.mubiao_wupin_id, shuliang, ctx);
+
+  // 采购原料明细（数量为期望值 HALF_UP 到整数，展示口径）
+  const cailiao: CailiaoMingxi[] = [];
+  let cailiaoChengbenRaw = 0;
+  for (const [wupinId, qiwang] of ctx.cailiao) {
+    const danjia = lianPrice(ctx, wupinId);
+    cailiaoChengbenRaw += qiwang * danjia;
+    cailiao.push({
+      wupin_id: wupinId,
+      mingcheng: wupinMingcheng(wupinId),
+      shuliang: Math.round(qiwang),
+      danjia,
+      xiaojia: Math.round(qiwang * danjia),
+      laiyuan: lianPriceLaiyuan(ctx, wupinId),
+      zhongjian: false,
+    });
+  }
+  const cailiaoChengben = Math.round(cailiaoChengbenRaw);
+
+  // 副产物期望收益（2/5/6/8 级）
+  const fuchanpin = [...ctx.fuchanpin.entries()]
+    .filter(([, qiwang]) => qiwang > 0)
+    .map(([wupinId, qiwang]) => {
+      const danjia = lianPrice(ctx, wupinId);
+      return {
+        wupin_id: wupinId,
+        mingcheng: wupinMingcheng(wupinId),
+        qiwang,
+        danjia,
+        shouru: Math.round(qiwang * danjia),
+      };
+    });
+  const fuchanpinShouru = fuchanpin.reduce((sum, row) => sum + row.shouru, 0);
+
+  // 分步明细（按数据文件顺序）
+  const order = new Map(hechengs.map((hecheng, index) => [hecheng.id, index]));
+  const buzhou = [...ctx.buzhou.entries()]
+    .sort((a, b) => (order.get(a[0]) ?? 0) - (order.get(b[0]) ?? 0))
+    .map(([hechengId, { hecheng, cishu }]) => ({
+      hecheng_id: hechengId,
+      chanpin: hecheng.chanpin,
+      mingcheng: wupinMingcheng(hecheng.chanpin),
+      cishu,
+      jingli: Math.round(cishu * hecheng.jingli),
+      jiagongfei: Math.round(cishu * hecheng.jiagongfei),
+    }));
+  const jingliRaw = [...ctx.buzhou.values()].reduce(
+    (sum, { hecheng, cishu }) => sum + cishu * hecheng.jingli,
+    0,
+  );
+  const jiagongfeiRaw = [...ctx.buzhou.values()].reduce(
+    (sum, { hecheng, cishu }) => sum + cishu * hecheng.jiagongfei,
+    0,
+  );
+  const jingli = Math.round(jingliRaw);
+  const jingliChengben = Math.round(jingliRaw * req.jingli_danjia);
+  const jiagongfei = Math.round(jiagongfeiRaw);
+  const zongChengben = cailiaoChengben + jingliChengben + jiagongfei - fuchanpinShouru;
+  const danjia = Math.round(zongChengben / shuliang);
+  const shichangjia = lianPrice(ctx, req.mubiao_wupin_id);
+  const zongshoujia = shichangjia * shuliang;
+  const feiyong = jisuanShouxufei(zongshoujia, req.shouxufei);
+  const lirun = zongshoujia - feiyong - zongChengben;
+  const lirunlvBp = zongChengben > 0 ? Math.round((lirun / zongChengben) * 10_000) : 0;
+  const baobenTotal = mockBaobenValue(zongChengben, req.shouxufei);
+  const baobenjia = Math.ceil(baobenTotal / shuliang);
+
+  return {
+    fangan_id: fangan.id,
+    fangan_mingcheng: fangan.mingcheng,
+    mubiao_wupin_id: req.mubiao_wupin_id,
+    mubiao_mingcheng: mubiao?.mingcheng ?? req.mubiao_wupin_id,
+    shuliang,
+    cailiao,
+    cailiao_chengben: cailiaoChengben,
+    jingli,
+    jingli_chengben: jingliChengben,
+    jiagongfei,
+    fuchanpin,
+    fuchanpin_shouru: fuchanpinShouru,
+    zong_chengben: zongChengben,
+    danjia,
+    baobenjia,
+    shichangjia,
+    lirun,
+    lirunlv_bp: lirunlvBp,
+    buzhou,
+    quejia: [...new Set(ctx.quejia)].sort(),
   };
 }
 
@@ -713,6 +934,10 @@ export async function mockInvoke(command: string, rawArgs?: Record<string, unkno
     case "calculate_convert": {
       await sleep(80);
       return mockCalculateConvert(args.req as ZhuanhuanRequest);
+    }
+    case "calculate_wuxingshi": {
+      await sleep(120);
+      return mockCalculateWuxingshi(args.req as WuxingshiLianRequest);
     }
     default:
       throw new Error(`mock 未实现的命令：${command}`);

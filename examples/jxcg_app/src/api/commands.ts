@@ -21,6 +21,8 @@ import type {
   RefreshResult,
   Settings,
   Tong,
+  WuxingshiLianRequest,
+  WuxingshiLianResult,
   ZhuanhuanRequest,
   ZhuanhuanResult,
 } from "../types";
@@ -123,9 +125,14 @@ export async function rankRecipes(req: PaihangRequest): Promise<PaihangRow[]> {
   return invoke<PaihangRow[]>("rank_recipes", { req });
 }
 
-/** 五行石转换（精炼）。 */
+/** 五行石转换（精炼，旧单步）。 */
 export async function calculateConvert(req: ZhuanhuanRequest): Promise<ZhuanhuanResult> {
   return invoke<ZhuanhuanResult>("calculate_convert", { req });
+}
+
+/** 五行石一键合成（面板配方链，含合 6 出 8 级期望）。 */
+export async function calculateWuxingshi(req: WuxingshiLianRequest): Promise<WuxingshiLianResult> {
+  return invoke<WuxingshiLianResult>("calculate_wuxingshi", { req });
 }
 
 // ---------------------------------------------------------------------------

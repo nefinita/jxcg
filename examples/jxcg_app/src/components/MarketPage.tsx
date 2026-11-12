@@ -115,7 +115,7 @@ export default function MarketPage({
   const [editValue, setEditValue] = useState(0);
   const [pasteText, setPasteText] = useState("");
 
-  // ---- 行数据：目录物品 + 当前行情（行情 > 商店价 > 缺价） ----
+  // ---- 行数据：目录物品 + 取价（手填 > NPC 商店价 > 行情 > 缺价，task-13 口径） ----
   const rows = useMemo(() => {
     const query = prefs.search.trim().toLowerCase();
     return catalog.wupin

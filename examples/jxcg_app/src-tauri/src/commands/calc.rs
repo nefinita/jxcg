@@ -2,9 +2,9 @@
 
 use jxcg_api::{
     BaobenRequest, JisuanRequest, JisuanResult, NetRequest, NetResult, PaihangRequest, PaihangRow,
-    Tong, ZhuanhuanRequest, ZhuanhuanResult,
+    Tong, WuxingshiLianRequest, WuxingshiLianResult, ZhuanhuanRequest, ZhuanhuanResult,
 };
-use jxcg_core::{convert, craft, fee, rank};
+use jxcg_core::{convert, craft, fee, rank, wuxingshi};
 
 use crate::state::AppState;
 
@@ -51,4 +51,15 @@ pub fn calculate_convert(
 ) -> Result<ZhuanhuanResult, String> {
     let catalog = state.catalog(&app)?;
     convert::jisuan(&catalog, &req).map_err(|err| err.to_string())
+}
+
+/// 五行石一键合成链（到六级）的期望消耗与收益。
+#[tauri::command]
+pub fn calculate_wuxingshi(
+    app: tauri::AppHandle,
+    state: tauri::State<AppState>,
+    req: WuxingshiLianRequest,
+) -> Result<WuxingshiLianResult, String> {
+    let catalog = state.catalog(&app)?;
+    wuxingshi::jisuan_lian(&catalog, &req).map_err(|err| err.to_string())
 }

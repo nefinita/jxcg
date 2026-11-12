@@ -261,6 +261,10 @@ export default function SettingsPage({
               启动时自动联网拉价（JX3BOX）
             </label>
             <p className={common.hint}>
+              取价口径：<strong>手填 &gt; NPC 商店价 &gt; 行情 &gt; 缺价</strong>
+              （NPC 有售材料如料酒/今朝醉按商店价计成本，不做商店/行情取低）。
+            </p>
+            <p className={common.hint}>
               精力消耗按「精力消耗 × 精力单价」计入总成本；行情拉取失败时会保留最近一次价格（last-known-good）。
             </p>
           </div>

@@ -96,45 +96,48 @@ describe("五行石精炼页", () => {
     expect(text()).toContain("转换配方");
     expect(text()).toContain("精炼结果");
     expect(text()).toContain("期望投入次数");
-    expect(text()).toContain("100%");
-    expect(text()).toContain("12金74银"); // 期望总成本
-    expect(text()).toContain("7金80银"); // 期望收入（扣手续费前）
-    expect(text()).toContain("负5金33银"); // 净利润 = 74100 − 127400
-    expect(text()).toContain("-41.84%"); // 利润率（万分比转 %）
+    expect(text()).toContain("92.76%");
+    expect(text()).toContain("12金67银79铜"); // 期望总成本
+    expect(text()).toContain("7金23银53铜"); // 期望收入（扣手续费前）
+    expect(text()).toContain("负5金80银44铜"); // 净利润 = 68735 − 126779
+    expect(text()).toContain("-45.78%"); // 利润率（万分比转 %）
     // 两种石头价格从行情库带出
     expect(text()).toContain("五行石（一级）");
     expect(text()).toContain("五行石（三级）");
     expect(text()).toContain("行情");
   });
 
-  it("切换 48.78% 配方与目标成功次数：期望投入按 1/p 变化", async () => {
+  it("切换 99.11% 配方与目标成功次数：期望投入按 1/p 变化", async () => {
     await render();
     await act(async () => optionByText("三级+一级").click());
     await flush(500);
-    expect(text()).toContain("2.05"); // 1 / 0.4878
-    expect(text()).toContain("9.25%"); // 净利润率
-    expect(text()).toContain("1金64银85铜"); // 净利润 = 204876−10244−178147
+    expect(text()).toContain("1.01"); // 1 / 0.9911
+    expect(text()).toContain("57.77%"); // 净利润率
+    expect(text()).toContain("14金47银97铜"); // 净利润 = 416262−20813−250652
 
     await typeInto("目标成功次数", "3");
-    expect(text()).toContain("6.15"); // 3 / 0.4878
+    expect(text()).toContain("3.03"); // 3 / 0.9911
   });
 
   it("缺价标红并可手填：手填价进入请求，缺价提示消失", async () => {
     await render({ prices: makePrices(["5_24423"]) });
-    expect(text()).toContain("缺价：五行石（一级）");
+    // 缺价提示会同时出现在新「一键合成」面板与旧单步转换区
+    const countQuejia = () => (text().match(/缺价：五行石（一级）/g) ?? []).length;
+    expect(countQuejia()).toBe(2);
     expect(inputByLabel("低阶石单价").value).toBe("0铜");
 
     await typeInto("低阶石单价", "1金");
     expect(text()).toContain("手填");
-    // 手填 1金 后成本 = 10000×13 + 3900 = 13金39银；净利润 = 74100 − 133900
-    expect(text()).toContain("负5金98银");
-    expect(text()).not.toContain("缺价：五行石（一级）");
+    // 手填 1金 后成本 = 10000×12 + 3600 = 123600；净利润 = 68735 − 133247
+    expect(text()).toContain("负6金45银12铜");
+    // 旧单步转换区的手填价已生效，只剩新面板仍缺价
+    expect(countQuejia()).toBe(1);
 
     // 恢复行情价 → 重新回到缺价状态
     const restore = [...host.querySelectorAll("button")].find((button) => button.textContent === "恢复行情价");
     expect(restore).toBeDefined();
     await act(async () => restore!.click());
     await flush(500);
-    expect(text()).toContain("缺价：五行石（一级）");
+    expect(countQuejia()).toBe(2);
   });
 });

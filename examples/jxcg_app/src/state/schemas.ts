@@ -15,6 +15,7 @@ import type {
   Settings,
   Shouxufei,
   Tong,
+  WuxingshiLianPrefs,
   WuxingshiPrefs,
 } from "../types";
 import { DEFAULT_SETTINGS } from "../utils/constants";
@@ -241,4 +242,30 @@ export function isWuxingshiPrefs(value: unknown): value is WuxingshiPrefs {
 export const wuxingshiPrefsSchema: PersistentSchema<WuxingshiPrefs> = {
   version: 1,
   validate: isWuxingshiPrefs,
+};
+
+// ---------------------------------------------------------------------------
+// 五行石一键合成页偏好
+// ---------------------------------------------------------------------------
+
+export const DEFAULT_WUXINGSHI_LIAN_PREFS: WuxingshiLianPrefs = {
+  fangan_id: "",
+  mubiao_wupin_id: "5_24428",
+  shuliang: 1,
+  baoji_bp: 0,
+};
+
+export function isWuxingshiLianPrefs(value: unknown): value is WuxingshiLianPrefs {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.fangan_id === "string" &&
+    typeof value.mubiao_wupin_id === "string" &&
+    isFiniteNumber(value.shuliang) &&
+    isFiniteNumber(value.baoji_bp)
+  );
+}
+
+export const wuxingshiLianPrefsSchema: PersistentSchema<WuxingshiLianPrefs> = {
+  version: 1,
+  validate: isWuxingshiLianPrefs,
 };

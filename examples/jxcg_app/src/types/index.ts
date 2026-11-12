@@ -36,7 +36,7 @@ export type PaihangZhibiao = "lirun" | "mei_jingli" | "lirunlv";
 
 /** 数据版本。 */
 export interface Banben {
-  /** 等级（当前正式服 130） */
+  /** 等级（当前正式服 50，苍生铸世资料片等级回退） */
   level: number;
   /** 赛季序号 */
   season: number;
@@ -111,6 +111,38 @@ export interface Zhuanhuan {
   laiyuan?: string | null;
 }
 
+/** 五行石合成方案（游戏内「一键合成/自动合成」使用的配方集合）。 */
+export interface WuxingshiFangan {
+  id: string;
+  mingcheng: string;
+  /** 说明（面板口径/来源等） */
+  note: string;
+}
+
+/** 单步合成结果槽：万分比概率与命中时产出数量。 */
+export interface WuxingshiJieguo {
+  wupin_id: string;
+  /** 万分比：9276 = 92.76%；未列出的余量视为失败（材料损失、无产物） */
+  bp: number;
+  /** 命中时的产出数量（默认 1） */
+  shuliang?: number;
+}
+
+/** 单步合成配方（主产物 + 材料 + 精力/加工费 + 概率结果）。 */
+export interface WuxingshiHecheng {
+  id: string;
+  /** 所属合成方案 id */
+  fangan: string;
+  /** 主产物物品 id */
+  chanpin: string;
+  /** 精力消耗（点/次） */
+  jingli: number;
+  /** 加工费（铜/次） */
+  jiagongfei: Tong;
+  cailiao: Cailiao[];
+  jieguo: WuxingshiJieguo[];
+}
+
 /** 服务器。 */
 export interface Fuwuqi {
   id: string;
@@ -142,6 +174,10 @@ export interface Catalog {
   wupin: Wupin[];
   peifang: Peifang[];
   wuxingshi: Zhuanhuan[];
+  /** 五行石合成方案（data/wuxingshi.toml 的 `[[fangan]]`） */
+  wuxingshi_fangan: WuxingshiFangan[];
+  /** 五行石单步合成配方（data/wuxingshi.toml 的 `[[hecheng]]`） */
+  wuxingshi_hecheng: WuxingshiHecheng[];
   fuwuqi: Fuwuqi[];
   zhiji: Zhiji[];
 }
@@ -276,6 +312,11 @@ export interface JisuanResult {
   baoguanfei: Tong;
   /** 总成本（铜） */
   zong_chengben: Tong;
+  /**
+   * 单件成本（铜/件）= zong_chengben / 期望产出总件数（HALF_UP）。
+   * 期望产出为 0 时等于 zong_chengben；多产出配方用它区分「每批总成本」与「单件成本」。
+   */
+  danjia_chengben: Tong;
   /** 期望产出价值（扣手续费前，铜） */
   shouru: Tong;
   /** 扣手续费后收入（铜） */
@@ -302,6 +343,11 @@ export interface JisuanResult {
   jingli_zhongjian: number;
   /** 中间产物展开明细（与材料表中的 zhongjian 行对应） */
   zhongjian: ZhongjianMingxi[];
+  /**
+   * 「不可获得」材料 id（quejia 的子集）：无行情/手填价、无 NPC 商店价，
+   * 且没有任何配方产出它（无法靠自制展开），需人工补价或清理数据。
+   */
+  bukede: string[];
 }
 
 /** 中间产物自制明细（材料表中 zhongjian=true 行的展开信息）。 */
@@ -382,6 +428,89 @@ export interface ZhuanhuanResult {
   lirun: Tong;
   lirunlv_bp: number;
   /** 缺价物品 id */
+  quejia: string[];
+}
+
+// ---------------------------------------------------------------------------
+// 五行石一键合成（面板配方链）
+// ---------------------------------------------------------------------------
+
+/** 五行石一键合成请求。 */
+export interface WuxingshiLianRequest {
+  fangan_id: string;
+  /** 目标物品 id（六级 = `5_24428`，默认） */
+  mubiao_wupin_id: string;
+  /** 目标件数 */
+  shuliang: number;
+  /** 每点精力折合金额（铜） */
+  jingli_danjia: Tong;
+  shouxufei: Shouxufei;
+  /** 物品 id -> 单价（铜）：行情/手填 > 商店价 > 缺价 */
+  jiage: Record<string, Tong>;
+  /** 覆盖「合 6 意外出 8 级」概率（万分比）；null = 用数据里的 bp（0 = 忽略） */
+  baoji_bp?: number | null;
+}
+
+/** 五行石合成副产物（期望量）。 */
+export interface WuxingshiFuchanpin {
+  wupin_id: string;
+  mingcheng: string;
+  /** 期望产出件数 */
+  qiwang: number;
+  danjia: Tong;
+  /** 折价收入（铜，HALF_UP）；缺价时为 0 */
+  shouru: Tong;
+}
+
+/** 五行石合成步骤（按单步配方聚合的期望值）。 */
+export interface WuxingshiBuzhou {
+  hecheng_id: string;
+  chanpin: string;
+  mingcheng: string;
+  /** 期望合成次数（含成功率放大） */
+  cishu: number;
+  /** 该步骤精力合计（期望，HALF_UP 到整数） */
+  jingli: number;
+  /** 该步骤加工费合计（期望，HALF_UP 到铜） */
+  jiagongfei: Tong;
+}
+
+/** 五行石一键合成结果。 */
+export interface WuxingshiLianResult {
+  fangan_id: string;
+  fangan_mingcheng: string;
+  mubiao_wupin_id: string;
+  mubiao_mingcheng: string;
+  shuliang: number;
+  /** 采购原料明细（一级石等无配方原料；数量为期望值 HALF_UP 到整数，展示口径） */
+  cailiao: CailiaoMingxi[];
+  /** 材料成本（铜，期望值一次性 HALF_UP） */
+  cailiao_chengben: Tong;
+  /** 精力合计（点，期望值 HALF_UP 到整数） */
+  jingli: number;
+  /** 精力折金（铜） */
+  jingli_chengben: Tong;
+  /** 加工费合计（铜） */
+  jiagongfei: Tong;
+  /** 副产物期望收益明细 */
+  fuchanpin: WuxingshiFuchanpin[];
+  /** 副产物折价收入合计（铜，冲抵成本） */
+  fuchanpin_shouru: Tong;
+  /** 净成本（铜）= 材料 + 精力折金 + 加工费 − 副产物收入 */
+  zong_chengben: Tong;
+  /** 单位净成本（铜/颗，= zong_chengben / shuliang 四舍五入） */
+  danjia: Tong;
+  /** 保本单价（铜/颗，按手续费反推的最小挂单价） */
+  baobenjia: Tong;
+  /** 目标物市场价（铜/颗；缺价为 0 并进 quejia） */
+  shichangjia: Tong;
+  /** 净利润（铜）= 市场价 × 数量 − 手续费 − 净成本 */
+  lirun: Tong;
+  /** 利润率（万分比） */
+  lirunlv_bp: number;
+  /** 合成步骤明细（按数据文件顺序，仅含实际用到的配方） */
+  buzhou: WuxingshiBuzhou[];
+  /** 缺价物品 id（排序去重） */
   quejia: string[];
 }
 
@@ -499,6 +628,18 @@ export interface WuxingshiPrefs {
   zhuanhuan_id: string;
   /** 目标成功次数（cishu；期望投入 = cishu / 成功率） */
   cishu: number;
+}
+
+/** 五行石「一键合成」页偏好（本地持久化）。 */
+export interface WuxingshiLianPrefs {
+  /** 选中的合成方案 id（catalog.wuxingshi_fangan[].id） */
+  fangan_id: string;
+  /** 目标物品 id（默认六级 `5_24428`） */
+  mubiao_wupin_id: string;
+  /** 目标数量 */
+  shuliang: number;
+  /** 合 6 出 8 级概率覆盖（万分比，0 = 忽略） */
+  baoji_bp: number;
 }
 
 /** 排行页偏好（本地持久化）。 */

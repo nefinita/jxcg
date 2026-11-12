@@ -90,18 +90,30 @@ export function jiageMapOf(
   return result;
 }
 
-/** 展示用单价：行情缓存 > 商店价；都没有返回 null（缺价）。 */
+/**
+ * 展示/统计用单价（与后端 task-12 口径一致）：手填 > NPC 商店价 > 行情 > 缺价。
+ *
+ * - NPC 有售（shangdianjia > 0）就按商店价，不做「商店/行情取低」；
+ * - 手填价（缓存 shoudong=true）是用户显式覆盖，优先级最高；
+ * - 都没有返回 null（缺价）。
+ */
 export function danjiaOf(
   biao: JiageBiao,
   fuwuqiId: string,
   wupin: Wupin,
 ): { danjia: Tong; laiyuan: string } | null {
   const entry = getJiage(biao, fuwuqiId, wupin.id);
-  if (entry && entry.danjia > 0) {
-    return { danjia: entry.danjia, laiyuan: entry.shoudong ? "shoudong" : entry.laiyuan };
+  // 1) 手填覆盖
+  if (entry && entry.shoudong && entry.danjia > 0) {
+    return { danjia: entry.danjia, laiyuan: "shoudong" };
   }
+  // 2) NPC 商店价（> 0 才视为有售）
   if (wupin.shangdianjia && wupin.shangdianjia > 0) {
     return { danjia: wupin.shangdianjia, laiyuan: "shangdian" };
+  }
+  // 3) 行情
+  if (entry && entry.danjia > 0) {
+    return { danjia: entry.danjia, laiyuan: entry.laiyuan };
   }
   return null;
 }

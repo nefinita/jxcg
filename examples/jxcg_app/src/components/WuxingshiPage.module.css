@@ -76,3 +76,14 @@
   gap: var(--space-md);
   min-width: 0;
 }
+
+.oldSummary {
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.oldSummary:hover {
+  color: var(--primary-600);
+}

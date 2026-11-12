@@ -61,7 +61,8 @@ describe("JXCG 应用壳与五页面（浏览器 mock）", () => {
     await mount();
     expect(host.textContent).toContain("JXCG · 剑网3 交易行计算器");
     expect(host.textContent).toContain("浏览器预览");
-    // 状态栏展示数据版本 + 数据范围 note（catalog.banben.note）
+    // 状态栏展示数据版本 + 数据范围 note（catalog.banben.note；苍生铸世等级回退到 50 级）
+    expect(host.textContent).toContain("50级·苍生铸世");
     expect(host.textContent).toContain("浏览器 mock 预览数据");
     expect(host.textContent).toContain("配方模式");
     expect(host.textContent).toContain("云芝竹沥羹");
@@ -91,11 +92,16 @@ describe("JXCG 应用壳与五页面（浏览器 mock）", () => {
     expect(visiblePageText()).toContain("物品价格");
     expect(visiblePageText()).toContain("珠贝母");
     expect(visiblePageText()).toContain("保存快照");
+    // NPC 有售物品在行情页显示「商店」来源（task-13）
+    expect(visiblePageText()).toContain("商店");
 
     // 五行石页（mock 精炼计算）
     await clickButton("五行石");
+    expect(visiblePageText()).toContain("一键合成参数");
+    expect(visiblePageText()).toContain("单颗净成本");
+    expect(visiblePageText()).toContain("分步明细");
+    // 旧单步转换折叠保留（details 内容仍在 DOM 中）
     expect(visiblePageText()).toContain("转换配方");
-    expect(visiblePageText()).toContain("期望投入次数");
     expect(visiblePageText()).toContain("精炼结果");
 
     // 排行页（mock 排名计算 + 图表）

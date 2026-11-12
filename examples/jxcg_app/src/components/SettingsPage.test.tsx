@@ -67,6 +67,7 @@ describe("设置页：中间产物开关（task-6）", () => {
   it("数据版本区展示数据范围 note（task-8）", async () => {
     await render(DEFAULT_SETTINGS);
     expect(host.textContent).toContain("数据范围");
+    expect(host.textContent).toContain("50 级");
     expect(host.textContent).toContain(mockCatalog().banben.note);
   });
 

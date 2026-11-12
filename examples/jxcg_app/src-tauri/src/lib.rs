@@ -15,6 +15,7 @@ pub fn run() {
             commands::calc::calculate_recipe,
             commands::calc::rank_recipes,
             commands::calc::calculate_convert,
+            commands::calc::calculate_wuxingshi,
             commands::data::load_catalog,
             commands::data::reload_catalog,
             commands::market::load_prices,

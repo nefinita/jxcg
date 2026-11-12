@@ -73,9 +73,13 @@ describe("计算页中间产物展示（task-6）", () => {
     await render();
     expect(text()).toContain("材料表");
     expect(text()).toContain("自制"); // 酱料行来源徽标
+    expect(text()).toContain("单件成本");
+    expect(text()).toContain("总成本 ÷ 期望产出");
     expect(text()).toContain("中间产物摊入");
     expect(text()).toContain("中间产物精力");
     expect(text()).toContain("酱料");
+    // NPC 商店价材料显示「商店」来源徽标（task-13）
+    expect(text()).toContain("商店");
     // 展开中间产物明细：产出配方 + 展开的采购原料
     await clickButton("明细");
     expect(text()).toContain("产出配方：酱料制作");
@@ -97,6 +101,24 @@ describe("计算页中间产物展示（task-6）", () => {
     expect(jiangliaoRow).toBeDefined();
     expect(jiangliaoRow!.textContent).not.toContain("自制");
     expect([...host.querySelectorAll("button")].some((button) => button.textContent === "明细")).toBe(false);
+  });
+
+  it("不可获得材料单列提示（水纹纸）", async () => {
+    await render();
+    const search = host.querySelector<HTMLInputElement>('input[aria-label="搜索配方"]')!;
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(search, "水墨");
+      search.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await flush(300);
+    const option = [...host.querySelectorAll<HTMLButtonElement>('[role="option"]')].find((element) =>
+      (element.textContent ?? "").includes("水墨画"),
+    );
+    expect(option).toBeDefined();
+    await act(async () => option!.click());
+    await flush();
+    expect(text()).toContain("不可获得材料：水纹纸");
+    expect(text()).toContain("无 NPC 售卖");
   });
 
   it("选中「只产中间产物」配方时提示自用成本，不显示可做/亏损", async () => {

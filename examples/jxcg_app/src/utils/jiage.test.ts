@@ -26,3 +26,43 @@ describe("行情全量映射 / 手填 id（task-6 契约）", () => {
     expect(shoudongIdsOf({}, "jiandanqinxin")).toEqual([]);
   });
 });
+
+import { danjiaOf } from "./jiage";
+import type { Wupin } from "../types";
+
+describe("danjiaOf 取价优先级（task-13：手填 > 商店价 > 行情 > 缺价）", () => {
+  const wupin = (id: string, shangdianjia?: number): Wupin => ({
+    id,
+    mingcheng: id,
+    pinlei: "cailiao",
+    dui: 1,
+    shangdianjia: shangdianjia ?? null,
+    laiyuan: null,
+  });
+  const entry = (danjia: number, shoudong = false) => ({
+    danjia,
+    gengxin_shijian: 1,
+    laiyuan: shoudong ? "shoudong" : "jx3box",
+    shoudong,
+  });
+  const biao: JiageBiao = {
+    [jiageKey("jiandanqinxin", "npc_shop")]: entry(100),
+    [jiageKey("jiandanqinxin", "npc_shop_manual")]: entry(50, true),
+    [jiageKey("jiandanqinxin", "normal")]: entry(200),
+  };
+
+  it("商店价优先于行情（即使行情更低/更高）", () => {
+    const result = danjiaOf(biao, "jiandanqinxin", wupin("npc_shop", 300));
+    expect(result).toEqual({ danjia: 300, laiyuan: "shangdian" });
+  });
+
+  it("手填覆盖商店价", () => {
+    const result = danjiaOf(biao, "jiandanqinxin", wupin("npc_shop_manual", 300));
+    expect(result).toEqual({ danjia: 50, laiyuan: "shoudong" });
+  });
+
+  it("无商店价时用行情；都没有返回 null（缺价）", () => {
+    expect(danjiaOf(biao, "jiandanqinxin", wupin("normal"))).toEqual({ danjia: 200, laiyuan: "jx3box" });
+    expect(danjiaOf(biao, "jiandanqinxin", wupin("missing"))).toBeNull();
+  });
+});

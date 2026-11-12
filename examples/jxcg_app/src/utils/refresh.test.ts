@@ -11,6 +11,10 @@ describe("行情刷新范围（task-8：全量相关物品、不截断）", () =
       expected.add(zhuanhuan.cong);
       expected.add(zhuanhuan.dao);
     }
+    for (const hecheng of catalog.wuxingshi_hecheng) {
+      for (const cailiao of hecheng.cailiao) expected.add(cailiao.wupin_id);
+      for (const jieguo of hecheng.jieguo) expected.add(jieguo.wupin_id);
+    }
     for (const peifang of catalog.peifang) {
       for (const cailiao of peifang.cailiao) expected.add(cailiao.wupin_id);
       for (const chuchan of peifang.chuchan) expected.add(chuchan.wupin_id);
@@ -23,6 +27,9 @@ describe("行情刷新范围（task-8：全量相关物品、不截断）", () =
     expect(ids[0]).toBe(catalog.wuxingshi[0].cong);
     expect(collectRefreshWupinIds(catalog)).toEqual(ids);
     expect(ids.indexOf("5_89346")).toBeGreaterThan(ids.indexOf("5_89970"));
+    // 合成链路的结果也纳入刷新（含七/八级与 2/5/6 级副产物）
+    expect(ids).toContain("5_24430");
+    expect(ids).toContain("5_24427");
   });
 
   it("不再有 200 截断：超过 200 个材料也全部返回", () => {
@@ -30,6 +37,8 @@ describe("行情刷新范围（task-8：全量相关物品、不截断）", () =
     const catalog = {
       ...mockCatalog(),
       wuxingshi: [],
+      wuxingshi_fangan: [],
+      wuxingshi_hecheng: [],
       peifang: [
         {
           id: "big_recipe",
@@ -51,7 +60,7 @@ describe("行情刷新范围（task-8：全量相关物品、不截断）", () =
   });
 
   it("目录为空时回退全部物品", () => {
-    const catalog = { ...mockCatalog(), wuxingshi: [], peifang: [] };
+    const catalog = { ...mockCatalog(), wuxingshi: [], wuxingshi_fangan: [], wuxingshi_hecheng: [], peifang: [] };
     expect(collectRefreshWupinIds(catalog)).toEqual(catalog.wupin.map((wupin) => wupin.id));
   });
 });

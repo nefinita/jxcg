@@ -287,8 +287,10 @@ export default function CalcPage({
       const wupin = catalog.wupin.find((entry) => entry.id === item.wupin_id);
       const override = overrides[item.wupin_id];
       const market = jiageMap[item.wupin_id];
-      const danjia = override ?? market ?? wupin?.shangdianjia ?? 0;
-      const laiyuan = override ? "shoudong" : market ? "hangqing" : wupin?.shangdianjia ? "shangdian" : "quejia";
+      const shop = wupin?.shangdianjia && wupin.shangdianjia > 0 ? wupin.shangdianjia : undefined;
+      // 与后端取价同口径：手填 > NPC 商店价 > 行情 > 缺价（结果返回前先按本地数据渲染）。
+      const danjia = override ?? shop ?? market ?? 0;
+      const laiyuan = override ? "shoudong" : shop ? "shangdian" : market ? "hangqing" : "quejia";
       return {
         wupin_id: item.wupin_id,
         mingcheng: wupin?.mingcheng ?? item.wupin_id,
@@ -302,9 +304,11 @@ export default function CalcPage({
     });
   }, [result, selected, catalog.wupin, overrides, jiageMap, prefs.cishu]);
 
-  const quejiaNames = (result?.quejia ?? []).map(
-    (id) => catalog.wupin.find((wupin) => wupin.id === id)?.mingcheng ?? id,
-  );
+  const bukedeSet = new Set(result?.bukede ?? []);
+  const wupinName = (id: string): string => catalog.wupin.find((wupin) => wupin.id === id)?.mingcheng ?? id;
+  // 「不可获得」材料（无 NPC 价、无行情、无配方产出）单列，与普通缺价区分。
+  const bukedeNames = (result?.bukede ?? []).map(wupinName);
+  const quejiaNames = (result?.quejia ?? []).filter((id) => !bukedeSet.has(id)).map(wupinName);
 
   const zhongjianItems: ResultItem[] =
     result && result.zhongjian.length > 0
@@ -324,6 +328,7 @@ export default function CalcPage({
           tone: result.lirun < 0 ? "negative" : "positive",
         },
         { label: "总成本", value: result.zong_chengben, kind: "money" },
+        { label: "单件成本", value: result.danjia_chengben, kind: "money", hint: "总成本 ÷ 期望产出" },
         ...zhongjianItems,
         { label: "税后收入", value: result.jingshouru, kind: "money" },
         { label: "利润率", value: result.lirunlv_bp, kind: "bp", tone: result.lirunlv_bp < 0 ? "negative" : "default" },
@@ -777,6 +782,12 @@ export default function CalcPage({
             {quejiaNames.length > 0 && (
               <div className={common.noticeDanger} role="alert">
                 缺价：{quejiaNames.join("、")}（结果不完整，可在行情页录价或在此手改）
+              </div>
+            )}
+            {bukedeNames.length > 0 && (
+              <div className={common.noticeDanger} role="alert">
+                不可获得材料：{bukedeNames.join("、")}
+                （无 NPC 售卖 / 合成配方 / 交易行价格，需在行情页手填价或清理数据）
               </div>
             )}
             <div className={common.divider} />

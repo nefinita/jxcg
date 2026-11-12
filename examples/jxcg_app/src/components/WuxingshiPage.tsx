@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as api from "../api/commands";
 import MoneyInput from "./MoneyInput";
+import WuxingshiLianPanel from "./WuxingshiLianPanel";
 import ResultCard, { type ResultItem } from "./ResultCard";
 import clsx from "../utils/clsx";
 import common from "../styles/common.module.css";
@@ -229,20 +230,33 @@ export default function WuxingshiPage({
         <div>
           <h1 className={common.pageTitle}>五行石</h1>
           <p className={common.pageSub}>
-            低阶石 + 精力 + 金币 → 高阶石：目标成功次数 ÷ 成功率 = 期望投入次数，成本按期望投入折算
+            一键合成到六级：面板配方按成功率期望展开，副产物（2/5/6/8 级）折价冲抵成本；旧单步转换折叠保留
           </p>
         </div>
         <div className={common.toolbar}>
           <span className={common.hint}>
             {fuwuqiName} · 手续费 {formatBp(shouxufei.shuilv_bp)}（{selected?.laiyuan === "shequ-2023" ? "社区口径" : "随包数据"}）
           </span>
-          <button className={common.btn} onClick={onOpenMarket} title="去行情页刷新两种五行石的价格">
+          <button className={common.btn} onClick={onOpenMarket} title="去行情页刷新五行石价格">
             去行情页刷新价格
           </button>
         </div>
       </div>
 
-      <div className={common.grid3}>
+      <WuxingshiLianPanel
+        catalog={catalog}
+        settings={settings}
+        updateSettings={updateSettings}
+        shouxufei={shouxufei}
+        prices={prices}
+        fuwuqiId={fuwuqiId}
+        fuwuqiName={fuwuqiName}
+        setStatus={setStatus}
+      />
+
+      <details className={common.card}>
+        <summary className={styles.oldSummary}>旧单步转换（按成功率精炼，保留兼容；数据来自旧 [[zhuanhuan]]）</summary>
+        <div className={common.grid3}>
         {/* 左：转换配方 + 参数 */}
         <section className={common.card}>
           <div className={common.cardTitle}>
@@ -417,6 +431,7 @@ export default function WuxingshiPage({
           </p>
         </div>
       </div>
+      </details>
     </div>
   );
 }
