@@ -11,7 +11,9 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 use crate::{JxcgError, Result};
-use jxcg_api::{Banben, Catalog, Fuwuqi, Peifang, Wupin, Zhiji, Zhuanhuan};
+use jxcg_api::{
+    Banben, Catalog, Fuwuqi, Peifang, Wupin, WuxingshiFangan, WuxingshiHecheng, Zhiji, Zhuanhuan,
+};
 use serde::de::DeserializeOwned;
 
 /// 随包数据文件名（与 data/ 目录约定一致）。
@@ -43,6 +45,12 @@ struct PeifangFile {
 struct WuxingshiFile {
     #[serde(default)]
     zhuanhuan: Vec<Zhuanhuan>,
+    /// 合成方案（`[[fangan]]`，面板/一键合成）
+    #[serde(default)]
+    fangan: Vec<WuxingshiFangan>,
+    /// 单步合成配方（`[[hecheng]]`）
+    #[serde(default)]
+    hecheng: Vec<WuxingshiHecheng>,
 }
 
 #[derive(serde::Deserialize, Default)]
@@ -91,6 +99,8 @@ pub fn load_catalog(dir: &Path) -> Result<Catalog> {
         wupin: wupin.wupin,
         peifang: peifang.peifang,
         wuxingshi: wuxingshi.zhuanhuan,
+        wuxingshi_fangan: wuxingshi.fangan,
+        wuxingshi_hecheng: wuxingshi.hecheng,
         fuwuqi: fuwuqi.fuwuqi,
         zhiji: values.zhiji,
     };
@@ -108,6 +118,28 @@ pub fn validate_catalog(catalog: &Catalog) -> Result<()> {
         "五行石转换",
         catalog.wuxingshi.iter().map(|z| z.id.as_str()),
     )?;
+    check_duplicate(
+        "五行石合成方案",
+        catalog.wuxingshi_fangan.iter().map(|f| f.id.as_str()),
+    )?;
+    check_duplicate(
+        "五行石合成配方",
+        catalog.wuxingshi_hecheng.iter().map(|h| h.id.as_str()),
+    )?;
+    // 单步配方必须挂在已声明的方案下（否则前端选了方案也算不出来）
+    let fangan_ids: std::collections::HashSet<&str> = catalog
+        .wuxingshi_fangan
+        .iter()
+        .map(|f| f.id.as_str())
+        .collect();
+    for hecheng in &catalog.wuxingshi_hecheng {
+        if !fangan_ids.contains(hecheng.fangan.as_str()) {
+            return Err(JxcgError::Data(format!(
+                "五行石合成配方「{}」引用了不存在的方案「{}」",
+                hecheng.id, hecheng.fangan
+            )));
+        }
+    }
     check_duplicate("服务器", catalog.fuwuqi.iter().map(|f| f.id.as_str()))?;
     check_duplicate("值集", catalog.zhiji.iter().map(|z| z.id.as_str()))?;
     for peifang in &catalog.peifang {
@@ -264,6 +296,14 @@ mod tests {
         assert!(!catalog.peifang.is_empty(), "配方表不应为空");
         assert!(!catalog.fuwuqi.is_empty(), "服务器表不应为空");
         assert!(!catalog.zhiji.is_empty(), "值集不应为空");
+        assert!(
+            !catalog.wuxingshi_fangan.is_empty(),
+            "五行石合成方案不应为空（data/wuxingshi.toml [[fangan]]）"
+        );
+        assert!(
+            !catalog.wuxingshi_hecheng.is_empty(),
+            "五行石单步配方不应为空（data/wuxingshi.toml [[hecheng]]）"
+        );
         assert!(
             catalog.zhiji.iter().all(|z| {
                 z.shouxufei.shuilv_bp >= 0

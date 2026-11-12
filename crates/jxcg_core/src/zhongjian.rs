@@ -5,12 +5,12 @@
 //!
 //! 展开口径：
 //! - 中间产物不按行情价计入最终配方成本，而是按自制成本展开：
-//!   自身材料（递归，采购原料仍按 行情/手填 > 商店价 > 缺价）+ 精力 × 精力单价 + 制作费，
+//!   自身材料（递归，采购原料统一按 手填 > NPC 商店价 > 行情 > 缺价，见 [`crate::price`]）+ 精力 × 精力单价 + 制作费，
 //!   除以「每批产出的期望件数」得到**单位成本（HALF_UP 到铜）**，上层按「单位成本 × 数量」摊入；
 //! - 中间产物自制不挂单，**不计保管费**；最终配方的保管费照旧；
 //! - 生产者选择：同一物品存在多个产出配方时，取 `(dengji, id)` 最小者
 //!   （等级低者优先，同等级按 id 升序，保证结果确定）；
-//! - 手填覆盖优先：物品 id 在 `shoudong` 集合中 → 按 `jiage` 手填价采购，不展开；
+//! - 手填覆盖优先：物品 id 在 `shoudong` 集合中 → 按 `jiage` 手填价采购（`laiyuan = shoudong`），不展开；
 //! - 兜底：无产出配方 / 期望产出为 0 / 成环 / 递归深度超限（> [`MAX_DEPTH`]）/ 数值溢出
 //!   → 该行回退采购价（`jiage` → 商店价 → 缺价）；
 //! - 缺价：递归里任何采购原料缺价 → 按 0 计入并汇总到 `quejia`（去重由调用方统一做）。
@@ -292,31 +292,25 @@ fn accumulate_batch(
     })
 }
 
-/// 采购价：行情/手填（`jiage`）> 商店价 > 缺价。
-///
-/// `laiyuan`：手填（id ∈ shoudong）= `shoudong`；行情 = `hangqing`；商店 = `shangdian`；缺价 = `quejia`。
+/// 采购价：统一走 [`crate::price::lookup`]（手填 > NPC 商店价 > 行情 > 缺价）。
 fn purchase_price(
     index: &ZhongjianIndex<'_>,
     price: &PriceCtx<'_>,
     wupin_id: &str,
     quejia: &mut Vec<String>,
 ) -> (Tong, &'static str) {
-    if let Some(value) = price.jiage.get(wupin_id)
-        && *value >= 0
-    {
-        let laiyuan = if price.shoudong.contains(wupin_id) {
-            "shoudong"
-        } else {
-            "hangqing"
-        };
-        return (*value, laiyuan);
+    let (value, laiyuan) = crate::price::lookup(
+        index.catalog(),
+        price.jiage,
+        price.shoudong,
+        wupin_id,
+        quejia,
+    );
+    if value < 0 {
+        // 递归展开内部拿不到 Result：非法负价按缺价计入（顶层取价仍会显式报错），
+        // 避免负成本污染自制单价。
+        quejia.push(wupin_id.to_string());
+        return (0, "quejia");
     }
-    if let Some(wupin) = index.catalog().wupin.iter().find(|w| w.id == wupin_id)
-        && let Some(value) = wupin.shangdianjia
-        && value >= 0
-    {
-        return (value, "shangdian");
-    }
-    quejia.push(wupin_id.to_string());
-    (0, "quejia")
+    (value, laiyuan)
 }

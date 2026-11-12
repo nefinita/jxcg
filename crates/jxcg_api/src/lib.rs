@@ -139,7 +139,8 @@ pub struct Wupin {
     /// 一组堆叠数量（按组购买用）
     #[serde(default)]
     pub dui: Option<u32>,
-    /// 商店价（铜）；来自 JX3BOX craft/price，无则缺省
+    /// NPC 商店价（铜）；来自 JX3BOX craft/price，无则缺省。
+    /// `> 0` 表示 NPC 无限量售卖：取价时**优先于交易行行情**（手填覆盖仍最高优先）
     #[serde(default)]
     pub shangdianjia: Option<Tong>,
     /// 数据来源标识
@@ -210,6 +211,44 @@ pub struct Zhuanhuan {
     pub laiyuan: Option<String>,
 }
 
+/// 五行石合成方案（游戏内「一键合成/自动合成」使用的配方集合）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WuxingshiFangan {
+    pub id: String,
+    pub mingcheng: String,
+    #[serde(default)]
+    pub note: String,
+}
+
+/// 五行石合成结果槽（概率结果）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WuxingshiJieguo {
+    pub wupin_id: String,
+    /// 万分比：9276 = 92.76%；未列出的余量视为失败（材料损失、无产物）
+    pub bp: i64,
+    /// 命中时的产出数量（默认 1）
+    #[serde(default = "one")]
+    pub shuliang: u32,
+}
+
+/// 五行石单步合成配方（面板口径：主产物 + 材料 + 精力 + 加工费 + 概率结果）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WuxingshiHecheng {
+    pub id: String,
+    /// 所属合成方案 id
+    pub fangan: String,
+    /// 主产物物品 id
+    pub chanpin: String,
+    /// 精力消耗（点/次）
+    pub jingli: u32,
+    /// 加工费（铜/次）
+    pub jiagongfei: Tong,
+    #[serde(default)]
+    pub cailiao: Vec<Cailiao>,
+    #[serde(default)]
+    pub jieguo: Vec<WuxingshiJieguo>,
+}
+
 /// 服务器。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Fuwuqi {
@@ -257,6 +296,12 @@ pub struct Catalog {
     pub wupin: Vec<Wupin>,
     pub peifang: Vec<Peifang>,
     pub wuxingshi: Vec<Zhuanhuan>,
+    /// 五行石合成方案（data/wuxingshi.toml 的 `[[fangan]]`）
+    #[serde(default)]
+    pub wuxingshi_fangan: Vec<WuxingshiFangan>,
+    /// 五行石单步合成配方（data/wuxingshi.toml 的 `[[hecheng]]`）
+    #[serde(default)]
+    pub wuxingshi_hecheng: Vec<WuxingshiHecheng>,
     pub fuwuqi: Vec<Fuwuqi>,
     pub zhiji: Vec<Zhiji>,
 }
@@ -368,7 +413,8 @@ pub struct JisuanRequest {
     #[serde(default)]
     pub jingli_danjia: Tong,
     pub shouxufei: Shouxufei,
-    /// 物品 id -> 单价（铜）：该服**全量**行情价 + 手填价，仅供「采购」取价（递归任意深度）；
+    /// 物品 id -> 单价（铜）：该服**全量**行情价 + 手填价（仅供「采购」取价，递归任意深度）。
+    /// 取价优先级：手填（`shoudong`）> NPC 商店价（`shangdianjia > 0`）> 本表行情价 > 缺价。
     /// 缺失表示缺价（缺价按 0 计并汇总 `quejia`）。
     #[serde(default)]
     pub jiage: BTreeMap<String, Tong>,
@@ -378,8 +424,10 @@ pub struct JisuanRequest {
     /// 中间产物按自制成本展开（默认 true）；false = 旧行为，按行情价
     #[serde(default = "true_default")]
     pub zhongjian_zizhi: bool,
-    /// 手填覆盖的物品 id 集合：命中中间产物时按 `jiage` 手填价采购、不再自制展开；
-    /// 空集 = 全部按自制展开（`zhongjian_zizhi=true` 时）
+    /// 手填覆盖的物品 id 集合（**最高取价优先级**，同时让中间产物按手填价采购、不再展开）：
+    /// - 取价：id ∈ 本集合且 `jiage` 有值 → 手填价（覆盖 NPC 商店价与行情）；
+    /// - 中间产物：命中时不再自制展开；
+    /// - 空集 = 全部按自制展开（`zhongjian_zizhi=true` 时）
     #[serde(default)]
     pub shoudong: BTreeSet<String>,
 }
@@ -392,7 +440,8 @@ pub struct CailiaoMingxi {
     pub shuliang: u32,
     pub danjia: Tong,
     pub xiaojia: Tong,
-    /// hangqing / shangdian / shoudong / zizhi / quejia
+    /// 取价来源：`shoudong`（手填）> `shangdian`（NPC 商店价）> `hangqing`（行情）> `quejia`（缺价）；
+    /// 自制中间产物行为 `zizhi`
     pub laiyuan: String,
     /// 该材料行是否为「自制展开」的中间产物（danjia 为单位自制成本）
     #[serde(default)]
@@ -449,6 +498,11 @@ pub struct JisuanResult {
     pub jingli_zhongjian: u32,
     /// 总成本（铜）= chengben_cailiao + chengben_jingli + zhizuofei + baoguanfei
     pub zong_chengben: Tong,
+    /// 单件成本（铜/件）= zong_chengben / 期望产出总件数（HALF_UP）；
+    /// 期望产出为 0 时等于 zong_chengben。
+    /// 多产出配方（如每次期望 2.5 件）用它区分「每批总成本」与「单件成本」。
+    #[serde(default)]
+    pub danjia_chengben: Tong,
     /// 期望产出价值（扣手续费前，铜）
     pub shouru: Tong,
     /// 扣手续费后收入（铜）
@@ -473,6 +527,10 @@ pub struct JisuanResult {
     /// 缺价物品 id 列表（非空表示结果不完整）
     #[serde(default)]
     pub quejia: Vec<String>,
+    /// 「无行情/手填价、也无 NPC 商店价、且没有任何产出配方」的材料 id（`quejia` 的子集）。
+    /// 这类物品无法靠行情/商店/自制获得（可能为采集材料或旧物品），需人工补价或清理数据。
+    #[serde(default)]
+    pub bukede: Vec<String>,
 }
 
 /// 排行请求。
@@ -484,7 +542,8 @@ pub struct PaihangRequest {
     #[serde(default)]
     pub jingli_danjia: Tong,
     pub shouxufei: Shouxufei,
-    /// 物品 id -> 单价（铜）：该服**全量**行情价 + 手填价（采购取价；中间产物默认自制展开）
+    /// 物品 id -> 单价（铜）：该服**全量**行情价 + 手填价（采购取价；中间产物默认自制展开）。
+    /// 取价优先级：手填（`shoudong`）> NPC 商店价 > 本表行情价 > 缺价
     #[serde(default)]
     pub jiage: BTreeMap<String, Tong>,
     pub zhibiao: PaihangZhibiao,
@@ -502,7 +561,7 @@ pub struct PaihangRequest {
     /// 是否包含「只产中间产物」的配方（默认 false = 不参与排行）
     #[serde(default)]
     pub baohan_zhongjian: bool,
-    /// 手填覆盖的物品 id 集合（语义同 JisuanRequest.shoudong）
+    /// 手填覆盖的物品 id 集合（最高取价优先级；语义同 `JisuanRequest.shoudong`）
     #[serde(default)]
     pub shoudong: BTreeSet<String>,
 }
@@ -553,6 +612,95 @@ pub struct ZhuanhuanResult {
     pub lirun: Tong,
     pub lirunlv_bp: i64,
     /// 缺价物品 id
+    #[serde(default)]
+    pub quejia: Vec<String>,
+}
+
+/// 五行石一键合成请求（面板配方链，目标默认六级 `5_24428`）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WuxingshiLianRequest {
+    pub fangan_id: String,
+    /// 目标物品 id（六级 = `5_24428`）
+    pub mubiao_wupin_id: String,
+    /// 目标件数
+    #[serde(default = "one")]
+    pub shuliang: u32,
+    /// 每点精力折合金额（铜）
+    #[serde(default)]
+    pub jingli_danjia: Tong,
+    pub shouxufei: Shouxufei,
+    /// 物品 id -> 单价（铜）：采购取价优先级 **NPC 商店价（> 0）> 本表行情价 > 缺价**
+    /// （本请求没有手填覆盖字段；缺价按 0 计并进 `quejia`）
+    #[serde(default)]
+    pub jiage: BTreeMap<String, Tong>,
+    /// 覆盖「合 6 意外出 8 级」概率（万分比）；None = 用数据里的 bp（0 = 忽略）
+    #[serde(default)]
+    pub baoji_bp: Option<i64>,
+}
+
+/// 五行石合成副产物（期望量）。
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct WuxingshiFuchanpin {
+    pub wupin_id: String,
+    pub mingcheng: String,
+    /// 期望产出件数
+    pub qiwang: f64,
+    pub danjia: Tong,
+    /// 折价收入（铜，HALF_UP）；缺价时为 0
+    pub shouru: Tong,
+}
+
+/// 五行石合成步骤（按单步配方聚合的期望值）。
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct WuxingshiBuzhou {
+    pub hecheng_id: String,
+    pub chanpin: String,
+    pub mingcheng: String,
+    /// 期望合成次数（含成功率放大）
+    pub cishu: f64,
+    /// 该步骤精力合计（期望，HALF_UP 到整数）
+    pub jingli: u32,
+    /// 该步骤加工费合计（期望，HALF_UP 到铜）
+    pub jiagongfei: Tong,
+}
+
+/// 五行石一键合成结果。
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct WuxingshiLianResult {
+    pub fangan_id: String,
+    pub fangan_mingcheng: String,
+    pub mubiao_wupin_id: String,
+    pub mubiao_mingcheng: String,
+    pub shuliang: u32,
+    /// 采购原料明细（一级石等无配方原料；数量为期望值 HALF_UP 到整数，展示口径）
+    pub cailiao: Vec<CailiaoMingxi>,
+    /// 材料成本（铜，期望值一次性 HALF_UP）
+    pub cailiao_chengben: Tong,
+    /// 精力合计（点，期望值 HALF_UP 到整数）
+    pub jingli: u32,
+    /// 精力折金（铜）
+    pub jingli_chengben: Tong,
+    /// 加工费合计（铜）
+    pub jiagongfei: Tong,
+    /// 副产物期望收益明细
+    pub fuchanpin: Vec<WuxingshiFuchanpin>,
+    /// 副产物折价收入合计（铜，冲抵成本）
+    pub fuchanpin_shouru: Tong,
+    /// 净成本（铜）= 材料 + 精力折金 + 加工费 − 副产物收入
+    pub zong_chengben: Tong,
+    /// 单位净成本（铜/颗，= zong_chengben / shuliang 四舍五入）
+    pub danjia: Tong,
+    /// 保本单价（铜/颗，按 5% 手续费反推的最小挂单价）
+    pub baobenjia: Tong,
+    /// 目标物市场价（铜/颗；缺价为 0 并进 quejia）
+    pub shichangjia: Tong,
+    /// 净利润（铜）= 市场价 × 数量 − 手续费 − 净成本
+    pub lirun: Tong,
+    /// 利润率（万分比）
+    pub lirunlv_bp: i64,
+    /// 合成步骤明细（按数据文件顺序，仅含实际用到的配方）
+    pub buzhou: Vec<WuxingshiBuzhou>,
+    /// 缺价物品 id（排序去重）
     #[serde(default)]
     pub quejia: Vec<String>,
 }
@@ -676,6 +824,34 @@ mod tests {
                 jinbi: 100,
                 chenggonglv_bp: 4_878,
                 laiyuan: Some("shequ".into()),
+            }],
+            wuxingshi_fangan: vec![WuxingshiFangan {
+                id: "mianban".into(),
+                mingcheng: "面板配方".into(),
+                note: "测试".into(),
+            }],
+            wuxingshi_hecheng: vec![WuxingshiHecheng {
+                id: "mianban_3".into(),
+                fangan: "mianban".into(),
+                chanpin: "5_2".into(),
+                jingli: 10,
+                jiagongfei: 3_600,
+                cailiao: vec![Cailiao {
+                    wupin_id: "5_1".into(),
+                    shuliang: 12,
+                }],
+                jieguo: vec![
+                    WuxingshiJieguo {
+                        wupin_id: "5_2".into(),
+                        bp: 9_276,
+                        shuliang: 1,
+                    },
+                    WuxingshiJieguo {
+                        wupin_id: "5_3".into(),
+                        bp: 724,
+                        shuliang: 1,
+                    },
+                ],
             }],
             fuwuqi: vec![Fuwuqi {
                 id: "jiandanqinxin".into(),
@@ -871,6 +1047,7 @@ mod tests {
             chengben_zhongjian: 6,
             jingli_zhongjian: 2,
             zong_chengben: 10,
+            danjia_chengben: 10,
             shouru: 20,
             jingshouru: 19,
             lirun: 9,
@@ -905,6 +1082,7 @@ mod tests {
                 danjia: 7,
             }],
             quejia: vec!["x".into()],
+            bukede: vec!["x".into()],
         };
         let back: JisuanResult =
             serde_json::from_str(&serde_json::to_string(&result).unwrap()).unwrap();
@@ -923,6 +1101,45 @@ mod tests {
         let back: ZhuanhuanResult =
             serde_json::from_str(&serde_json::to_string(&zhuanhuan).unwrap()).unwrap();
         assert_eq!(back, zhuanhuan);
+    }
+
+    #[test]
+    fn wuxingshi_contract() {
+        let shouxufei = r#"{"shuilv_bp":500,"quzheng":"half_up","baoguanfei":8000}"#;
+        // 请求缺省：shuliang=1、精力单价 0、价格表空、baoji_bp=None
+        let req: WuxingshiLianRequest = serde_json::from_str(&format!(
+            r#"{{"fangan_id":"mianban","mubiao_wupin_id":"5_24428","shouxufei":{shouxufei}}}"#
+        ))
+        .unwrap();
+        assert_eq!(req.shuliang, 1);
+        assert_eq!(req.jingli_danjia, 0);
+        assert!(req.jiage.is_empty());
+        assert_eq!(req.baoji_bp, None);
+
+        // 结果槽 shuliang 缺省为 1
+        let jieguo: WuxingshiJieguo =
+            serde_json::from_str(r#"{"wupin_id":"5_24430","bp":5}"#).unwrap();
+        assert_eq!(jieguo.shuliang, 1);
+        // hecheng 的 cailiao/jieguo 缺省为空
+        let hecheng: WuxingshiHecheng = serde_json::from_str(
+            r#"{"id":"h1","fangan":"mianban","chanpin":"5_24425","jingli":10,"jiagongfei":3600}"#,
+        )
+        .unwrap();
+        assert!(hecheng.cailiao.is_empty());
+        assert!(hecheng.jieguo.is_empty());
+
+        // Catalog JSON 往返包含 new sections
+        let catalog = sample_catalog();
+        let json = serde_json::to_string(&catalog).unwrap();
+        assert!(json.contains("wuxingshi_hecheng"));
+        assert!(json.contains("wuxingshi_fangan"));
+        let back: Catalog = serde_json::from_str(&json).unwrap();
+        assert_eq!(back, catalog);
+        // 旧 Catalog JSON（无新段）也能反序列化
+        let old_json = r#"{"banben":{"level":1,"season":1,"modified":1},"wupin":[],"peifang":[],"wuxingshi":[],"fuwuqi":[],"zhiji":[]}"#;
+        let old: Catalog = serde_json::from_str(old_json).unwrap();
+        assert!(old.wuxingshi_fangan.is_empty());
+        assert!(old.wuxingshi_hecheng.is_empty());
     }
 
     #[test]

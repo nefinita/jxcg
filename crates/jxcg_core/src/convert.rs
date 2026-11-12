@@ -9,11 +9,11 @@
 //! - 期望成本 = 单次投入成本 × cishu/p，最后一次性 HALF_UP 到铜；
 //! - 期望收入（扣手续费前）= cishu × 高阶石单价；
 //! - 成功率 `chenggonglv_bp` clamp 到 1..10000（0 或负数据按 0.01% 处理，>100% 按 100% 处理）；
-//! - 单价优先级与 craft 一致：行情/手填 > 商店价 > 缺价（缺价按 0 计并写入 `quejia`）。
+//! - 单价优先级与 craft 一致：手填 > NPC 商店价 > 行情 > 缺价（缺价按 0 计并写入 `quejia`）。
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
-use crate::{JxcgError, Result, fee, math};
+use crate::{JxcgError, Result, fee, math, price};
 use jxcg_api::{Catalog, Tong, ZhuanhuanRequest, ZhuanhuanResult};
 
 /// 成功率万分比下限/上限：clamp 到 1..=10000（0.01% ~ 100%）。
@@ -23,35 +23,6 @@ pub const CHENGGONGLV_BP_MAX: i64 = 10_000;
 /// 成功率（万分比），clamp 到合法区间。
 pub fn clamp_chenggonglv_bp(bp: i64) -> i64 {
     bp.clamp(CHENGGONGLV_BP_MIN, CHENGGONGLV_BP_MAX)
-}
-
-/// 取单价：行情/手填 > 商店价 > 缺价（与 craft 口径一致）。
-fn qu_danjia(
-    catalog: &Catalog,
-    jiage: &BTreeMap<String, Tong>,
-    wupin_id: &str,
-    quejia: &mut Vec<String>,
-) -> Result<(Tong, &'static str)> {
-    if let Some(price) = jiage.get(wupin_id) {
-        if *price < 0 {
-            return Err(JxcgError::Money(format!(
-                "行情/手填单价不能为负：{wupin_id} = {price}"
-            )));
-        }
-        return Ok((*price, "hangqing"));
-    }
-    if let Some(wupin) = catalog.wupin.iter().find(|w| w.id == wupin_id)
-        && let Some(price) = wupin.shangdianjia
-    {
-        if price < 0 {
-            return Err(JxcgError::Data(format!(
-                "商店价不能为负：{wupin_id} = {price}"
-            )));
-        }
-        return Ok((price, "shangdian"));
-    }
-    quejia.push(wupin_id.to_string());
-    Ok((0, "quejia"))
 }
 
 /// 计算五行石转换的期望成本/收入/利润。
@@ -78,8 +49,12 @@ pub fn jisuan(catalog: &Catalog, req: &ZhuanhuanRequest) -> Result<ZhuanhuanResu
     let cishu = req.cishu as i128;
     let mut quejia: Vec<String> = Vec::new();
 
-    let (congjia, _cong_laiyuan) = qu_danjia(catalog, &req.jiage, &z.cong, &mut quejia)?;
-    let (daojia, _dao_laiyuan) = qu_danjia(catalog, &req.jiage, &z.dao, &mut quejia)?;
+    // 旧转换请求没有手填覆盖字段；取价优先级与 craft 一致（商店价 > 行情）
+    let empty_shoudong = BTreeSet::new();
+    let (congjia, _cong_laiyuan) =
+        price::qu_danjia(catalog, &req.jiage, &empty_shoudong, &z.cong, &mut quejia)?;
+    let (daojia, _dao_laiyuan) =
+        price::qu_danjia(catalog, &req.jiage, &empty_shoudong, &z.dao, &mut quejia)?;
 
     // 成功率 clamp 到 1..=10000，避免 0 除、负数与 >100% 的荒谬结果。
     let chenggonglv_bp = clamp_chenggonglv_bp(z.chenggonglv_bp) as i128;
@@ -192,6 +167,8 @@ mod tests {
             wuxingshi: list,
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         }
     }
 
@@ -308,6 +285,25 @@ mod tests {
         let r = jisuan(&cat, &req).unwrap();
         assert!(r.quejia.is_empty());
         // 成本 = 2 × 7 = 14；收入 = 100；手续费 5 → 利润 81
+        assert_eq!(r.zong_chengben, 14);
+        assert_eq!(r.shouru, 100);
+        assert_eq!(r.lirun, 81);
+    }
+
+    #[test]
+    fn npc_shop_price_beats_market() {
+        // shop_low 是 NPC 有售（商店价 7 铜）：行情即使更便宜也按商店价
+        let mut z = zhuanhuan("t1", 10_000);
+        z.cong = "shop_low".into();
+        z.dao = "shop_high".into();
+        z.xuyao = 2;
+        z.jinbi = 0;
+        z.jingli = 0;
+        let cat = catalog(vec![z]);
+        let mut req = request("t1");
+        req.jiage = BTreeMap::from([("shop_low".to_string(), 3), ("shop_high".to_string(), 500)]);
+        let r = jisuan(&cat, &req).unwrap();
+        // 成本 = 2×商店价 7 = 14（行情 3 被覆盖）；收入 = 商店价 100；手续费 5 → 利润 81
         assert_eq!(r.zong_chengben, 14);
         assert_eq!(r.shouru, 100);
         assert_eq!(r.lirun, 81);

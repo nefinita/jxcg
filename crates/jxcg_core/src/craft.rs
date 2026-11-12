@@ -1,7 +1,8 @@
 //! 单配方成本/利润计算。
 //!
 //! 口径（PLAN.md §6.3 / §6.3.1）：
-//! - 材料成本 = Σ(需求数量 × 单价)；单价优先级：**行情/手填（`jiage`）> 商店价 > 缺价**，
+//! - 材料成本 = Σ(需求数量 × 单价)；单价优先级（统一见 [`crate::price`]）：
+//!   **手填（`shoudong`）> NPC 商店价（`shangdianjia > 0`）> 行情（`jiage`）> 缺价**，
 //!   缺价按 0 计入并汇总到 `quejia`（供排行过滤与界面提示）；
 //! - 中间产物（产物 ∩ 材料）在 `zhongjian_zizhi=true`（默认）时按**自制成本展开**：
 //!   自身材料递归 + 精力×精力单价 + 制作费，按期望产出折算单位成本，摊入最终产物的材料成本；
@@ -11,13 +12,14 @@
 //! - 期望收入 = Σ(权重/2^20 × (min+max)/2 × cishu × 单价)：用 i128 精确累加，
 //!   **最后一次性 HALF_UP 到铜**（逐槽取整会累计误差）；
 //! - 手续费按期望收入 5% HALF_UP；保管费 = 单次保管费 × 挂单次数 × 批量（中间产物不挂单、不计保管费）；
+//! - 单件成本 = 总成本 / 期望产出总件数（HALF_UP；产出为 0 时退化为总成本）；
 //! - 净利润 = 税后收入 − 材料 − 精力 − 制作费 − 保管费；
 //!   利润率万分比用整数 HALF_UP；每精力利润按（最终精力 + 中间产物精力）计算、整数截断。
 
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::zhongjian::{self, PriceCtx, QIWANG_DEN, ZhongjianIndex, ZizhiUnit};
-use crate::{JxcgError, Result, fee, math};
+use crate::{JxcgError, Result, fee, math, price};
 use jxcg_api::{
     CailiaoMingxi, Catalog, Chuchan, ChuchanMingxi, JisuanRequest, JisuanResult, QUANZHONG_FENMU,
     Tong, Wupin, ZhongjianMingxi,
@@ -42,44 +44,6 @@ fn wupin_mingcheng(catalog: &Catalog, id: &str) -> String {
     find_wupin(catalog, id)
         .map(|w| w.mingcheng.clone())
         .unwrap_or_else(|| id.to_string())
-}
-
-/// 取采购单价：行情/手填 > 商店价 > 缺价。
-///
-/// 返回 `(单价, 来源标记)`；缺价返回 `(0, "quejia")` 并写入 `quejia`。
-/// 来源标记：手填（id ∈ `shoudong`）= `shoudong`；行情 = `hangqing`；商店 = `shangdian`。
-fn qu_danjia(
-    catalog: &Catalog,
-    jiage: &BTreeMap<String, Tong>,
-    shoudong: &BTreeSet<String>,
-    wupin_id: &str,
-    quejia: &mut Vec<String>,
-) -> Result<(Tong, &'static str)> {
-    if let Some(price) = jiage.get(wupin_id) {
-        if *price < 0 {
-            return Err(JxcgError::Money(format!(
-                "行情/手填单价不能为负：{wupin_id} = {price}"
-            )));
-        }
-        let laiyuan = if shoudong.contains(wupin_id) {
-            "shoudong"
-        } else {
-            "hangqing"
-        };
-        return Ok((*price, laiyuan));
-    }
-    if let Some(wupin) = find_wupin(catalog, wupin_id)
-        && let Some(price) = wupin.shangdianjia
-    {
-        if price < 0 {
-            return Err(JxcgError::Data(format!(
-                "商店价不能为负：{wupin_id} = {price}"
-            )));
-        }
-        return Ok((price, "shangdian"));
-    }
-    quejia.push(wupin_id.to_string());
-    Ok((0, "quejia"))
 }
 
 /// 请求级批量计算器：复用中间产物索引与单位自制成本 memo。
@@ -205,7 +169,7 @@ impl<'a> Calculator<'a> {
                 }
                 None => {
                     // 非中间产物 / 展开失败：按采购价（行情 → 商店 → 缺价）
-                    let (price, source) = qu_danjia(
+                    let (price, source) = price::qu_danjia(
                         self.catalog,
                         self.jiage,
                         shoudong,
@@ -276,7 +240,7 @@ impl<'a> Calculator<'a> {
                     peifang.id, slot.min, slot.max
                 )));
             }
-            let (danjia, _laiyuan) = qu_danjia(
+            let (danjia, _laiyuan) = price::qu_danjia(
                 self.catalog,
                 self.jiage,
                 shoudong,
@@ -303,6 +267,13 @@ impl<'a> Calculator<'a> {
         let shouru = math::to_tong(math::round_div_half_up(shouru_num, QIWANG_DEN), "期望收入")?;
 
         // ---- 利润指标 ----
+        // 单件成本 = 总成本 / 期望产出总件数（HALF_UP；无产出时退化为总成本）
+        let danjia_chengben = if qiwang_num > 0 {
+            let num = math::checked_mul(zong_i, QIWANG_DEN, "单件成本")?;
+            math::to_tong(math::round_div_half_up(num, qiwang_num), "单件成本")?
+        } else {
+            math::to_tong(zong_i, "单件成本")?
+        };
         let feiyong = fee::jisuan_shouxufei(shouru, &req.shouxufei);
         let jingshouru = shouru - feiyong;
         let zong_chengben = math::to_tong(zong_i, "总成本")?;
@@ -347,6 +318,8 @@ impl<'a> Calculator<'a> {
         // 缺价去重（排序后去重，结果稳定，便于前端提示与测试）
         quejia.sort();
         quejia.dedup();
+        // 「不可获得」材料：缺价里既无任何产出配方、又是配方材料的物品（`quejia` 子集）
+        let bukede = bukede_wupin(self.catalog, &quejia);
 
         Ok(JisuanResult {
             peifang_id: peifang.id.clone(),
@@ -357,6 +330,7 @@ impl<'a> Calculator<'a> {
             zhizuofei: math::to_tong(zhizuofei_i, "制作费")?,
             baoguanfei: math::to_tong(baoguanfei_i, "保管费")?,
             zong_chengben,
+            danjia_chengben,
             shouru,
             jingshouru,
             lirun,
@@ -370,8 +344,34 @@ impl<'a> Calculator<'a> {
             zhongjian: zhongjian_mx,
             chuchan: chuchan_mx,
             quejia,
+            bukede,
         })
     }
+}
+
+/// 从缺价列表里筛出「不可获得」材料：是配方材料、但没有任何配方产出它。
+///
+/// 这类物品既不能用行情/手填价，也不能靠自制展开，需人工补价或清理数据。
+fn bukede_wupin(catalog: &Catalog, quejia: &[String]) -> Vec<String> {
+    quejia
+        .iter()
+        .filter(|wupin_id| {
+            let is_cailiao = catalog.peifang.iter().any(|peifang| {
+                peifang
+                    .cailiao
+                    .iter()
+                    .any(|item| &item.wupin_id == *wupin_id)
+            });
+            let is_chanchu = catalog.peifang.iter().any(|peifang| {
+                peifang
+                    .chuchan
+                    .iter()
+                    .any(|slot| &slot.wupin_id == *wupin_id)
+            });
+            is_cailiao && !is_chanchu
+        })
+        .cloned()
+        .collect()
 }
 
 /// 中间产物明细里的「一层原料」：按顶层需求数量折算（展示用，数量 HALF_UP 到整数）。
@@ -459,20 +459,23 @@ mod tests {
         }
     }
 
-    /// 基础目录：材料 5_1（商店价 100）、成品 5_2 / 5_3（无商店价）
+    /// 基础目录：材料 5_1 / 5_9（无商店价）、NPC 有售材料 5_npc（商店价 100）、成品 5_2 / 5_3
     fn catalog(peifang_list: Vec<Peifang>) -> Catalog {
         Catalog {
             banben: Banben::default(),
             wupin: vec![
-                wupin("5_1", "材料", Some(100)),
+                wupin("5_1", "材料", None),
                 wupin("5_2", "成品", None),
                 wupin("5_3", "精制品", None),
                 wupin("5_9", "无商店价材料", None),
+                wupin("5_npc", "NPC 商店材料", Some(100)),
             ],
             peifang: peifang_list,
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         }
     }
 
@@ -549,8 +552,8 @@ mod tests {
     }
 
     #[test]
-    fn price_priority_and_quejia() {
-        // 5_1 有行情 → 行情优先；5_9 无行情无商店 → 缺价；成品没有价格 → 缺价
+    fn market_price_priority_and_quejia() {
+        // 无商店价的材料：行情价优先；缺价按 0 计并汇总 quejia（成品缺价同样传播）
         let cat = catalog(vec![peifang(
             "p1",
             0,
@@ -560,7 +563,6 @@ mod tests {
         let mut req = request("p1");
         req.jiage = BTreeMap::from([("5_1".into(), 500)]);
         let r = jisuan(&cat, &req).unwrap();
-        // 行情价 500 覆盖商店价 100
         assert_eq!(r.cailiao[0].danjia, 500);
         assert_eq!(r.cailiao[0].laiyuan, "hangqing");
         // 缺价材料按 0 计
@@ -571,22 +573,59 @@ mod tests {
         // 缺价去重且稳定排序（5_2 成品缺价、5_9 材料缺价）
         assert_eq!(r.quejia, vec!["5_2".to_string(), "5_9".to_string()]);
         assert_eq!(r.chuchan[0].danjia, 0);
+    }
 
-        // 只用商店价时来源标记 shangdian
-        let mut req2 = request("p1");
-        req2.peifang_id = "p1".into();
-        let cat2 = catalog(vec![peifang(
-            "p2",
+    #[test]
+    fn npc_shop_price_beats_market() {
+        // NPC 有售材料（商店价 100）：交易行行情再便宜/再贵都按商店价算
+        let cat = catalog(vec![peifang(
+            "p1",
             0,
-            vec![cailiao("5_1", 3)],
+            vec![cailiao("5_npc", 3)],
             vec![chuchan("5_2", 1, 1, QUANZHONG_FENMU)],
         )]);
-        req2.peifang_id = "p2".into();
-        req2.jiage = BTreeMap::new();
-        let r2 = jisuan(&cat2, &req2).unwrap();
-        assert_eq!(r2.cailiao[0].danjia, 100);
-        assert_eq!(r2.cailiao[0].laiyuan, "shangdian");
-        assert_eq!(r2.chengben_cailiao, 300);
+        for market in [1_i64, 20, 9_999] {
+            let mut req = request("p1");
+            req.jiage = BTreeMap::from([("5_npc".into(), market), ("5_2".into(), 1_000)]);
+            let r = jisuan(&cat, &req).unwrap();
+            assert_eq!(r.cailiao[0].danjia, 100, "行情 {market} 不应覆盖商店价");
+            assert_eq!(r.cailiao[0].laiyuan, "shangdian");
+            assert_eq!(r.chengben_cailiao, 300);
+        }
+        // 行情表里没有该物品时同样取商店价
+        let mut req = request("p1");
+        req.jiage = BTreeMap::from([("5_2".into(), 1_000)]);
+        let r = jisuan(&cat, &req).unwrap();
+        assert_eq!(r.cailiao[0].danjia, 100);
+        assert_eq!(r.cailiao[0].laiyuan, "shangdian");
+        // NPC 商品的交易行负价不会被采用，也不应报错
+        let mut req = request("p1");
+        req.jiage = BTreeMap::from([("5_npc".into(), -5)]);
+        assert!(jisuan(&cat, &req).is_ok());
+    }
+
+    #[test]
+    fn shoudong_price_beats_npc_shop() {
+        // 用户手填价（shoudong 集合 + jiage 值）最高优先，可覆盖 NPC 商店价
+        let cat = catalog(vec![peifang(
+            "p1",
+            0,
+            vec![cailiao("5_npc", 2)],
+            vec![chuchan("5_2", 1, 1, QUANZHONG_FENMU)],
+        )]);
+        let mut req = request("p1");
+        req.jiage = BTreeMap::from([("5_npc".into(), 250)]);
+        req.shoudong = BTreeSet::from(["5_npc".to_string()]);
+        let r = jisuan(&cat, &req).unwrap();
+        assert_eq!(r.cailiao[0].danjia, 250);
+        assert_eq!(r.cailiao[0].laiyuan, "shoudong");
+        assert_eq!(r.chengben_cailiao, 500);
+        // shoudong 命中但 jiage 没值 → 手填不生效，回落商店价
+        let mut req = request("p1");
+        req.shoudong = BTreeSet::from(["5_npc".to_string()]);
+        let r = jisuan(&cat, &req).unwrap();
+        assert_eq!(r.cailiao[0].danjia, 100);
+        assert_eq!(r.cailiao[0].laiyuan, "shangdian");
     }
 
     #[test]
@@ -903,6 +942,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         }
     }
 
@@ -925,15 +966,16 @@ mod tests {
         let req = zhongjian_req();
         let r = jisuan(&cat, &req).unwrap();
 
-        // 中间产物单位成本：每批 (2×100 + 1×200 + 10×10 + 500) = 1000，期望 2.5 件 → 400
+        // 中间产物单位成本：每批 (2×100 + 1×150 + 10×10 + 500) = 950，期望 2.5 件 → 380
+        // （raw_b 是 NPC 有售材料，商店价 150 优先于行情价 200）
         assert_eq!(r.cailiao.len(), 1);
-        assert_eq!(r.cailiao[0].danjia, 400);
-        assert_eq!(r.cailiao[0].xiaojia, 1_200);
+        assert_eq!(r.cailiao[0].danjia, 380);
+        assert_eq!(r.cailiao[0].xiaojia, 1_140);
         assert!(r.cailiao[0].zhongjian);
         assert_eq!(r.cailiao[0].laiyuan, "zizhi");
-        assert_eq!(r.chengben_cailiao, 1_200);
+        assert_eq!(r.chengben_cailiao, 1_140);
         // 中间产物成本展示值已含在材料成本里
-        assert_eq!(r.chengben_zhongjian, 1_200);
+        assert_eq!(r.chengben_zhongjian, 1_140);
         // 最终配方自身精力 20×10=200；中间产物精力 3×(10/2.5=4)=12
         assert_eq!(r.jingli, 20);
         assert_eq!(r.chengben_jingli, 200);
@@ -945,13 +987,13 @@ mod tests {
             r.zong_chengben,
             r.chengben_cailiao + r.chengben_jingli + r.zhizuofei + r.baoguanfei
         );
-        assert_eq!(r.zong_chengben, 9_400);
-        // 收入 5000 − 手续费 250 = 4750；利润 4750 − 9400 = −4650
+        assert_eq!(r.zong_chengben, 9_340);
+        // 收入 5000 − 手续费 250 = 4750；利润 4750 − 9340 = −4590
         assert_eq!(r.shouru, 5_000);
         assert_eq!(r.jingshouru, 4_750);
-        assert_eq!(r.lirun, -4_650);
-        // 每精力利润 = −4650 / (20 + 12) = −145（截断）
-        assert_eq!(r.mei_jingli, -145);
+        assert_eq!(r.lirun, -4_590);
+        // 每精力利润 = −4590 / (20 + 12) = −143（截断）
+        assert_eq!(r.mei_jingli, -143);
 
         assert_eq!(r.zhongjian.len(), 1);
         let zj = &r.zhongjian[0];
@@ -959,19 +1001,20 @@ mod tests {
         assert_eq!(zj.mingcheng, "中间产物");
         assert_eq!(zj.peifang_id, "mid_recipe");
         assert_eq!(zj.shuliang, 3);
-        assert_eq!(zj.danjia, 400);
-        assert_eq!(zj.xiaojia, 1_200);
+        assert_eq!(zj.danjia, 380);
+        assert_eq!(zj.xiaojia, 1_140);
         assert_eq!(zj.jingli, 12);
         // 一层原料按顶层需求折算：raw_a 2×3/2.5 = 2.4 → 2；raw_b 1×3/2.5 = 1.2 → 1
         assert_eq!(zj.cailiao.len(), 2);
         assert_eq!(zj.cailiao[0].wupin_id, "raw_a");
         assert_eq!(zj.cailiao[0].shuliang, 2);
         assert_eq!(zj.cailiao[0].danjia, 100);
-        assert_eq!(zj.cailiao[0].laiyuan, "hangqing");
+        assert_eq!(zj.cailiao[0].laiyuan, "shangdian"); // raw_a 同样是 NPC 有售，商店价优先
         assert!(!zj.cailiao[0].zhongjian);
         assert_eq!(zj.cailiao[1].wupin_id, "raw_b");
         assert_eq!(zj.cailiao[1].shuliang, 1);
-        assert_eq!(zj.cailiao[1].danjia, 200);
+        assert_eq!(zj.cailiao[1].danjia, 150);
+        assert_eq!(zj.cailiao[1].laiyuan, "shangdian");
         assert!(r.quejia.is_empty());
     }
 
@@ -1013,6 +1056,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         };
         let mut req = request("final_recipe");
         req.jingli_danjia = 10;
@@ -1064,6 +1109,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         };
         let mut req = request("final_recipe");
         req.jiage = BTreeMap::from([("mid_a".to_string(), 300), ("out".to_string(), 1_000)]);
@@ -1109,6 +1156,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         };
         let mut req = request("final_recipe");
         req.jiage = BTreeMap::from([("mid".to_string(), 500), ("out".to_string(), 1_000)]);
@@ -1136,12 +1185,13 @@ mod tests {
         assert_eq!(r.jingli_zhongjian, 0);
         assert!(r.zhongjian.is_empty());
 
-        // 更深一层采购原料手填：raw_a 手填 333 → mid 单位成本 = (2×333+200+100+500)/2.5 = 586.4 → 586
+        // 更深一层采购原料手填：raw_a 手填 333（raw_b 商店价 150）→
+        // mid 单位成本 = (2×333 + 150 + 100 + 500)/2.5 = 566.4 → 566
         let mut req2 = zhongjian_req();
         req2.jiage.insert("raw_a".to_string(), 333);
         req2.shoudong = BTreeSet::from(["raw_a".to_string()]);
         let r2 = jisuan(&cat, &req2).unwrap();
-        assert_eq!(r2.cailiao[0].danjia, 586);
+        assert_eq!(r2.cailiao[0].danjia, 566);
         assert_eq!(r2.zhongjian[0].cailiao[0].laiyuan, "shoudong");
         assert_eq!(r2.zhongjian[0].cailiao[0].danjia, 333);
     }
@@ -1206,6 +1256,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         };
         let mut req = request("final_recipe");
         req.jiage = BTreeMap::from([("out".to_string(), 1_000)]);
@@ -1225,6 +1277,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         };
         let r2 = jisuan(&cat2, &req).unwrap();
         assert_eq!(r2.zhongjian[0].peifang_id, "p_a");
@@ -1260,6 +1314,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         };
         // 成品也缺价 → quejia 同时包含采购缺价与产出缺价，排序去重
         let req = request("final_recipe");
@@ -1270,6 +1326,47 @@ mod tests {
     }
 
     #[test]
+    fn zhongjian_negative_purchase_treated_as_quejia() {
+        // 深层采购原料被传入负价（非法输入）：递归内部按缺价计 0 并进 quejia，
+        // 不允许出现负成本（顶层直接采购仍会明确报错）。
+        let mut mid = peifang(
+            "mid_recipe",
+            0,
+            vec![cailiao("missing_raw", 2)],
+            vec![chuchan("mid", 1, 1, QUANZHONG_FENMU)],
+        );
+        mid.zhizuofei = 0;
+        let cat = Catalog {
+            banben: Banben::default(),
+            wupin: vec![
+                wupin("missing_raw", "缺价原料", None),
+                wupin("mid", "中间产物", None),
+                wupin("out", "成品", None),
+            ],
+            peifang: vec![
+                mid,
+                peifang(
+                    "final_recipe",
+                    0,
+                    vec![cailiao("mid", 1)],
+                    vec![chuchan("out", 1, 1, QUANZHONG_FENMU)],
+                ),
+            ],
+            wuxingshi: vec![],
+            fuwuqi: vec![],
+            zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
+        };
+        let mut req = request("final_recipe");
+        req.jiage = BTreeMap::from([("missing_raw".to_string(), -1)]);
+        let r = jisuan(&cat, &req).unwrap();
+        assert_eq!(r.cailiao[0].danjia, 0);
+        assert!(r.chengben_cailiao >= 0);
+        assert!(r.quejia.contains(&"missing_raw".to_string()));
+    }
+
+    #[test]
     fn zhongjian_batch_scaling() {
         let cat = zhongjian_catalog();
         let mut req = zhongjian_req();
@@ -1277,10 +1374,10 @@ mod tests {
         req.guadan_cishu = 2;
         let r = jisuan(&cat, &req).unwrap();
         assert_eq!(r.cailiao[0].shuliang, 3);
-        assert_eq!(r.cailiao[0].xiaojia, 6 * 400);
-        assert_eq!(r.chengben_cailiao, 2_400);
+        assert_eq!(r.cailiao[0].xiaojia, 6 * 380);
+        assert_eq!(r.chengben_cailiao, 2_280);
         assert_eq!(r.zhongjian[0].shuliang, 6);
-        assert_eq!(r.zhongjian[0].xiaojia, 2_400);
+        assert_eq!(r.zhongjian[0].xiaojia, 2_280);
         assert_eq!(r.zhongjian[0].jingli, 24);
         assert_eq!(r.jingli, 40);
         assert_eq!(r.jingli_zhongjian, 24);
@@ -1290,5 +1387,106 @@ mod tests {
             r.zong_chengben,
             r.chengben_cailiao + r.chengben_jingli + r.zhizuofei + r.baoguanfei
         );
+    }
+
+    // ========================================================================
+    // 单件成本（多产出配方除法）与「不可获得材料」分类
+    // ========================================================================
+
+    #[test]
+    fn danjia_chengben_divides_expected_output() {
+        // 材料 5×67,000 = 335,000；每次期望产出 2.5 件 → 单件成本 134,000
+        let cat = catalog(vec![peifang(
+            "p1",
+            0,
+            vec![cailiao("5_1", 5)],
+            vec![chuchan("5_2", 2, 3, QUANZHONG_FENMU)],
+        )]);
+        let mut req = request("p1");
+        req.jiage = BTreeMap::from([("5_1".into(), 67_000)]);
+        let r = jisuan(&cat, &req).unwrap();
+        assert!((r.chuchan_qiwang - 2.5).abs() < 1e-9);
+        assert_eq!(r.chengben_cailiao, 335_000);
+        assert_eq!(r.zong_chengben, 335_000);
+        assert_eq!(r.danjia_chengben, 134_000);
+        // 单件成本 × 期望产出 = 总成本（此例整除）
+        assert_eq!(r.danjia_chengben as f64 * 2.5, r.zong_chengben as f64);
+        // 批量 3 次：总成本 ×3、期望产出 7.5，单件成本不变
+        req.cishu = 3;
+        let batch = jisuan(&cat, &req).unwrap();
+        assert_eq!(batch.zong_chengben, 1_005_000);
+        assert!((batch.chuchan_qiwang - 7.5).abs() < 1e-9);
+        assert_eq!(batch.danjia_chengben, 134_000);
+    }
+
+    #[test]
+    fn danjia_chengben_halves_up_and_zero_output() {
+        // 335,001 / 2.5 = 134,000.4 → HALF_UP 134,000；×2.5 与总成本差 1 铜（在 ±1 内）
+        let mut recipe = peifang(
+            "p1",
+            0,
+            vec![cailiao("5_1", 5)],
+            vec![chuchan("5_2", 2, 3, QUANZHONG_FENMU)],
+        );
+        recipe.zhizuofei = 1;
+        let cat = catalog(vec![recipe]);
+        let mut req = request("p1");
+        req.jiage = BTreeMap::from([("5_1".into(), 67_000)]);
+        let r = jisuan(&cat, &req).unwrap();
+        assert_eq!(r.zong_chengben, 335_001);
+        assert_eq!(r.danjia_chengben, 134_000);
+        assert!((r.danjia_chengben as f64 * 2.5 - r.zong_chengben as f64).abs() <= 1.0);
+
+        // 单产出：单件成本 = 总成本
+        let cat1 = catalog(vec![peifang(
+            "p2",
+            0,
+            vec![cailiao("5_1", 2)],
+            vec![chuchan("5_2", 1, 1, QUANZHONG_FENMU)],
+        )]);
+        let mut req1 = request("p2");
+        req1.jiage = BTreeMap::from([("5_1".into(), 100)]);
+        let r1 = jisuan(&cat1, &req1).unwrap();
+        assert_eq!(r1.danjia_chengben, r1.zong_chengben);
+
+        // 无产出（数据异常）：单件成本退化为总成本
+        let cat0 = catalog(vec![peifang("p3", 0, vec![cailiao("5_1", 2)], vec![])]);
+        let mut req0 = request("p3");
+        req0.jiage = BTreeMap::from([("5_1".into(), 100)]);
+        let r0 = jisuan(&cat0, &req0).unwrap();
+        assert_eq!(r0.danjia_chengben, r0.zong_chengben);
+    }
+
+    #[test]
+    fn bukede_materials_classified() {
+        // 5_missing / 5_1：是配方材料、无价格、无任何产出配方 → 不可获得
+        // 5_2：是配方产物（可自制），即使缺价也不算不可获得
+        let cat = catalog(vec![peifang(
+            "p1",
+            0,
+            vec![cailiao("5_missing", 2), cailiao("5_1", 1)],
+            vec![chuchan("5_2", 1, 1, QUANZHONG_FENMU)],
+        )]);
+        let req = request("p1");
+        let r = jisuan(&cat, &req).unwrap();
+        assert_eq!(
+            r.quejia,
+            vec![
+                "5_1".to_string(),
+                "5_2".to_string(),
+                "5_missing".to_string()
+            ]
+        );
+        assert_eq!(r.bukede, vec!["5_1".to_string(), "5_missing".to_string()]);
+        assert!(r.bukede.iter().all(|id| r.quejia.contains(id)));
+
+        // 中间产物（有产出配方）缺价时也不算不可获得
+        let cat2 = crate::craft::tests::zhongjian_catalog();
+        let mut req2 = crate::craft::tests::zhongjian_req();
+        req2.jiage.clear();
+        req2.zhongjian_zizhi = false; // 不展开，按行情价采购（缺价）
+        let r2 = jisuan(&cat2, &req2).unwrap();
+        assert!(r2.quejia.contains(&"mid".to_string()));
+        assert!(!r2.bukede.contains(&"mid".to_string()));
     }
 }

@@ -152,6 +152,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         }
     }
 
@@ -312,6 +314,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         }
     }
 
@@ -388,6 +392,29 @@ mod tests {
     }
 
     #[test]
+    fn npc_shop_price_used_in_rank() {
+        // mat 为 NPC 有售（商店价 100）：行情价 999 不参与排行成本
+        let cat = zhongjian_rank_catalog();
+        let mut req = zhongjian_rank_req();
+        req.jiage.insert("raw".to_string(), 999);
+        let rows = paihang(&cat, &req);
+        // final_a: 1000 − 50 − (100 + 10×10=200) = 750
+        // final_b: 1200 − 60 − 200 = 940
+        assert_eq!(rows[0].peifang_id, "final_b");
+        assert_eq!(rows[0].lirun, 940);
+        assert_eq!(rows[1].peifang_id, "final_a");
+        assert_eq!(rows[1].lirun, 750);
+        // 手填覆盖商店价：raw 手填 50 → 成本 50+100=150，利润 800/990
+        req.shoudong = BTreeSet::from(["raw".to_string()]);
+        req.jiage.insert("raw".to_string(), 50);
+        let rows = paihang(&cat, &req);
+        assert_eq!(rows[0].peifang_id, "final_b");
+        assert_eq!(rows[0].lirun, 990);
+        assert_eq!(rows[1].peifang_id, "final_a");
+        assert_eq!(rows[1].lirun, 800);
+    }
+
+    #[test]
     fn zhongjian_rank_metric_sorting() {
         // 每精力指标：final_a/final_b 自身精力为 0，中间产物精力摊入后仍退化为净利润；
         // 用中间产物配方自身（精力 10）参与排序验证三种指标都稳定。
@@ -432,6 +459,8 @@ mod tests {
             wuxingshi: vec![],
             fuwuqi: vec![],
             zhiji: vec![],
+            wuxingshi_fangan: vec![],
+            wuxingshi_hecheng: vec![],
         };
         let mut req = zhongjian_rank_req();
         req.jiage = BTreeMap::from([("out_a".to_string(), 1_000), ("out_b".to_string(), 1_200)]);

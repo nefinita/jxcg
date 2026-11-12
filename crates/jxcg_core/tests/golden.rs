@@ -79,6 +79,8 @@ fn plan_catalog() -> Catalog {
         }],
         fuwuqi: vec![],
         zhiji: vec![],
+        wuxingshi_fangan: vec![],
+        wuxingshi_hecheng: vec![],
     }
 }
 
@@ -324,6 +326,8 @@ fn plan_6_3_1_middle_product_self_made() {
         wuxingshi: vec![],
         fuwuqi: vec![],
         zhiji: vec![],
+        wuxingshi_fangan: vec![],
+        wuxingshi_hecheng: vec![],
     };
     let req = JisuanRequest {
         peifang_id: "final_recipe".into(),
@@ -342,9 +346,10 @@ fn plan_6_3_1_middle_product_self_made() {
         shoudong: BTreeSet::new(),
     };
     let r = craft::jisuan(&catalog, &req).expect("中间产物展开计算");
-    // 中间产物单位成本 = (2×100 + 200 + 10×10 + 500) / 2.5 = 400
-    assert_eq!(r.chengben_cailiao, 1_200);
-    assert_eq!(r.chengben_zhongjian, 1_200);
+    // 中间产物单位成本 = (2×100 + 150 + 10×10 + 500) / 2.5 = 380
+    // （原料 B 为 NPC 有售，商店价 150 优先于行情价 200）
+    assert_eq!(r.chengben_cailiao, 1_140);
+    assert_eq!(r.chengben_zhongjian, 1_140);
     assert_eq!(r.jingli_zhongjian, 12);
     assert_eq!(r.chengben_jingli, 200);
     assert_eq!(r.baoguanfei, 8_000);
@@ -352,10 +357,10 @@ fn plan_6_3_1_middle_product_self_made() {
         r.zong_chengben,
         r.chengben_cailiao + r.chengben_jingli + r.zhizuofei + r.baoguanfei
     );
-    assert_eq!(r.zong_chengben, 9_400);
+    assert_eq!(r.zong_chengben, 9_340);
     assert_eq!(r.zhongjian.len(), 1);
     assert_eq!(r.zhongjian[0].peifang_id, "mid_recipe");
-    assert_eq!(r.zhongjian[0].danjia, 400);
+    assert_eq!(r.zhongjian[0].danjia, 380);
     assert_eq!(r.zhongjian[0].jingli, 12);
     // 关闭开关 = 旧行为：中间产物按行情价 999 计
     let mut old = req.clone();

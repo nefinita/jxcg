@@ -17,8 +17,10 @@ pub mod error;
 pub mod fee;
 mod math;
 pub mod money;
+mod price;
 pub mod rank;
 pub mod store;
+pub mod wuxingshi;
 mod zhongjian;
 
 pub use error::{JxcgError, Result};
