@@ -36,6 +36,22 @@ pub struct ExportReport {
     pub wupin_by_pinlei: Vec<(&'static str, usize)>,
     pub shangdian_count: usize,
     pub catalog_by_tab: Vec<(String, usize)>,
+    /// 本次赛季过滤的目标资料片；None = `--all` 未过滤
+    pub current_dlc: Option<i64>,
+    /// 保留配方里 nDlc == current 的条数
+    pub kept_current_count: usize,
+    /// 保留配方里梓匠（furniture）的条数
+    pub kept_furniture_count: usize,
+    /// 保留配方按技艺（中文名）统计
+    pub kept_by_tab: Vec<(String, usize)>,
+    /// 剔除配方按技艺（中文名）统计
+    pub removed_by_tab: Vec<(String, usize)>,
+    /// 闭包补齐的旧中间材料配方名
+    pub closure_recipes: Vec<String>,
+    /// 保留配方派生的中间产物：(物品 id, 名称)
+    pub intermediate_items: Vec<(String, String)>,
+    /// 剔除配方示例名称
+    pub removed_examples: Vec<String>,
     pub detail_failed: usize,
     pub item_missing: usize,
     pub network_requests: u64,
@@ -114,7 +130,7 @@ pub fn write_data_dir(out: &Path, bundle: &DataBundle, report: &mut ExportReport
     let catalog = CatalogFile {
         banben: banben.clone(),
     };
-    let header = header_lines(&[
+    let mut catalog_header = vec![
         "JXCG 随包数据版本（自动生成，勿手改；重新生成：cargo run -p jx3box-export -- --out data）"
             .to_string(),
         format!("生成日期：{date}（北京时间）；来源：JX3BOX（https://www.jx3box.com）"),
@@ -124,7 +140,9 @@ pub fn write_data_dir(out: &Path, bundle: &DataBundle, report: &mut ExportReport
             bundle.wupin.len(),
             bundle.fuwuqi.len()
         ),
-    ]);
+    ];
+    catalog_header.extend(season_header_lines(report));
+    let header = header_lines(&catalog_header);
     report
         .files
         .push(write_toml(&out.join("catalog.toml"), &header, &catalog)?);
@@ -184,12 +202,14 @@ pub fn write_data_dir(out: &Path, bundle: &DataBundle, report: &mut ExportReport
         .map(|(name, count)| format!("{name} {count}"))
         .collect::<Vec<_>>()
         .join(" / ");
-    let peifang_header = header_lines(&[
+    let mut peifang_header_lines = vec![
         "生活技艺配方（自动生成，勿手改；来源：JX3BOX manufacture 目录 + 详情）".to_string(),
         format!("生成日期：{date}（北京时间）"),
         format!("覆盖 5 技艺 {} 条：{summary}", bundle.peifang.len()),
         "chuchan.quanzhong 是概率权重，分母 2^20 = 1048576（普通 1006633 / 精制 41943）；材料槽只留数量>0，产物槽只留权重>0".to_string(),
-    ]);
+    ];
+    peifang_header_lines.extend(season_header_lines(report));
+    let peifang_header = header_lines(&peifang_header_lines);
     report.files.push(write_toml(
         &out.join("peifang.toml"),
         &peifang_header,
@@ -262,6 +282,37 @@ pub fn write_data_dir(out: &Path, bundle: &DataBundle, report: &mut ExportReport
     // ---- data/README.md ----
     report.files.push(write_readme(out, bundle, report, &date)?);
     Ok(())
+}
+
+/// 赛季过滤的保留/剔除总数与摘要（README/日志复用）。
+fn season_kept_total(report: &ExportReport) -> usize {
+    report.kept_current_count + report.kept_furniture_count + report.closure_recipes.len()
+}
+
+fn season_removed_total(report: &ExportReport) -> usize {
+    report.removed_by_tab.iter().map(|(_, count)| *count).sum()
+}
+
+/// 写进 catalog/peifang 头注释的赛季说明行。
+fn season_header_lines(report: &ExportReport) -> Vec<String> {
+    match report.current_dlc {
+        Some(dlc) => {
+            let season_name = crate::season::season_mingcheng(dlc).unwrap_or("当前资料片");
+            vec![
+                format!(
+                    "赛季过滤：nDlc={dlc}（{season_name}）；保留 {} 条（本资料片 {} + 梓匠 {} + 旧中间材料闭包 {}），剔除 {} 条旧赛季配方",
+                    season_kept_total(report),
+                    report.kept_current_count,
+                    report.kept_furniture_count,
+                    report.closure_recipes.len(),
+                    season_removed_total(report)
+                ),
+                "如需全量导出（含旧赛季配方，仅调试/对比）：cargo run -p jx3box-export -- --out data --all"
+                    .to_string(),
+            ]
+        }
+        None => vec!["赛季过滤：未启用（--all 全量导出，含旧赛季配方）".to_string()],
+    }
 }
 
 fn header_lines(lines: &[String]) -> String {
@@ -467,6 +518,15 @@ fn write_readme(
     lines.push(String::new());
     lines.push("## 本次生成统计".to_string());
     lines.push(String::new());
+    if let Some(dlc) = report.current_dlc {
+        lines.push(format!(
+            "- 赛季过滤：**nDlc={dlc}**；保留 {} 条 / 剔除 {} 条旧赛季配方（下详）",
+            season_kept_total(report),
+            season_removed_total(report)
+        ));
+    } else {
+        lines.push("- 赛季过滤：**未启用**（`--all` 全量导出，含旧赛季配方）".to_string());
+    }
     lines.push(format!(
         "- 配方：**{}** 条（{peifang_summary}）",
         bundle.peifang.len()
@@ -476,17 +536,119 @@ fn write_readme(
         bundle.wupin.len(),
         report.shangdian_count
     ));
+    if !report.intermediate_items.is_empty() {
+        lines.push(format!(
+            "- 中间产物：**{}** 个（产物 ∩ 材料，core 按自制成本展开）",
+            report.intermediate_items.len()
+        ));
+    }
     lines.push(format!("- 服务器：{} 个", bundle.fuwuqi.len()));
-    lines.push(format!(
-        "- 网络：请求 {} 次 / 缓存命中 {} 次 / 最终失败 {} 次；配方详情失败 {} 条，物品缺失 {} 条；耗时 {:.1}s",
-        report.network_requests,
-        report.cache_hits,
-        report.http_failures,
-        report.detail_failed,
-        report.item_missing,
-        report.elapsed_ms as f64 / 1000.0
-    ));
+    if report.network_requests == 0 && report.cache_hits > 0 {
+        lines.push(format!(
+            "- 网络：本次复用原始 JSON 缓存（`--cache`，命中 {} 条 URL），未联网；要同步最新数据请去掉 `--cache` 重跑。",
+            report.cache_hits
+        ));
+    } else {
+        lines.push(format!(
+            "- 网络：请求 {} 次 / 缓存命中 {} 次 / 最终失败 {} 次；配方详情失败 {} 条，物品缺失 {} 条；耗时 {:.1}s",
+            report.network_requests,
+            report.cache_hits,
+            report.http_failures,
+            report.detail_failed,
+            report.item_missing,
+            report.elapsed_ms as f64 / 1000.0
+        ));
+    }
     lines.push(String::new());
+
+    // ---- 赛季过滤规则/明细 ----
+    lines.push("## 赛季过滤（nDlc）".to_string());
+    lines.push(String::new());
+    match report.current_dlc {
+        Some(dlc) => {
+            let season_name = crate::season::season_mingcheng(dlc).unwrap_or("当前资料片");
+            lines.push(format!(
+                "当前正式服资料片 **nDlc={dlc}（{season_name}）**；导出器只保留「本赛季用得上的配方」，剔除已完成资料片的旧配方。"
+            ));
+            lines.push(String::new());
+            lines.push("规则（`server_tools/jx3box-export/src/season.rs`）：".to_string());
+            lines.push(String::new());
+            lines.push(format!(
+                "1. `nDlc == {dlc}` 的当前资料片配方：**{}** 条；",
+                report.kept_current_count
+            ));
+            lines.push(format!(
+                "2. 梓匠（`furniture`）全部保留：**{}** 条（家具配方无 nDlc，晋秩仍要木板/卯榫/雕花等）；",
+                report.kept_furniture_count
+            ));
+            lines.push(format!(
+                "3. 旧中间材料闭包补齐：**{}** 条（产物被保留配方当材料的旧配方，迭代到不动点）。",
+                report.closure_recipes.len()
+            ));
+            if !report.closure_recipes.is_empty() {
+                lines.push(format!(
+                    "   - 闭包配方：{}",
+                    report.closure_recipes.join(" / ")
+                ));
+            }
+            if !report.intermediate_items.is_empty() {
+                lines.push(format!(
+                    "   - 派生中间产物（{} 个）：{}",
+                    report.intermediate_items.len(),
+                    report
+                        .intermediate_items
+                        .iter()
+                        .map(|(id, name)| format!("{name}({id})"))
+                        .collect::<Vec<_>>()
+                        .join(" / ")
+                ));
+            }
+            if !report.kept_by_tab.is_empty() {
+                lines.push(format!(
+                    "   - 保留（按技艺）：{}",
+                    report
+                        .kept_by_tab
+                        .iter()
+                        .map(|(name, count)| format!("{name} {count}"))
+                        .collect::<Vec<_>>()
+                        .join(" / ")
+                ));
+            }
+            if !report.removed_by_tab.is_empty() {
+                lines.push(format!(
+                    "   - 剔除（按技艺）：{}",
+                    report
+                        .removed_by_tab
+                        .iter()
+                        .map(|(name, count)| format!("{name} {count}"))
+                        .collect::<Vec<_>>()
+                        .join(" / ")
+                ));
+            }
+            lines.push(String::new());
+            if !report.removed_examples.is_empty() {
+                lines.push(format!(
+                    "已剔除（{} 条）示例：{}。",
+                    season_removed_total(report),
+                    report.removed_examples.join(" / ")
+                ));
+                lines.push(String::new());
+            }
+            lines.push("- 切回全量（含旧赛季，仅调试/对比）：`cargo run -p jx3box-export -- --out data --all`".to_string());
+            lines.push(
+                "- 指定资料片：`--season 9`（数字是 nDlc）；默认 `--season auto` = max(nDlc)。"
+                    .to_string(),
+            );
+        }
+        None => {
+            lines.push("未启用（`--all` 全量导出）：包含旧赛季配方，仅供调试/对比。".to_string());
+            lines.push(String::new());
+            lines
+                .push("- 恢复默认赛季过滤：`cargo run -p jx3box-export -- --out data`".to_string());
+        }
+    }
+    lines.push(String::new());
+
     lines.push("## 文件".to_string());
     lines.push(String::new());
     lines.push("| 文件 | 内容 | 生成方式 |".to_string());
@@ -505,7 +667,7 @@ fn write_readme(
     lines.push("- 产物权重分母固定 `2^20 = 1048576`（普通 1006633 / 精制 41943）；材料槽只保留数量>0，产物槽只保留权重>0。".to_string());
     lines.push("- 配方 id 形如 `cooking_437`（`{JX3BOX tab}_{游戏 ID}`）；`jiyi` 映射：cooking→pengren、medicine→zhiyao、tailoring→fengren、founding→zhuzhao、furniture→zijiang。".to_string());
     lines.push("- 物品 `pinlei` 为**粗分**（cailiao/chengpin/xiaohao/wuxingshi）：配方产物 → chengpin；五行石 → wuxingshi；其余按上游 `TypeLabel`，拿不准按 cailiao 并标 `laiyuan=jx3box(粗分)`。".to_string());
-    lines.push("- `shangdianjia` 只取 NPC 售卖价（`craft/price`，仅 77 条）；物品表 `Price` 是卖给商店的价格，不能当成本兜底，未采用。".to_string());
+    lines.push("- `shangdianjia` 只取 NPC 售卖价（`craft/price`）；物品表 `Price` 是卖给商店的价格，不能当成本兜底，未采用。".to_string());
     lines.push(
         "- `dui`（一组堆叠数）上游未提供，暂缺省；如需按组购买请在设置里补默认值。".to_string(),
     );
@@ -527,8 +689,13 @@ fn write_readme(
     lines.push(String::new());
     lines.push("```sh".to_string());
     lines.push("# 需要联网；对上游礼貌（并发 5、超时 15s、失败重试 1 次）".to_string());
+    lines.push("# 默认 --season auto = 当前资料片 max(nDlc)，剔除旧赛季配方".to_string());
     lines.push("cargo run -p jx3box-export -- --out data".to_string());
-    lines.push("# 调试：只抓每类前 N 条，并把原始 JSON 缓存到 .cache/jx3box".to_string());
+    lines.push("# 全量导出（含旧赛季配方，仅调试/对比）".to_string());
+    lines.push("cargo run -p jx3box-export -- --out data --all".to_string());
+    lines.push("# 指定资料片 nDlc（例如 9 = 苍生铸世）".to_string());
+    lines.push("cargo run -p jx3box-export -- --out data --season 9".to_string());
+    lines.push("# 调试/续跑：复用 .cache/jx3box 原始 JSON，只抓每类前 N 条".to_string());
     lines.push(
         "cargo run -p jx3box-export -- --out data --limit 5 --cache .cache/jx3box".to_string(),
     );

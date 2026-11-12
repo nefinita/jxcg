@@ -1,9 +1,11 @@
 # JXCG 随包数据版本（自动生成，勿手改；重新生成：cargo run -p jx3box-export -- --out data）
 # 生成日期：2026-11-12（北京时间）；来源：JX3BOX（https://www.jx3box.com）
-# 数据量：配方 1036 条 / 物品 1361 条 / 服务器 22 个
+# 数据量：配方 590 条 / 物品 849 条 / 服务器 22 个
+# 赛季过滤：nDlc=9（苍生铸世）；保留 590 条（本资料片 154 + 梓匠 411 + 旧中间材料闭包 25），剔除 446 条旧赛季配方
+# 如需全量导出（含旧赛季配方，仅调试/对比）：cargo run -p jx3box-export -- --out data --all
 
 [banben]
 level = 130
 season = 3
 modified = 20261112
-note = "由 server_tools/jx3box-export 于 2026-11-12 从 JX3BOX 导出"
+note = "130级·苍生铸世（nDlc=9）· 已剔除旧赛季配方"

@@ -118,6 +118,8 @@ pub struct RecipeDetail {
     pub name: String,
     pub require_level: u32,
     pub cost_vigor: u32,
+    /// 资料片版本（JX3BOX `nDlc`）：当前正式服最高 9（苍生铸世），旧配方为 5/6/7/8 或 null
+    pub n_dlc: Option<i64>,
     /// 材料槽：(物品类型, 物品索引, 数量)，只保留数量 > 0 的槽
     pub cailiao: Vec<(u32, u32, u32)>,
     /// 产物槽：(物品类型, 物品索引, min, max, 概率权重)，只保留权重 > 0 的槽
@@ -130,17 +132,32 @@ pub async fn fetch_recipe_detail(
     entry: &CatalogEntry,
 ) -> Result<RecipeDetail> {
     let value = client.get_json(&detail_url(tab, entry.id)).await?;
+    parse_recipe_detail(tab, entry.id, &entry.name, entry.n_level, &value)
+}
+
+/// 解析配方详情 JSON（纯函数，便于用录制 JSON 做离线测试）。
+///
+/// `nDlc` 是资料片版本：当前正式服最高 9（苍生铸世/130 级），
+/// 旧资料片配方是 5/6/7/8 或 null（见 season 模块的过滤规则）。
+pub fn parse_recipe_detail(
+    tab: &str,
+    game_id: i64,
+    fallback_name: &str,
+    fallback_level: i64,
+    value: &Value,
+) -> Result<RecipeDetail> {
     let obj = value
         .as_object()
-        .ok_or_else(|| Error::Parse(format!("配方详情不是对象（{tab}#{}）", entry.id)))?;
+        .ok_or_else(|| Error::Parse(format!("配方详情不是对象（{tab}#{game_id}）")))?;
 
     let name = str_field(obj, "Name")
         .filter(|name| !name.trim().is_empty())
-        .unwrap_or_else(|| entry.name.clone());
+        .unwrap_or_else(|| fallback_name.to_string());
     let require_level = positive_i64(obj.get("RequireLevel"))
         .or_else(|| positive_i64(obj.get("nLevel")))
-        .unwrap_or(entry.n_level.max(0)) as u32;
+        .unwrap_or(fallback_level.max(0)) as u32;
     let cost_vigor = non_negative_i64(obj.get("CostVigor")).unwrap_or(0) as u32;
+    let n_dlc = non_negative_i64(obj.get("nDlc"));
 
     let mut cailiao = Vec::new();
     for index in 1..=8 {
@@ -183,10 +200,11 @@ pub async fn fetch_recipe_detail(
 
     Ok(RecipeDetail {
         tab: tab.to_string(),
-        game_id: entry.id,
+        game_id,
         name,
         require_level,
         cost_vigor,
+        n_dlc,
         cailiao,
         chuchan,
     })
@@ -403,6 +421,36 @@ mod tests {
         assert_eq!(chuchan.iter().map(|(_, _, p)| *p).sum::<u32>(), 1_048_576);
         assert_eq!(positive_i64(obj.get("RequireLevel")), Some(50));
         assert_eq!(non_negative_i64(obj.get("CostVigor")), Some(75));
+    }
+
+    #[test]
+    fn parse_recipe_detail_n_dlc() {
+        // 当前资料片配方：nDlc=9
+        let text = include_str!("../tests/fixtures/detail_cooking_437.json");
+        let value: Value = serde_json::from_str(text).expect("fixture 解析失败");
+        let detail =
+            parse_recipe_detail("cooking", 437, "云芝竹沥羹", 50, &value).expect("解析失败");
+        assert_eq!(detail.n_dlc, Some(9));
+        assert_eq!(detail.tab, "cooking");
+        assert_eq!(detail.game_id, 437);
+        assert_eq!(detail.name, "云芝竹沥羹");
+        assert_eq!(detail.cailiao.len(), 5);
+        assert_eq!(detail.chuchan.len(), 2);
+
+        // 旧配方（饺子皮）：nDlc 缺省
+        let text = include_str!("../tests/fixtures/detail_cooking_120.json");
+        let value: Value = serde_json::from_str(text).expect("fixture 解析失败");
+        let detail = parse_recipe_detail("cooking", 120, "饺子皮", 1, &value).expect("解析失败");
+        assert_eq!(detail.n_dlc, None);
+        assert_eq!(detail.name, "饺子皮");
+
+        // 家具（梓匠）：nDlc 缺省但按规则全保留
+        let text = include_str!("../tests/fixtures/detail_furniture_1.json");
+        let value: Value = serde_json::from_str(text).expect("fixture 解析失败");
+        let detail =
+            parse_recipe_detail("furniture", 1, "柳叶水甘草", 9, &value).expect("解析失败");
+        assert_eq!(detail.n_dlc, None);
+        assert_eq!(detail.chuchan.len(), 1);
     }
 
     #[test]
