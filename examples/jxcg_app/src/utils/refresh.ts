@@ -1,35 +1,40 @@
 // ============================================================================
-// 行情刷新范围：配方材料（去重、按使用频率排序）+ 五行石转换的两种石 + 产物，上限 200 个
+// 行情刷新范围：五行石转换的两种石 + 全部配方材料 + 全部配方产物
 //
-// 依据 lead 联调约定：refresh_prices 一次别超过 ~200 个物品；
-// 五行石数量少且精炼页依赖它们定价，放最前保证不被截断；材料决定成本，产物决定售价。
+// - 去重、稳定排序（石头 → 材料 → 产物，均按 catalog 顺序），**不再截断**；
+// - 目录完全为空时才回退 catalog.wupin；
+// - 全量刷新由用户显式触发（首次约 1–2 分钟），失败保留最近一次价格。
 // ============================================================================
 
 import type { Catalog } from "../types";
 
-export const REFRESH_LIMIT = 200;
+/** 收集一次行情刷新应覆盖的物品 id（全量相关物品，去重、稳定排序、无上限）。 */
+export function collectRefreshWupinIds(catalog: Catalog): string[] {
+  const ids: string[] = [];
+  const seen = new Set<string>();
+  const push = (id: string) => {
+    if (!id || seen.has(id)) return;
+    seen.add(id);
+    ids.push(id);
+  };
 
-/** 收集一次行情刷新应覆盖的物品 id（材料优先，产物补足，去重，最多 200 个）。 */
-export function collectRefreshWupinIds(catalog: Catalog, limit = REFRESH_LIMIT): string[] {
-  // 五行石转换的两种石（数量很少，优先保证精炼页有价）
-  const stones = new Set<string>();
+  // 1) 五行石转换的两种石（数量少，精炼页依赖它们定价）
   for (const zhuanhuan of catalog.wuxingshi) {
-    stones.add(zhuanhuan.cong);
-    stones.add(zhuanhuan.dao);
+    push(zhuanhuan.cong);
+    push(zhuanhuan.dao);
   }
-  const usage = new Map<string, number>();
-  const outputs = new Set<string>();
+  // 2) 全部配方材料（成本侧）
   for (const peifang of catalog.peifang) {
-    for (const cailiao of peifang.cailiao) {
-      usage.set(cailiao.wupin_id, (usage.get(cailiao.wupin_id) ?? 0) + Math.max(1, cailiao.shuliang));
-    }
-    for (const chuchan of peifang.chuchan) outputs.add(chuchan.wupin_id);
+    for (const cailiao of peifang.cailiao) push(cailiao.wupin_id);
   }
-  const ranked = [...usage.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .map(([id]) => id);
-  const ids = [...new Set([...stones, ...ranked, ...outputs])];
+  // 3) 全部配方产物（售价侧）
+  for (const peifang of catalog.peifang) {
+    for (const chuchan of peifang.chuchan) push(chuchan.wupin_id);
+  }
+
   // 目录里既没有配方也没有五行石时退回全部物品（首次启动/数据未导出）。
-  if (ids.length === 0) return catalog.wupin.slice(0, limit).map((wupin) => wupin.id);
-  return ids.length > limit ? ids.slice(0, limit) : ids;
+  if (ids.length === 0) {
+    for (const wupin of catalog.wupin) push(wupin.id);
+  }
+  return ids;
 }

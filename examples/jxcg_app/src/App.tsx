@@ -97,10 +97,13 @@ export default function App() {
     [catalog, settings.zhiji_id],
   );
   const shouxufei: Shouxufei = zhijiOverride ?? zhiji?.shouxufei ?? DEFAULT_SHOUXUFEI;
+  // 状态栏展示数据版本与数据范围（note，由 data-export 生成，如「已剔除旧赛季配方」）。
   const banben = catalog
-    ? `数据 ${catalog.banben.level}级·S${catalog.banben.season} · ${catalog.banben.modified}`
+    ? `数据 ${catalog.banben.level}级·S${catalog.banben.season} · ${
+        catalog.banben.note.trim() || String(catalog.banben.modified)
+      }`
     : undefined;
-  // 刷新范围：配方材料优先（去重、最多 200 个），见 utils/refresh.ts。
+  // 刷新范围：五行石 + 全部配方材料与产物（去重、不截断），见 utils/refresh.ts。
   const refreshCount = useMemo(() => (catalog ? collectRefreshWupinIds(catalog).length : 0), [catalog]);
 
   const updateSettings = useCallback((patch: Partial<Settings>) => {
@@ -148,7 +151,8 @@ export default function App() {
       .loadSettings()
       .then((value) => {
         if (cancelled) return;
-        setSettingsState(value);
+        // 旧存档/旧后端可能没有 zhongjian_zizhi，补齐默认值（默认开）。
+        setSettingsState({ ...DEFAULT_SETTINGS, ...value });
         setSettingsReady(true);
       })
       .catch((err: unknown) => {
@@ -227,6 +231,7 @@ export default function App() {
       refreshingRef.current = true;
       setRefreshing(true);
       setRefreshProgress({ done: 0, total: ids.length, failed: 0 });
+      setStatus(`正在全量刷新行情（${ids.length} 个物品，首次约 1–2 分钟，失败保留最近价格）…`);
       let unlisten = () => {};
       try {
         unlisten = await api.listenRefreshProgress((progress) => setRefreshProgress(progress));
@@ -235,7 +240,7 @@ export default function App() {
         setPrices(next);
         const snapshot = snapshotOf(next, targetFuwuqi, ids);
         if (Object.keys(snapshot.jiage).length > 0) setSnapshots((previous) => appendSnapshot(previous, snapshot));
-        setStatus(`行情刷新完成：成功 ${result.chenggong} / 失败 ${result.shibai}`);
+        setStatus(`行情刷新完成：成功 ${result.chenggong} / 失败 ${result.shibai}（共 ${ids.length} 个物品）`);
         if (!silent) {
           addToast(
             `行情刷新完成（成功 ${result.chenggong}，失败 ${result.shibai}）`,
@@ -244,8 +249,8 @@ export default function App() {
         }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
-        setStatus("行情刷新失败（已保留最近价格）");
-        if (silent) setStatus(`自动拉价失败：${message}（可在行情页重试）`);
+        setStatus("全量刷新失败（已保留最近价格）");
+        if (silent) setStatus(`自动全量拉价失败：${message}（可在行情页重试）`);
         else addToast(`行情刷新失败：${message}`, "error");
       } finally {
         unlisten();
@@ -394,7 +399,7 @@ export default function App() {
       if (!Array.isArray(data.snapshots) || !data.snapshots.every(isKuaizhao)) {
         throw new Error("存档中的快照数据非法");
       }
-      setSettingsState(data.settings);
+      setSettingsState({ ...DEFAULT_SETTINGS, ...data.settings });
       setZhijiOverride(data.zhiji_override ?? null);
       setPrices(data.jiage);
       setFavorites(data.favorites);

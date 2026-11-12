@@ -227,10 +227,17 @@ export interface JisuanRequest {
   /** 每点精力折合金额（铜） */
   jingli_danjia: Tong;
   shouxufei: Shouxufei;
-  /** 物品 id -> 单价（铜）；缺失表示缺价 */
+  /**
+   * 物品 id -> 单价（铜）：当前服务器全量行情 + 手填价（递归采购取价用）。
+   * 缺失表示缺价。
+   */
   jiage: Record<string, Tong>;
+  /** 用户手动覆盖的物品 id（手填价；这些物品不再按中间产物展开） */
+  shoudong: string[];
   /** 技艺等级（0-50，暂只影响展示加成，默认 0） */
   jiyi_dengji: number;
+  /** 中间产物按自制成本展开摊入（默认 true；关闭则按行情价） */
+  zhongjian_zizhi: boolean;
 }
 
 /** 材料明细行。 */
@@ -240,8 +247,10 @@ export interface CailiaoMingxi {
   shuliang: number;
   danjia: Tong;
   xiaojia: Tong;
-  /** hangqing / shangdian / shoudong / quejia */
+  /** hangqing / shangdian / shoudong / quejia / zizhi */
   laiyuan: string;
+  /** 是否为中间产物（自制展开行，单位成本含材料+精力+制作费） */
+  zhongjian: boolean;
 }
 
 /** 产物明细行。 */
@@ -287,6 +296,30 @@ export interface JisuanResult {
   chuchan: ChuchanMingxi[];
   /** 缺价物品 id 列表（非空表示结果不完整） */
   quejia: string[];
+  /** 顶层自制行成本合计（铜；已含在 chengben_cailiao 内，展示用、不重复加总） */
+  chengben_zhongjian: Tong;
+  /** 中间产物摊入的精力点数（最终配方自身精力之外的额外精力） */
+  jingli_zhongjian: number;
+  /** 中间产物展开明细（与材料表中的 zhongjian 行对应） */
+  zhongjian: ZhongjianMingxi[];
+}
+
+/** 中间产物自制明细（材料表中 zhongjian=true 行的展开信息）。 */
+export interface ZhongjianMingxi {
+  wupin_id: string;
+  mingcheng: string;
+  /** 产出该中间产物的配方 id */
+  peifang_id: string;
+  /** 本次制作需要的数量（含制作次数） */
+  shuliang: number;
+  /** 单位自制成本（铜/件） */
+  danjia: Tong;
+  /** 摊入小计（铜） */
+  xiaojia: Tong;
+  /** 摊入的精力点数 */
+  jingli: number;
+  /** 展开后的采购原料（可能仍含中间产物） */
+  cailiao: CailiaoMingxi[];
 }
 
 /** 排行请求。 */
@@ -295,13 +328,20 @@ export interface PaihangRequest {
   jiyi?: Jiyi | null;
   jingli_danjia: Tong;
   shouxufei: Shouxufei;
+  /** 物品 id -> 单价（铜）：当前服务器全量行情 + 手填价 */
   jiage: Record<string, Tong>;
+  /** 用户手动覆盖的物品 id（手填价） */
+  shoudong: string[];
   zhibiao: PaihangZhibiao;
   jiyi_dengji: number;
   /** 最多返回条数；null/缺省 = 全部 */
   limit?: number | null;
   /** 是否包含缺价配方（缺价行排在末尾，quejia=true）；默认 false */
   baohan_quejia?: boolean;
+  /** 中间产物按自制成本展开（默认 true） */
+  zhongjian_zizhi: boolean;
+  /** 排行是否包含「只产中间产物」的配方（默认 false） */
+  baohan_zhongjian: boolean;
 }
 
 /** 排行行。 */
@@ -315,6 +355,8 @@ export interface PaihangRow {
   jingli: number;
   /** 是否缺价（缺价的默认不参与排行，但结果里保留供提示） */
   quejia: boolean;
+  /** 该配方是否只产中间产物（默认不参与排行，baohan_zhongjian 可显示） */
+  zhongjian: boolean;
 }
 
 /** 五行石转换请求。 */
@@ -357,6 +399,8 @@ export interface Settings {
   jiyi_dengji: number;
   /** 是否联网自动拉价 */
   auto_refresh: boolean;
+  /** 中间产物按自制成本摊入（默认 true） */
+  zhongjian_zizhi: boolean;
 }
 
 /** 行情刷新进度事件负载（事件名 refresh_progress）。 */
@@ -463,4 +507,6 @@ export interface RankPrefs {
   jiyi: Jiyi | "all";
   limit: number;
   baohan_quejia: boolean;
+  /** 是否包含「只产中间产物」的配方（默认 false） */
+  baohan_zhongjian: boolean;
 }

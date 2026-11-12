@@ -15,7 +15,11 @@ export default function StatusBar({ message, fuwuqi, banben, mock }: Props) {
       <span className={styles.message}>{message}</span>
       <span className={styles.spacer} />
       {fuwuqi && <span className={styles.meta}>{fuwuqi}</span>}
-      {banben && <span className={styles.meta}>{banben}</span>}
+      {banben && (
+        <span className={styles.meta} title={banben}>
+          {banben}
+        </span>
+      )}
       {mock && <span className={styles.mock}>浏览器预览 mock</span>}
     </footer>
   );

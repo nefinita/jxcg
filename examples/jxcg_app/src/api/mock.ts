@@ -22,11 +22,13 @@ import type {
   NetResult,
   PaihangRequest,
   PaihangRow,
+  Peifang,
   RefreshProgress,
   RefreshResult,
   Settings,
   Shouxufei,
   Tong,
+  ZhongjianMingxi,
   ZhuanhuanRequest,
   ZhuanhuanResult,
 } from "../types";
@@ -34,6 +36,7 @@ import { QUANZHONG_FENMU } from "../types";
 import { DEFAULT_SETTINGS, REFRESH_PROGRESS_EVENT } from "../utils/constants";
 import { nowSeconds } from "../utils/format";
 import { MOCK_BASE_JIAGE, MOCK_CATALOG, MOCK_SERVER_FACTOR } from "./mockData";
+import { chuchanQiwangOf, deriveZhongjianIds, isZhongjianPeifang } from "../utils/zhongjian";
 
 // ---------------------------------------------------------------------------
 // 事件总线（refresh_progress）
@@ -217,26 +220,199 @@ function chuchanDanjia(
   return { danjia: 0, laiyuan: "quejia" };
 }
 
+// ---------------------------------------------------------------------------
+// 中间产物自制成本展开（近似后端 task-5 口径）
+// ---------------------------------------------------------------------------
+
+/** 中间产物集合（产物 ∩ 材料），随包目录不变，模块级派生一次。 */
+const ZHONGJIAN_IDS: ReadonlySet<string> = deriveZhongjianIds(MOCK_CATALOG);
+
+/** 中间产物 -> 产出配方（同物品多配方取 (dengji, id) 最小者，对齐 jxcg_core::zhongjian）。 */
+const ZHONGJIAN_PRODUCERS: ReadonlyMap<string, Peifang> = (() => {
+  const map = new Map<string, Peifang>();
+  for (const peifang of MOCK_CATALOG.peifang) {
+    for (const chuchan of peifang.chuchan) {
+      if (!ZHONGJIAN_IDS.has(chuchan.wupin_id)) continue;
+      const current = map.get(chuchan.wupin_id);
+      if (
+        !current ||
+        peifang.dengji < current.dengji ||
+        (peifang.dengji === current.dengji && peifang.id.localeCompare(current.id) < 0)
+      ) {
+        map.set(chuchan.wupin_id, peifang);
+      }
+    }
+  }
+  return map;
+})();
+
+interface ZizhiCailiao {
+  wupin_id: string;
+  shuliang: number;
+  danjia: Tong;
+  laiyuan: string;
+  zhongjian: boolean;
+}
+
+interface ZizhiCost {
+  /** 单位自制成本（铜/件） */
+  danjia: Tong;
+  /** 每件摊入的精力点数（含嵌套中间产物） */
+  jingli_per_unit: number;
+  peifang_id: string;
+  cailiao: ZizhiCailiao[];
+}
+
+interface ZizhiContext {
+  jiage: Record<string, Tong>;
+  jingli_danjia: Tong;
+  quejia: string[];
+  /** 手填价物品：不按中间产物展开，直接用 jiage 里的手填价采购 */
+  shoudong: Set<string>;
+  cache: Map<string, ZizhiCost | null>;
+  visiting: Set<string>;
+}
+
+/** 递归计算某中间产物的单位自制成本（材料 + 精力×单价 + 制作费，按期望产出折算）。 */
+function zizhiUnitCost(wupinId: string, ctx: ZizhiContext): ZizhiCost | null {
+  if (ctx.cache.has(wupinId)) return ctx.cache.get(wupinId) ?? null;
+  // 环引用（A→B→A）时降级为行情价，避免死循环。
+  if (ctx.visiting.has(wupinId)) return null;
+  const producer = ZHONGJIAN_PRODUCERS.get(wupinId);
+  if (!producer) return null;
+  const qiwang = chuchanQiwangOf(producer.chuchan, wupinId);
+  if (qiwang <= 0) return null;
+
+  ctx.visiting.add(wupinId);
+  let cailiaoCost = 0;
+  let nestedJingli = 0;
+  const cailiao: ZizhiCailiao[] = [];
+  for (const item of producer.cailiao) {
+    let danjia: Tong;
+    let laiyuan: string;
+    let zhongjian = false;
+    if (ctx.shoudong.has(item.wupin_id)) {
+      // 手填价优先：不再递归展开，直接用 jiage 里的手填价（缺价则按商店价兜底）。
+      const manual = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia);
+      danjia = manual.danjia;
+      laiyuan = manual.danjia > 0 ? "shoudong" : manual.laiyuan;
+    } else if (ZHONGJIAN_IDS.has(item.wupin_id)) {
+      const nested = zizhiUnitCost(item.wupin_id, ctx);
+      if (nested) {
+        danjia = nested.danjia;
+        laiyuan = "zizhi";
+        zhongjian = true;
+        nestedJingli += nested.jingli_per_unit * item.shuliang;
+      } else {
+        const fallback = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia);
+        danjia = fallback.danjia;
+        laiyuan = fallback.laiyuan;
+      }
+    } else {
+      const found = chuchanDanjia(MOCK_CATALOG, ctx.jiage, item.wupin_id, ctx.quejia);
+      danjia = found.danjia;
+      laiyuan = found.laiyuan;
+    }
+    cailiaoCost += danjia * item.shuliang;
+    cailiao.push({ wupin_id: item.wupin_id, shuliang: item.shuliang, danjia, laiyuan, zhongjian });
+  }
+  const jingliPerCraft = producer.jingli + nestedJingli;
+  const perCraftCost = cailiaoCost + producer.jingli * ctx.jingli_danjia + producer.zhizuofei;
+  ctx.visiting.delete(wupinId);
+  const result: ZizhiCost = {
+    danjia: Math.round(perCraftCost / qiwang),
+    jingli_per_unit: jingliPerCraft / qiwang,
+    peifang_id: producer.id,
+    cailiao,
+  };
+  ctx.cache.set(wupinId, result);
+  return result;
+}
+
+function wupinMingcheng(wupinId: string): string {
+  return findWupin(MOCK_CATALOG, wupinId)?.mingcheng ?? wupinId;
+}
+
 function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
   const peifang = MOCK_CATALOG.peifang.find((p) => p.id === req.peifang_id);
   if (!peifang) throw new Error(`配方不存在：${req.peifang_id}`);
   const cishu = Math.max(1, Math.trunc(req.cishu));
+  const zhongjianZizhi = req.zhongjian_zizhi !== false;
+  const shoudong = new Set(req.shoudong ?? []);
   const quejia: string[] = [];
+  const ctx: ZizhiContext = {
+    jiage: req.jiage,
+    jingli_danjia: req.jingli_danjia,
+    quejia,
+    shoudong,
+    cache: new Map(),
+    visiting: new Set(),
+  };
 
   const cailiao: CailiaoMingxi[] = [];
+  const zhongjian: ZhongjianMingxi[] = [];
   let chengbenCailiao: Tong = 0;
+  let chengbenZhongjian: Tong = 0;
+  let jingliZhongjian = 0;
+
   for (const item of peifang.cailiao) {
     const need = item.shuliang * cishu;
+    const zizhi =
+      zhongjianZizhi && ZHONGJIAN_IDS.has(item.wupin_id) && !shoudong.has(item.wupin_id)
+        ? zizhiUnitCost(item.wupin_id, ctx)
+        : null;
+    if (zizhi) {
+      const xiaojia = zizhi.danjia * need;
+      chengbenCailiao += xiaojia;
+      chengbenZhongjian += xiaojia;
+      const jingliPoints = zizhi.jingli_per_unit * need;
+      jingliZhongjian += jingliPoints;
+      const producer = ZHONGJIAN_PRODUCERS.get(item.wupin_id);
+      const runs = producer ? need / Math.max(chuchanQiwangOf(producer.chuchan, item.wupin_id), 1e-9) : 1;
+      cailiao.push({
+        wupin_id: item.wupin_id,
+        mingcheng: wupinMingcheng(item.wupin_id),
+        shuliang: item.shuliang,
+        danjia: zizhi.danjia,
+        xiaojia,
+        laiyuan: "zizhi",
+        zhongjian: true,
+      });
+      zhongjian.push({
+        wupin_id: item.wupin_id,
+        mingcheng: wupinMingcheng(item.wupin_id),
+        peifang_id: zizhi.peifang_id,
+        shuliang: need,
+        danjia: zizhi.danjia,
+        xiaojia,
+        jingli: Math.round(jingliPoints),
+        cailiao: zizhi.cailiao.map((row) => {
+          const qty = Math.max(1, Math.round(row.shuliang * runs));
+          return {
+            wupin_id: row.wupin_id,
+            mingcheng: wupinMingcheng(row.wupin_id),
+            shuliang: qty,
+            danjia: row.danjia,
+            xiaojia: row.danjia * qty,
+            laiyuan: row.laiyuan,
+            zhongjian: row.zhongjian,
+          };
+        }),
+      });
+      continue;
+    }
     const { danjia, laiyuan } = chuchanDanjia(MOCK_CATALOG, req.jiage, item.wupin_id, quejia);
     const xiaojia = danjia * need;
     chengbenCailiao += xiaojia;
     cailiao.push({
       wupin_id: item.wupin_id,
-      mingcheng: findWupin(MOCK_CATALOG, item.wupin_id)?.mingcheng ?? item.wupin_id,
+      mingcheng: wupinMingcheng(item.wupin_id),
       shuliang: item.shuliang,
       danjia,
       xiaojia,
-      laiyuan,
+      // zhongjian_zizhi=false 时严格旧行为（shoudong 不生效）；开启时手填价行显示「手填」。
+      laiyuan: zhongjianZizhi && shoudong.has(item.wupin_id) && danjia > 0 ? "shoudong" : laiyuan,
+      zhongjian: false,
     });
   }
 
@@ -257,7 +433,7 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
     shouru += Math.round(qiwang * danjia);
     chuchan.push({
       wupin_id: slot.wupin_id,
-      mingcheng: findWupin(MOCK_CATALOG, slot.wupin_id)?.mingcheng ?? slot.wupin_id,
+      mingcheng: wupinMingcheng(slot.wupin_id),
       qiwang,
       danjia,
     });
@@ -269,7 +445,8 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
   const jingshouru = shouru - feiyong;
   const lirun = jingshouru - zongChengben;
   const lirunlvBp = zongChengben > 0 ? Math.round((lirun / zongChengben) * 10_000) : 0;
-  const meiJingli = jingli > 0 ? Math.trunc(lirun / jingli) : lirun;
+  const jingliTotal = jingli + Math.round(jingliZhongjian);
+  const meiJingli = jingliTotal > 0 ? Math.trunc(lirun / jingliTotal) : lirun;
   const baobenTotal = mockBaobenValue(zongChengben, req.shouxufei);
   const baobenjia =
     chuchanQiwangTotal > 0 ? Math.ceil(baobenTotal / chuchanQiwangTotal) : baobenTotal;
@@ -293,6 +470,9 @@ function mockCalculateRecipe(req: JisuanRequest): JisuanResult {
     cailiao,
     chuchan,
     quejia: [...new Set(quejia)].sort(),
+    chengben_zhongjian: chengbenZhongjian,
+    jingli_zhongjian: Math.round(jingliZhongjian),
+    zhongjian,
   };
 }
 
@@ -312,8 +492,13 @@ function mockBaobenValue(chengben: Tong, cfg: Shouxufei): Tong {
 
 function mockRankRecipes(req: PaihangRequest): PaihangRow[] {
   const rows: PaihangRow[] = [];
+  const zhongjianZizhi = req.zhongjian_zizhi !== false;
+  const baohanZhongjian = req.baohan_zhongjian === true;
   for (const peifang of MOCK_CATALOG.peifang) {
     if (req.jiyi && peifang.jiyi !== req.jiyi) continue;
+    // 只产中间产物的配方默认不进入成品排行。
+    const zhongjianPeifang = isZhongjianPeifang(peifang, ZHONGJIAN_IDS);
+    if (zhongjianPeifang && !baohanZhongjian) continue;
     const result = mockCalculateRecipe({
       peifang_id: peifang.id,
       cishu: 1,
@@ -322,6 +507,8 @@ function mockRankRecipes(req: PaihangRequest): PaihangRow[] {
       shouxufei: req.shouxufei,
       jiage: req.jiage,
       jiyi_dengji: req.jiyi_dengji,
+      zhongjian_zizhi: zhongjianZizhi,
+      shoudong: req.shoudong ?? [],
     });
     const quejia = result.quejia.length > 0;
     if (quejia && !req.baohan_quejia) continue;
@@ -334,6 +521,7 @@ function mockRankRecipes(req: PaihangRequest): PaihangRow[] {
       mei_jingli: result.mei_jingli,
       jingli: peifang.jingli,
       quejia,
+      zhongjian: zhongjianPeifang,
     });
   }
   rows.sort((a, b) => {

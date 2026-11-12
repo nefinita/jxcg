@@ -267,6 +267,20 @@
   background: var(--danger-bg);
 }
 
+.badgeZizhi {
+  composes: badge;
+  color: var(--primary-600);
+  background: var(--glass-highlight);
+  border-color: var(--primary-500);
+}
+
+.badgeZhongjian {
+  composes: badge;
+  color: var(--warning-text);
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+  border-color: color-mix(in srgb, var(--warning) 40%, transparent);
+}
+
 .badgeMock {
   composes: badge;
   color: var(--text-muted);

@@ -166,6 +166,37 @@ export const MOCK_CATALOG: Catalog = {
         { wupin_id: "5_50017", min: 2, max: 2, quanzhong: 41943 },
       ],
     },
+    // ---- 中间产物制作配方（产物同时是其它配方的材料）----
+    // 酱料：cooking_437 / zhiyao_88 / cooking_512 都需要它
+    {
+      id: "tiaoliao_1",
+      mingcheng: "酱料制作",
+      jiyi: "pengren",
+      dengji: 20,
+      jingli: 10,
+      zhizuofei: 0,
+      laiyuan: "mock-preview",
+      cailiao: [
+        { wupin_id: "5_50015", shuliang: 5 },
+        { wupin_id: "5_31984", shuliang: 2 },
+      ],
+      chuchan: [{ wupin_id: "5_89970", min: 5, max: 5, quanzhong: 1048576 }],
+    },
+    // 锦缎：fengren_201 / zijiang_415 都需要它
+    {
+      id: "buzhi_1",
+      mingcheng: "锦缎织造",
+      jiyi: "fengren",
+      dengji: 25,
+      jingli: 20,
+      zhizuofei: 1000,
+      laiyuan: "mock-preview",
+      cailiao: [
+        { wupin_id: "5_50002", shuliang: 4 },
+        { wupin_id: "5_50010", shuliang: 1 },
+      ],
+      chuchan: [{ wupin_id: "5_50001", min: 2, max: 2, quanzhong: 1048576 }],
+    },
   ],
   // data/wuxingshi.toml：五行石精炼（社区口径，待实机校准）
   wuxingshi: [

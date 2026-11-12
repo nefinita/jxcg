@@ -10,7 +10,7 @@ import { DEFAULT_RANK_PREFS, rankPrefsSchema } from "../state/schemas";
 import { JIYI_LABEL, JIYI_LIST, PAIHANG_LABEL, PAIHANG_LIST, STORAGE_KEYS } from "../utils/constants";
 import { formatBp, formatQiwang } from "../utils/format";
 import { formatTong } from "../utils/money";
-import { danjiaOf, jiageMapOf } from "../utils/jiage";
+import { danjiaOf, quanliangJiageMap, shoudongIdsOf } from "../utils/jiage";
 import type { Catalog, JiageBiao, PaihangRow, PaihangZhibiao, Settings, Shouxufei } from "../types";
 import type { Toast } from "../hooks/useToast";
 
@@ -94,11 +94,15 @@ export default function RankPage({
           jiyi: prefs.jiyi === "all" ? null : prefs.jiyi,
           jingli_danjia: settings.jingli_danjia,
           shouxufei,
-          jiage: jiageMapOf(prices, fuwuqiId, relevantIds),
+          // 全量行情 + 手填价（递归中间产物采购取价用）；完整度展示仍按 relevantIds 自算。
+          jiage: quanliangJiageMap(prices, fuwuqiId),
+          shoudong: shoudongIdsOf(prices, fuwuqiId),
           zhibiao: prefs.zhibiao,
           jiyi_dengji: settings.jiyi_dengji,
           limit: null,
           baohan_quejia: prefs.baohan_quejia,
+          zhongjian_zizhi: settings.zhongjian_zizhi ?? true,
+          baohan_zhongjian: prefs.baohan_zhongjian,
         })
         .then((data) => {
           if (rev !== rankRev.current) return;
@@ -119,12 +123,13 @@ export default function RankPage({
     prefs.jiyi,
     prefs.zhibiao,
     prefs.baohan_quejia,
+    prefs.baohan_zhongjian,
     settings.jingli_danjia,
     settings.jiyi_dengji,
+    settings.zhongjian_zizhi,
     shouxufei,
     prices,
     fuwuqiId,
-    relevantIds,
     recalcNonce,
   ]);
 
@@ -222,6 +227,14 @@ export default function RankPage({
             />
             包含缺价配方
           </label>
+          <label className={common.checkboxRow} title="只产中间产物的配方默认不参与成品排行">
+            <input
+              type="checkbox"
+              checked={prefs.baohan_zhongjian}
+              onChange={(event) => setPrefs((previous) => ({ ...previous, baohan_zhongjian: event.target.checked }))}
+            />
+            包含中间产物
+          </label>
           <span className={styles.controlsSpacer} />
           <span className={common.hint}>
             行情完整度 {completeness.priced}/{completeness.total}
@@ -234,7 +247,8 @@ export default function RankPage({
           </span>
         </div>
         <p className={common.hint}>
-          {PAIHANG_LABEL[prefs.zhibiao]}排序 · 缺价配方默认不参与排行（可勾选「包含缺价配方」查看）；点行跳转计算页。
+          {PAIHANG_LABEL[prefs.zhibiao]}排序 · 缺价配方默认不参与排行（可勾选查看）；只产中间产物的配方默认不进入成品排行
+          （可勾选「包含中间产物」查看，标记为中间产物）；点行跳转计算页。
           {loading ? " 计算中…" : ""}
         </p>
         {error && <div className={common.noticeDanger}>{error}</div>}
@@ -305,7 +319,14 @@ export default function RankPage({
                       </td>
                       <td className={common.num}>{row.jingli}</td>
                       <td className={common.center}>
-                        {row.quejia ? <span className={common.badgeQuejia}>缺价</span> : <span className={common.badgeHangqing}>有价</span>}
+                        <span className={styles.statusBadges}>
+                          {row.zhongjian && <span className={common.badgeZhongjian}>中间产物</span>}
+                          {row.quejia ? (
+                            <span className={common.badgeQuejia}>缺价</span>
+                          ) : (
+                            !row.zhongjian && <span className={common.badgeHangqing}>有价</span>
+                          )}
+                        </span>
                       </td>
                     </tr>
                   );

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as api from "../api/commands";
 import MoneyInput from "./MoneyInput";
 import ResultCard, { type ResultItem } from "./ResultCard";
@@ -11,7 +11,8 @@ import { calcOverridesSchema, calcPrefsSchema, DEFAULT_CALC_PREFS } from "../sta
 import { JIYI_LABEL, JIYI_LIST, QUZHENG_LABEL, STORAGE_KEYS } from "../utils/constants";
 import { formatBp, formatQiwang, clampInt } from "../utils/format";
 import { formatTong } from "../utils/money";
-import { jiageMapOf } from "../utils/jiage";
+import { quanliangJiageMap, shoudongIdsOf } from "../utils/jiage";
+import { deriveZhongjianIds, isZhongjianPeifang } from "../utils/zhongjian";
 import type {
   Catalog,
   CailiaoMingxi,
@@ -28,6 +29,7 @@ const LAIGUAN_LABEL: Record<string, string> = {
   hangqing: "行情",
   shangdian: "商店",
   shoudong: "手填",
+  zizhi: "自制",
   quejia: "缺价",
 };
 
@@ -35,6 +37,7 @@ const LAIGUAN_BADGE: Record<string, string> = {
   hangqing: common.badgeHangqing,
   shangdian: common.badgeShangdian,
   shoudong: common.badgeShoudong,
+  zizhi: common.badgeZizhi,
   quejia: common.badgeQuejia,
 };
 
@@ -78,6 +81,7 @@ export default function CalcPage({
     calcOverridesSchema,
   );
   const [editingWupin, setEditingWupin] = useState<string | null>(null);
+  const [expandedZhongjian, setExpandedZhongjian] = useState<Record<string, boolean>>({});
   const [result, setResult] = useState<JisuanResult | null>(null);
   const [calculating, setCalculating] = useState(false);
   const [recipeError, setRecipeError] = useState("");
@@ -119,6 +123,13 @@ export default function CalcPage({
     }
   }, [selected, prefs.peifang_id, setPrefs]);
 
+  // 中间产物集合（产物 ∩ 材料）与「只产中间产物」配方标记。
+  const zhongjianIds = useMemo(() => deriveZhongjianIds(catalog), [catalog]);
+  const selectedIsZhongjian = useMemo(
+    () => (selected ? isZhongjianPeifang(selected, zhongjianIds) : false),
+    [selected, zhongjianIds],
+  );
+
   // 排行页跳转：切到配方模式并清空筛选，确保选中配方可见。
   const focusNonce = focusRecipe?.nonce ?? 0;
   useEffect(() => {
@@ -134,20 +145,22 @@ export default function CalcPage({
     // 只在 nonce 变化时触发，避免同一次跳转被 setPrefs 反复覆盖。
   }, [focusNonce]);
 
-  // ---- 请求价格映射（行情 > 商店价由后端兜底；手改覆盖优先） ----
-  const priceMap = useMemo(() => {
-    if (!selected) return {};
-    const ids = [
-      ...selected.cailiao.map((item) => item.wupin_id),
-      ...selected.chuchan.map((slot) => slot.wupin_id),
-    ];
-    const map = jiageMapOf(prices, fuwuqiId, ids);
-    for (const id of selected.cailiao.map((item) => item.wupin_id)) {
-      const override = overrides[id];
-      if (typeof override === "number" && override > 0) map[id] = override;
+  // ---- 请求价格映射：当前服全量行情 + 本地手填；shoudong 标记手填物品 ----
+  const jiageMap = useMemo(() => {
+    const map = quanliangJiageMap(prices, fuwuqiId);
+    for (const [wupinId, tong] of Object.entries(overrides)) {
+      if (typeof tong === "number" && tong > 0) map[wupinId] = tong;
     }
     return map;
-  }, [selected, prices, fuwuqiId, overrides]);
+  }, [prices, fuwuqiId, overrides]);
+
+  const shoudongIds = useMemo(() => {
+    const ids = new Set(shoudongIdsOf(prices, fuwuqiId));
+    for (const [wupinId, tong] of Object.entries(overrides)) {
+      if (typeof tong === "number" && tong > 0) ids.add(wupinId);
+    }
+    return [...ids].sort();
+  }, [prices, fuwuqiId, overrides]);
 
   // ---- 配方模式：自动重算（防抖 + 版本号防迟到响应） ----
   useEffect(() => {
@@ -167,8 +180,10 @@ export default function CalcPage({
           guadan_cishu: Math.max(1, prefs.guadan_cishu),
           jingli_danjia: settings.jingli_danjia,
           shouxufei,
-          jiage: priceMap,
+          jiage: jiageMap,
+          shoudong: shoudongIds,
           jiyi_dengji: settings.jiyi_dengji,
+          zhongjian_zizhi: settings.zhongjian_zizhi ?? true,
         })
         .then((data) => {
           if (rev !== recipeRev.current) return;
@@ -193,7 +208,8 @@ export default function CalcPage({
     settings.jingli_danjia,
     settings.jiyi_dengji,
     shouxufei,
-    priceMap,
+    jiageMap,
+    shoudongIds,
   ]);
 
   // ---- 手动模式：净收入 + 保本价 ----
@@ -262,14 +278,15 @@ export default function CalcPage({
     if (result) {
       return result.cailiao.map((row) => ({
         ...row,
-        laiyuan: overrides[row.wupin_id] ? "shoudong" : row.laiyuan,
+        // 自制行来源固定为「自制」；本地手填行显示「手填」。
+        laiyuan: row.zhongjian ? "zizhi" : overrides[row.wupin_id] ? "shoudong" : row.laiyuan,
       }));
     }
     if (!selected) return [];
     return selected.cailiao.map((item) => {
       const wupin = catalog.wupin.find((entry) => entry.id === item.wupin_id);
       const override = overrides[item.wupin_id];
-      const market = priceMap[item.wupin_id];
+      const market = jiageMap[item.wupin_id];
       const danjia = override ?? market ?? wupin?.shangdianjia ?? 0;
       const laiyuan = override ? "shoudong" : market ? "hangqing" : wupin?.shangdianjia ? "shangdian" : "quejia";
       return {
@@ -279,13 +296,23 @@ export default function CalcPage({
         danjia,
         xiaojia: danjia * item.shuliang * Math.max(1, prefs.cishu),
         laiyuan,
+        // 结果返回前不冒充自制价，返回后由后端 zhongjian 字段决定。
+        zhongjian: false,
       };
     });
-  }, [result, selected, catalog.wupin, overrides, priceMap, prefs.cishu]);
+  }, [result, selected, catalog.wupin, overrides, jiageMap, prefs.cishu]);
 
   const quejiaNames = (result?.quejia ?? []).map(
     (id) => catalog.wupin.find((wupin) => wupin.id === id)?.mingcheng ?? id,
   );
+
+  const zhongjianItems: ResultItem[] =
+    result && result.zhongjian.length > 0
+      ? [
+          { label: "中间产物摊入", value: result.chengben_zhongjian, kind: "money", hint: "已含在材料成本内" },
+          { label: "中间产物精力", value: result.jingli_zhongjian, kind: "number", hint: "点（计入每精力利润）" },
+        ]
+      : [];
 
   const resultItems: ResultItem[] = result
     ? [
@@ -297,6 +324,7 @@ export default function CalcPage({
           tone: result.lirun < 0 ? "negative" : "positive",
         },
         { label: "总成本", value: result.zong_chengben, kind: "money" },
+        ...zhongjianItems,
         { label: "税后收入", value: result.jingshouru, kind: "money" },
         { label: "利润率", value: result.lirunlv_bp, kind: "bp", tone: result.lirunlv_bp < 0 ? "negative" : "default" },
         { label: "每精力利润", value: result.mei_jingli, kind: "money" },
@@ -523,6 +551,9 @@ export default function CalcPage({
                       </button>
                       <span className={styles.recipeName}>{peifang.mingcheng}</span>
                       <span className={common.listItemMeta}>
+                        {isZhongjianPeifang(peifang, zhongjianIds) && (
+                          <span className={common.badgeZhongjian}>中间产物</span>
+                        )}
                         {JIYI_LABEL[peifang.jiyi]} · 精力 {peifang.jingli}
                       </span>
                     </div>
@@ -622,44 +653,121 @@ export default function CalcPage({
                   <tbody>
                     {cailiaoRows.map((row) => {
                       const overridden = overrides[row.wupin_id] !== undefined;
+                      const zhongjianRow = row.zhongjian === true;
+                      const zhongjianInfo = zhongjianRow
+                        ? result?.zhongjian.find((item) => item.wupin_id === row.wupin_id)
+                        : undefined;
+                      const expanded = expandedZhongjian[row.wupin_id] === true;
+                      const producerName = zhongjianInfo
+                        ? catalog.peifang.find((peifang) => peifang.id === zhongjianInfo.peifang_id)?.mingcheng
+                        : undefined;
                       return (
-                        <tr key={row.wupin_id}>
-                          <td>{row.mingcheng}</td>
-                          <td>
-                            <span className={LAIGUAN_BADGE[row.laiyuan] ?? common.badge}>
-                              {LAIGUAN_LABEL[row.laiyuan] ?? row.laiyuan}
-                            </span>
-                          </td>
-                          <td className={common.num}>{row.shuliang}</td>
-                          <td className={common.num}>
-                            {editingWupin === row.wupin_id ? (
-                              <MoneyInput
-                                size="compact"
-                                ariaLabel={`${row.mingcheng} 单价`}
-                                value={row.danjia}
-                                onChange={(tong) => handleOverride(row.wupin_id, tong)}
-                              />
-                            ) : (
-                              formatTong(row.danjia)
-                            )}
-                          </td>
-                          <td className={common.num}>{formatTong(row.xiaojia)}</td>
-                          <td className={common.center}>
-                            {overridden ? (
-                              <button className={common.btnGhost} onClick={() => clearOverride(row.wupin_id)}>
-                                恢复
-                              </button>
-                            ) : (
-                              <button
-                                className={common.btnGhost}
-                                onClick={() => setEditingWupin(row.wupin_id)}
-                                title="手动覆盖该材料单价（优先于行情）"
-                              >
-                                改价
-                              </button>
-                            )}
-                          </td>
-                        </tr>
+                        <Fragment key={row.wupin_id}>
+                          <tr>
+                            <td>{row.mingcheng}</td>
+                            <td>
+                              <span className={LAIGUAN_BADGE[row.laiyuan] ?? common.badge}>
+                                {LAIGUAN_LABEL[row.laiyuan] ?? row.laiyuan}
+                              </span>
+                            </td>
+                            <td className={common.num}>{row.shuliang}</td>
+                            <td className={common.num}>
+                              {!zhongjianRow && editingWupin === row.wupin_id ? (
+                                <MoneyInput
+                                  size="compact"
+                                  ariaLabel={`${row.mingcheng} 单价`}
+                                  value={row.danjia}
+                                  onChange={(tong) => handleOverride(row.wupin_id, tong)}
+                                />
+                              ) : (
+                                formatTong(row.danjia)
+                              )}
+                            </td>
+                            <td className={common.num}>{formatTong(row.xiaojia)}</td>
+                            <td className={common.center}>
+                              {zhongjianRow ? (
+                                zhongjianInfo ? (
+                                  <button
+                                    className={common.btnGhost}
+                                    onClick={() =>
+                                      setExpandedZhongjian((previous) => ({
+                                        ...previous,
+                                        [row.wupin_id]: !previous[row.wupin_id],
+                                      }))
+                                    }
+                                    aria-expanded={expanded}
+                                    title="展开中间产物自制成本明细"
+                                  >
+                                    {expanded ? "收起" : "明细"}
+                                  </button>
+                                ) : (
+                                  <span className={common.hint}>—</span>
+                                )
+                              ) : overridden ? (
+                                <button className={common.btnGhost} onClick={() => clearOverride(row.wupin_id)}>
+                                  恢复
+                                </button>
+                              ) : (
+                                <button
+                                  className={common.btnGhost}
+                                  onClick={() => setEditingWupin(row.wupin_id)}
+                                  title="手动覆盖该材料单价（优先于行情；手填后不再按中间产物展开）"
+                                >
+                                  改价
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                          {zhongjianRow && zhongjianInfo && expanded && (
+                            <tr className={styles.detailRow}>
+                              <td colSpan={6}>
+                                <div className={styles.zjDetail}>
+                                  <div className={styles.zjHead}>
+                                    <strong>
+                                      中间产物明细 · {zhongjianInfo.mingcheng}
+                                      <span className={common.badgeZizhi}>自制</span>
+                                    </strong>
+                                    <span className={common.hint}>
+                                      产出配方：{producerName ?? zhongjianInfo.peifang_id} · 需要 {zhongjianInfo.shuliang} 件 ·
+                                      单位自制成本 {formatTong(zhongjianInfo.danjia)} · 摊入小计{" "}
+                                      {formatTong(zhongjianInfo.xiaojia)} · 精力 {zhongjianInfo.jingli} 点
+                                    </span>
+                                  </div>
+                                  {zhongjianInfo.cailiao.length > 0 ? (
+                                    <table className={common.table}>
+                                      <thead>
+                                        <tr>
+                                          <th>展开的采购原料</th>
+                                          <th className={common.num}>数量</th>
+                                          <th className={common.num}>单价</th>
+                                          <th className={common.num}>小计</th>
+                                          <th>来源</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {zhongjianInfo.cailiao.map((cailiaoRow) => (
+                                          <tr key={cailiaoRow.wupin_id}>
+                                            <td>{cailiaoRow.mingcheng}</td>
+                                            <td className={common.num}>{cailiaoRow.shuliang}</td>
+                                            <td className={common.num}>{formatTong(cailiaoRow.danjia)}</td>
+                                            <td className={common.num}>{formatTong(cailiaoRow.xiaojia)}</td>
+                                            <td>
+                                              <span className={LAIGUAN_BADGE[cailiaoRow.laiyuan] ?? common.badge}>
+                                                {LAIGUAN_LABEL[cailiaoRow.laiyuan] ?? cailiaoRow.laiyuan}
+                                              </span>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  ) : (
+                                    <p className={common.hint}>该中间产物没有可展开的采购原料（可能直接使用商店价）。</p>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </Fragment>
                       );
                     })}
                   </tbody>
@@ -700,21 +808,34 @@ export default function CalcPage({
           {/* 右：结果 */}
           <div className={styles.resultStack}>
             <ResultCard
-              title={selected ? `${selected.mingcheng}${Math.max(1, prefs.cishu) > 1 ? ` × ${Math.max(1, prefs.cishu)}` : ""}` : "结果"}
+              title={
+                selected
+                  ? `${selected.mingcheng}${Math.max(1, prefs.cishu) > 1 ? ` × ${Math.max(1, prefs.cishu)}` : ""}${
+                      selectedIsZhongjian ? "（中间产物）" : ""
+                    }`
+                  : "结果"
+              }
               items={resultItems}
               emptyText={calculating ? "计算中…" : "请选择一个配方"}
               extra={
-                result && (
+                result &&
+                (selectedIsZhongjian ? (
+                  <span className={styles.resultBadges}>
+                    <span className={common.badgeZhongjian}>中间产物</span>
+                    <span className={common.badgeMock}>自用成本</span>
+                  </span>
+                ) : (
                   <span className={result.lirun >= 0 ? common.badgeHangqing : common.badgeQuejia}>
                     {result.lirun >= 0 ? "可做" : "亏损"}
                   </span>
-                )
+                ))
               }
               footer={
                 result && (
                   <>
                     <span className={common.hint}>
-                      材料 {formatTong(result.chengben_cailiao)} · 精力 {formatTong(result.chengben_jingli)} · 制作费{" "}
+                      材料（含自制）{formatTong(result.chengben_cailiao)} · 精力（最终）{formatTong(result.chengben_jingli)}
+                      {result.zhongjian.length > 0 ? ` · 中间产物精力 ${result.jingli_zhongjian} 点` : ""} · 制作费{" "}
                       {formatTong(result.zhizuofei)} · 保管费 {formatTong(result.baoguanfei)}
                     </span>
                     <span className={common.hint}>
@@ -724,6 +845,11 @@ export default function CalcPage({
                 )
               }
             />
+            {selectedIsZhongjian && (
+              <div className={common.notice} role="status">
+                中间产物仅作成本参考，默认不进入成品排行。
+              </div>
+            )}
           </div>
         </div>
       )}

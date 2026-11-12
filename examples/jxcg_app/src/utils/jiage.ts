@@ -106,6 +106,28 @@ export function danjiaOf(
   return null;
 }
 
+/** 当前服务器全量行情映射（用于计算/排行的采购取价，含递归中间产物）。 */
+export function quanliangJiageMap(biao: JiageBiao, fuwuqiId: string): Record<string, Tong> {
+  const prefix = `${fuwuqiId}|`;
+  const map: Record<string, Tong> = {};
+  for (const [key, entry] of Object.entries(biao)) {
+    if (!key.startsWith(prefix)) continue;
+    if (entry.danjia > 0) map[key.slice(prefix.length)] = entry.danjia;
+  }
+  return map;
+}
+
+/** 当前服务器手动覆盖价的物品 id（排序稳定；手填中间产物时不再展开）。 */
+export function shoudongIdsOf(biao: JiageBiao, fuwuqiId: string): string[] {
+  const prefix = `${fuwuqiId}|`;
+  const ids: string[] = [];
+  for (const [key, entry] of Object.entries(biao)) {
+    if (!key.startsWith(prefix)) continue;
+    if (entry.shoudong) ids.push(key.slice(prefix.length));
+  }
+  return ids.sort();
+}
+
 /** 用当前缓存生成一条行情快照。 */
 export function snapshotOf(biao: JiageBiao, fuwuqiId: string, wupinIds: Iterable<string>): Kuaizhao {
   const jiage: Record<string, Tong> = {};

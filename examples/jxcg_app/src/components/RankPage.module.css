@@ -43,3 +43,11 @@
 .rowQuejia {
   opacity: 0.62;
 }
+
+.statusBadges {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

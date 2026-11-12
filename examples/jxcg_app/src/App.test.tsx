@@ -61,6 +61,8 @@ describe("JXCG 应用壳与五页面（浏览器 mock）", () => {
     await mount();
     expect(host.textContent).toContain("JXCG · 剑网3 交易行计算器");
     expect(host.textContent).toContain("浏览器预览");
+    // 状态栏展示数据版本 + 数据范围 note（catalog.banben.note）
+    expect(host.textContent).toContain("浏览器 mock 预览数据");
     expect(host.textContent).toContain("配方模式");
     expect(host.textContent).toContain("云芝竹沥羹");
 
@@ -141,6 +143,10 @@ describe("JXCG 应用壳与五页面（浏览器 mock）", () => {
       button.textContent?.includes("一键刷新"),
     );
     expect(refreshButton).toBeDefined();
+    // task-8：全量刷新文案（数量 + 预计时长），不再有 200 截断
+    expect(refreshButton!.textContent).toMatch(/一键刷新（\d+）/);
+    expect(refreshButton!.title).toContain("全部相关物品");
+    expect(refreshButton!.title).not.toContain("200");
     await act(async () => refreshButton!.click());
     await flush(2000);
 

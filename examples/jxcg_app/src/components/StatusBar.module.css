@@ -33,6 +33,9 @@
 .meta {
   color: var(--text-muted);
   white-space: nowrap;
+  max-width: min(520px, 45vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mock {

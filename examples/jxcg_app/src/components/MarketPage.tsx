@@ -82,7 +82,7 @@ export interface MarketPageProps {
   onOverridePrice: (wupinId: string, danjia: Tong) => void;
   onImportPrices: (entries: Array<{ wupinId: string; danjia: Tong }>, source: string) => void;
   onRefresh: () => void;
-  /** 本次「一键刷新」覆盖的物品数（配方材料去重，最多 200） */
+  /** 本次「一键刷新」覆盖的物品数（五行石 + 全部配方材料与产物，去重、不截断） */
   refreshCount: number;
   refreshing: boolean;
   progress: RefreshProgress | null;
@@ -279,7 +279,7 @@ export default function MarketPage({
             className={common.btnPrimary}
             onClick={onRefresh}
             disabled={refreshing}
-            title={`调用 JX3BOX 自动拉价（配方材料 ${refreshCount} 个；失败保留最近一次价格）`}
+            title={`联网刷新当前服全部相关物品（${refreshCount} 个，首次约 1–2 分钟；失败保留最近价格）`}
           >
             <IconRefresh size={14} />
             {refreshing ? "刷新中…" : `一键刷新（${refreshCount}）`}
@@ -292,7 +292,8 @@ export default function MarketPage({
         <div className={common.notice} role="status">
           <IconRefresh size={14} />
           <span>
-            当前服务器还没有本地行情：点右上角「一键刷新」联网拉价，或使用「粘贴导入 / 导入 JSON」录价。
+            当前服务器还没有本地行情：点右上角「一键刷新」联网拉价（{refreshCount} 个物品，首次约 1–2 分钟；
+            失败保留最近价格），或使用「粘贴导入 / 导入 JSON」录价。
           </span>
         </div>
       )}

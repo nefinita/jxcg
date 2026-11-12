@@ -160,6 +160,7 @@ export const DEFAULT_RANK_PREFS: RankPrefs = {
   jiyi: "all",
   limit: 10,
   baohan_quejia: false,
+  baohan_zhongjian: false,
 };
 
 function isJiyiValue(value: unknown): boolean {
@@ -208,13 +209,20 @@ export function isRankPrefs(value: unknown): value is RankPrefs {
     (value.zhibiao === "lirun" || value.zhibiao === "mei_jingli" || value.zhibiao === "lirunlv") &&
     (value.jiyi === "all" || isJiyiValue(value.jiyi)) &&
     isFiniteNumber(value.limit) &&
-    typeof value.baohan_quejia === "boolean"
+    typeof value.baohan_quejia === "boolean" &&
+    typeof value.baohan_zhongjian === "boolean"
   );
 }
 
 export const calcPrefsSchema: PersistentSchema<CalcPrefs> = { version: 1, validate: isCalcPrefs };
 export const marketPrefsSchema: PersistentSchema<MarketPrefs> = { version: 1, validate: isMarketPrefs };
-export const rankPrefsSchema: PersistentSchema<RankPrefs> = { version: 1, validate: isRankPrefs };
+export const rankPrefsSchema: PersistentSchema<RankPrefs> = {
+  version: 2,
+  validate: isRankPrefs,
+  // v1 没有「包含中间产物」开关：升级时补默认 false。
+  migrate: (value, version) =>
+    version < 2 && isRecord(value) ? { ...value, baohan_zhongjian: false } : value,
+};
 
 // ---------------------------------------------------------------------------
 // 五行石页偏好

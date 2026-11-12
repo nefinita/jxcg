@@ -85,6 +85,7 @@ export const DEFAULT_SETTINGS: Settings = {
   jingli_danjia: 0,
   jiyi_dengji: 0,
   auto_refresh: true,
+  zhongjian_zizhi: true,
 };
 
 /** 默认值集（与 jxcg_api::Shouxufei::default 一致：5% HALF_UP + 保管费 80 银）。 */

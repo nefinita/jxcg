@@ -30,7 +30,10 @@ function recipeRequest(overrides: Partial<JisuanRequest> = {}): JisuanRequest {
     jingli_danjia: 0,
     shouxufei,
     jiage: mockPriceMap("jiandanqinxin"),
+    shoudong: [],
     jiyi_dengji: 0,
+    // 默认按旧口径（不展开中间产物），便于断言原始行情价；展开口径单独测试。
+    zhongjian_zizhi: false,
     ...overrides,
   };
 }
@@ -104,6 +107,9 @@ describe("mock 配方成本 / 排行 / 五行石", () => {
       zhibiao: "lirun",
       jiyi_dengji: 0,
       limit: 20,
+      shoudong: [],
+      zhongjian_zizhi: true,
+      baohan_zhongjian: false,
     };
     const withoutQuejia = (await mockInvoke("rank_recipes", { req: base })) as Array<{
       peifang_id: string;
@@ -146,5 +152,115 @@ describe("mock 配方成本 / 排行 / 五行石", () => {
     expect(jiage["5_89346"]).toBe(98_000);
     expect(jiage["5_50007"]).toBeUndefined();
     expect(priceBiao()["jiandanqinxin|5_30853"].danjia).toBe(8_000);
+  });
+});
+
+describe("中间产物自制成本展开（task-6 口径）", () => {
+  it("默认展开中间产物：酱料按自制成本摊入，精力单独统计", async () => {
+    const result = (await mockInvoke("calculate_recipe", {
+      req: recipeRequest({ zhongjian_zizhi: true }),
+    })) as {
+      chengben_cailiao: number;
+      chengben_zhongjian: number;
+      jingli_zhongjian: number;
+      cailiao: Array<{
+        wupin_id: string;
+        danjia: number;
+        xiaojia: number;
+        laiyuan: string;
+        zhongjian: boolean;
+      }>;
+      zhongjian: Array<{
+        wupin_id: string;
+        peifang_id: string;
+        shuliang: number;
+        danjia: number;
+        xiaojia: number;
+        jingli: number;
+        cailiao: Array<{ wupin_id: string; shuliang: number; danjia: number; laiyuan: string }>;
+      }>;
+      mei_jingli: number;
+      lirun: number;
+      jingli: number;
+    };
+    const jiangliao = result.cailiao.find((row) => row.wupin_id === "5_89970")!;
+    // 酱料单位自制成本 = (糯米 5×800 + 老豆腐 2×300) / 5件 = 920 铜
+    expect(jiangliao.zhongjian).toBe(true);
+    expect(jiangliao.laiyuan).toBe("zizhi");
+    expect(jiangliao.danjia).toBe(920);
+    expect(jiangliao.xiaojia).toBe(920 * 3);
+    // 材料成本含自制行：8000 + 36000 + 2760 + 9000 + 3000
+    expect(result.chengben_cailiao).toBe(58_760);
+    expect(result.chengben_zhongjian).toBe(2_760);
+    // 中间产物精力：10 点/次 ÷ 5 件 × 3 件 = 6 点
+    expect(result.jingli_zhongjian).toBe(6);
+    expect(result.zhongjian).toHaveLength(1);
+    const zj = result.zhongjian[0];
+    expect(zj.peifang_id).toBe("tiaoliao_1");
+    expect(zj.shuliang).toBe(3);
+    expect(zj.danjia).toBe(920);
+    expect(zj.jingli).toBe(6);
+    // 展开的采购原料来自全量行情映射（糯米 800 / 老豆腐 300）
+    const nuomi = zj.cailiao.find((row) => row.wupin_id === "5_50015")!;
+    expect(nuomi.danjia).toBe(800);
+    expect(nuomi.laiyuan).toBe("hangqing");
+    expect(nuomi.shuliang).toBe(3);
+    // mei_jingli 按 (最终精力 75 + 中间产物精力 6) 计算
+    expect(result.mei_jingli).toBe(Math.trunc(result.lirun / (result.jingli + 6)));
+  });
+
+  it("手填价物品不展开：直接用手填单价，中间产物明细为空", async () => {
+    const result = (await mockInvoke("calculate_recipe", {
+      req: recipeRequest({
+        zhongjian_zizhi: true,
+        shoudong: ["5_89970"],
+        jiage: { ...mockPriceMap("jiandanqinxin"), "5_89970": 300 },
+      }),
+    })) as {
+      chengben_cailiao: number;
+      chengben_zhongjian: number;
+      jingli_zhongjian: number;
+      zhongjian: unknown[];
+      cailiao: Array<{ wupin_id: string; danjia: number; laiyuan: string; zhongjian: boolean }>;
+    };
+    const jiangliao = result.cailiao.find((row) => row.wupin_id === "5_89970")!;
+    expect(jiangliao.laiyuan).toBe("shoudong");
+    expect(jiangliao.zhongjian).toBe(false);
+    expect(jiangliao.danjia).toBe(300);
+    expect(result.chengben_zhongjian).toBe(0);
+    expect(result.jingli_zhongjian).toBe(0);
+    expect(result.zhongjian).toEqual([]);
+    // 旧口径材料成本：8000 + 36000 + 900 + 9000 + 3000
+    expect(result.chengben_cailiao).toBe(56_900);
+  });
+
+  it("排行默认排除只产中间产物的配方，勾选后返回并打标", async () => {
+    const base: PaihangRequest = {
+      jiyi: null,
+      jingli_danjia: 0,
+      shouxufei,
+      jiage: mockPriceMap("jiandanqinxin"),
+      shoudong: [],
+      zhibiao: "lirun",
+      jiyi_dengji: 0,
+      limit: 50,
+      zhongjian_zizhi: true,
+      baohan_zhongjian: false,
+    };
+    const without = (await mockInvoke("rank_recipes", { req: base })) as Array<{
+      peifang_id: string;
+      zhongjian: boolean;
+    }>;
+    expect(without.some((row) => row.peifang_id === "tiaoliao_1")).toBe(false);
+    expect(without.some((row) => row.peifang_id === "buzhi_1")).toBe(false);
+    expect(without.some((row) => row.zhongjian)).toBe(false);
+
+    const withZj = (await mockInvoke("rank_recipes", {
+      req: { ...base, baohan_zhongjian: true },
+    })) as Array<{ peifang_id: string; zhongjian: boolean }>;
+    expect(withZj.some((row) => row.peifang_id === "tiaoliao_1" && row.zhongjian)).toBe(true);
+    expect(withZj.some((row) => row.peifang_id === "buzhi_1" && row.zhongjian)).toBe(true);
+    // 手工排除后，其它成品配方仍在
+    expect(withZj.some((row) => row.peifang_id === "cooking_437")).toBe(true);
   });
 });

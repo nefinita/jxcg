@@ -243,6 +243,18 @@ export default function SettingsPage({
             <label className={common.checkboxRow}>
               <input
                 type="checkbox"
+                checked={settings.zhongjian_zizhi ?? true}
+                onChange={(event) => updateSettings({ zhongjian_zizhi: event.target.checked })}
+              />
+              中间产物按自制成本摊入
+            </label>
+            <p className={common.hint}>
+              中间产物（既是某配方产物、又是某配方材料的物品，如酱料/锦缎）按「自身材料 + 精力×精力单价 + 制作费」递归折算成本，
+              摊入最终产物；关闭时按行情价计算。手填价的物品不会被展开。
+            </p>
+            <label className={common.checkboxRow}>
+              <input
+                type="checkbox"
                 checked={settings.auto_refresh}
                 onChange={(event) => updateSettings({ auto_refresh: event.target.checked })}
               />
@@ -293,6 +305,10 @@ export default function SettingsPage({
               </dd>
             </div>
             <div>
+              <dt>数据范围</dt>
+              <dd>{catalog.banben.note.trim() || "—"}</dd>
+            </div>
+            <div>
               <dt>数据量</dt>
               <dd>
                 物品 {catalog.wupin.length} · 配方 {catalog.peifang.length} · 五行石 {catalog.wuxingshi.length} · 服务器{" "}
@@ -300,7 +316,6 @@ export default function SettingsPage({
               </dd>
             </div>
           </dl>
-          {catalog.banben.note && <p className={common.hint}>{catalog.banben.note}</p>}
           <div className={common.toolbar}>
             <button className={common.btn} onClick={handleReload} disabled={reloading}>
               <IconRefresh size={14} />
