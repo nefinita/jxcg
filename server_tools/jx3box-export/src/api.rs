@@ -137,7 +137,7 @@ pub async fn fetch_recipe_detail(
 
 /// 解析配方详情 JSON（纯函数，便于用录制 JSON 做离线测试）。
 ///
-/// `nDlc` 是资料片版本：当前正式服最高 9（苍生铸世/130 级），
+/// `nDlc` 是资料片版本：当前正式服最高 9（苍生铸世/50 级），
 /// 旧资料片配方是 5/6/7/8 或 null（见 season 模块的过滤规则）。
 pub fn parse_recipe_detail(
     tab: &str,

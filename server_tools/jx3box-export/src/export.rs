@@ -52,6 +52,10 @@ pub struct ExportReport {
     pub intermediate_items: Vec<(String, String)>,
     /// 剔除配方示例名称
     pub removed_examples: Vec<String>,
+    /// 因「旧家园家具成品（梓匠产物 10_）」剔除的配方数
+    pub old_home_removed_count: usize,
+    /// 旧家园家具成品剔除示例名称
+    pub old_home_examples: Vec<String>,
     pub detail_failed: usize,
     pub item_missing: usize,
     pub network_requests: u64,
@@ -130,7 +134,8 @@ pub fn write_data_dir(out: &Path, bundle: &DataBundle, report: &mut ExportReport
     let catalog = CatalogFile {
         banben: banben.clone(),
     };
-    let mut catalog_header = vec![
+    let mut catalog_header =
+        vec![
         "JXCG 随包数据版本（自动生成，勿手改；重新生成：cargo run -p jx3box-export -- --out data）"
             .to_string(),
         format!("生成日期：{date}（北京时间）；来源：JX3BOX（https://www.jx3box.com）"),
@@ -140,6 +145,7 @@ pub fn write_data_dir(out: &Path, bundle: &DataBundle, report: &mut ExportReport
             bundle.wupin.len(),
             bundle.fuwuqi.len()
         ),
+        format!("等级口径：{} 级（苍生铸世，2026-10-29 等级回退 50 级）", banben.level),
     ];
     catalog_header.extend(season_header_lines(report));
     let header = header_lines(&catalog_header);
@@ -241,7 +247,11 @@ pub fn write_data_dir(out: &Path, bundle: &DataBundle, report: &mut ExportReport
     } else {
         let values_header = header_lines(&[
             "值集：交易行费率 / 取整 / 保管费（自动生成的默认值；可手工调整）".to_string(),
-            format!("生成日期：{date}（北京时间）"),
+            format!(
+                "生成日期：{date}（北京时间）；等级口径：50 级·苍生铸世（2026-10-29 等级回退）"
+            ),
+            "id 沿用历史 live-130（用户设置兼容，勿改）；界面显示名已更新为「正式服·50级」"
+                .to_string(),
             "口径来源：wind-jx3 / hidewnd 社区实现交叉验证，待游戏内实测校准（PLAN.md §6.2）"
                 .to_string(),
         ]);
@@ -300,14 +310,18 @@ fn season_header_lines(report: &ExportReport) -> Vec<String> {
             let season_name = crate::season::season_mingcheng(dlc).unwrap_or("当前资料片");
             vec![
                 format!(
-                    "赛季过滤：nDlc={dlc}（{season_name}）；保留 {} 条（本资料片 {} + 梓匠 {} + 旧中间材料闭包 {}），剔除 {} 条旧赛季配方",
+                    "赛季过滤：nDlc={dlc}（{season_name}）；保留 {} 条（本资料片 {} + 梓匠 5_ 产物 {} + 旧中间材料闭包 {}），剔除 {} 条（旧赛季 + 旧家园家具成品）",
                     season_kept_total(report),
                     report.kept_current_count,
                     report.kept_furniture_count,
                     report.closure_recipes.len(),
                     season_removed_total(report)
                 ),
-                "如需全量导出（含旧赛季配方，仅调试/对比）：cargo run -p jx3box-export -- --out data --all"
+                format!(
+                    "旧家园家具成品（梓匠产物 10_）剔除 {} 条：依赖绑定/不可获得阅读材料（徽墨等），NPC 无售价、无合成配方、交易行无稳定挂单",
+                    report.old_home_removed_count
+                ),
+                "如需全量导出（含旧赛季/旧家园家具配方，仅调试/对比）：cargo run -p jx3box-export -- --out data --all"
                     .to_string(),
             ]
         }
@@ -350,9 +364,12 @@ fn write_toml<T: Serialize>(path: &Path, header: &str, value: &T) -> Result<(Str
 /// 默认值集：5% HALF_UP + 保管费 80 银/24h（PLAN.md §6.2）。
 pub fn default_zhiji(date: &str) -> Vec<Zhiji> {
     vec![Zhiji {
+        // id 保持历史值 "live-130"（等级口径已改 50 级）：用户设置里已存该 id，改名会破坏旧设置。
         id: "live-130".to_string(),
-        mingcheng: "正式服·130级".to_string(),
-        note: format!("5% 四舍五入 + 保管费 80 银/24h（社区口径，实机校准后更新；生成于 {date}）"),
+        mingcheng: "正式服·50级".to_string(),
+        note: format!(
+            "50 级·苍生铸世：5% 四舍五入 + 保管费 80 银/24h（社区口径，实机校准后更新；生成于 {date}）"
+        ),
         shouxufei: Shouxufei {
             shuilv_bp: 500,
             quzheng: Quzheng::HalfUp,
@@ -518,6 +535,10 @@ fn write_readme(
     lines.push(String::new());
     lines.push("## 本次生成统计".to_string());
     lines.push(String::new());
+    lines.push(format!(
+        "- 数据版本：**{} 级**·苍生铸世（2026-10-29 资料片上线，角色/生活技艺等级回退到 50 级）",
+        bundle.banben.level
+    ));
     if let Some(dlc) = report.current_dlc {
         lines.push(format!(
             "- 赛季过滤：**nDlc={dlc}**；保留 {} 条 / 剔除 {} 条旧赛季配方（下详）",
@@ -531,6 +552,13 @@ fn write_readme(
         "- 配方：**{}** 条（{peifang_summary}）",
         bundle.peifang.len()
     ));
+    if let Some(_dlc) = report.current_dlc {
+        lines.push(format!(
+            "- 剔除构成：旧赛季配方 {} 条 + 旧家园家具成品（`10_` 产物）{} 条",
+            season_removed_total(report).saturating_sub(report.old_home_removed_count),
+            report.old_home_removed_count
+        ));
+    }
     lines.push(format!(
         "- 物品：**{}** 条（{pinlei_summary}）；其中有 NPC 商店价 {} 条",
         bundle.wupin.len(),
@@ -571,6 +599,8 @@ fn write_readme(
                 "当前正式服资料片 **nDlc={dlc}（{season_name}）**；导出器只保留「本赛季用得上的配方」，剔除已完成资料片的旧配方。"
             ));
             lines.push(String::new());
+            lines.push("判定口径（用户确认）：材料价格只认 **NPC 售卖价 / 合成配方 / 交易行挂单** 三者之一；三者皆无 = 不可获得材料，会把配方长期拖成缺价。`10_` 旧家园家具成品正是这种情况（徽墨 `5_3843`/水纹纸/浣花笺/五彩墨等为绑定阅读材料），故整体剔除。".to_string());
+            lines.push(String::new());
             lines.push("规则（`server_tools/jx3box-export/src/season.rs`）：".to_string());
             lines.push(String::new());
             lines.push(format!(
@@ -578,7 +608,7 @@ fn write_readme(
                 report.kept_current_count
             ));
             lines.push(format!(
-                "2. 梓匠（`furniture`）全部保留：**{}** 条（家具配方无 nDlc，晋秩仍要木板/卯榫/雕花等）；",
+                "2. 梓匠（`furniture`）中产物为 `5_` 的可交易材料/套件配方保留：**{}** 条（木板/卯榫/雕花/篾条/鱼胶、红荣素·臻、家园套件等，晋秩要用）；",
                 report.kept_furniture_count
             ));
             lines.push(format!(
@@ -625,10 +655,20 @@ fn write_readme(
                         .join(" / ")
                 ));
             }
+            lines.push(format!(
+                "4. 剔除梓匠中产物为 `10_` 的**旧家园家具成品**：**{}** 条（章草/偶作等；依赖绑定/不可获得阅读材料，无 NPC 价、无合成配方、交易行无稳定挂单，无可靠价格来源，本赛季不参与交易行计算）。",
+                report.old_home_removed_count
+            ));
+            if !report.old_home_examples.is_empty() {
+                lines.push(format!(
+                    "   - 旧家园家具剔除示例：{}",
+                    report.old_home_examples.join(" / ")
+                ));
+            }
             lines.push(String::new());
             if !report.removed_examples.is_empty() {
                 lines.push(format!(
-                    "已剔除（{} 条）示例：{}。",
+                    "已剔除（{} 条：旧赛季 + 旧家园家具）示例：{}。",
                     season_removed_total(report),
                     report.removed_examples.join(" / ")
                 ));
@@ -649,6 +689,21 @@ fn write_readme(
     }
     lines.push(String::new());
 
+    lines.push("## 等级口径（50 级回退）".to_string());
+    lines.push(String::new());
+    lines.push("- **2026-10-29「苍生铸世」资料片上线后，角色等级回退到 50 级，生活技艺等级上限也是 50 级**；本数据 `[banben].level = 50`。".to_string());
+    lines.push("- 配方 `dengji` 仍是游戏内原始 `RequireLevel`（对应 50 级上限口径），未做 130→50 的数值偏移。".to_string());
+    lines.push("- 值集 id 沿用历史 `live-130`（用户设置里已存该 id，改名会破坏旧设置），显示名已改为「正式服·50级」。".to_string());
+    lines.push(String::new());
+
+    lines.push("## 五行石合成数据（手工维护）".to_string());
+    lines.push(String::new());
+    lines.push("- `wuxingshi.toml` **不由导出器覆盖**（只在新目录初始化时写模板），手工维护来源：游戏内精炼面板（2026-11）+ [JX3BOX 2026-11-08 攻略《面向萌新的五行石精炼方法与成本》](https://www.jx3box.com/community/6363) 与社区配方整理。".to_string());
+    lines.push("- 结构：`[[fangan]]` 合成方案 + `[[hecheng]]` 单步配方（主产物 `chanpin` / 材料 `cailiao` / 精力 / 加工费 + 概率结果 `jieguo.bp` 万分比，未列出的余量为失败）+ 兼容旧 `[[zhuanhuan]]`。".to_string());
+    lines.push("- **待校准**：合 6 意外出八级（连升两级）的概率面板未公示，`mianban_6` 预留 `bp=0` 结果槽，前端可用 `baoji_bp` 覆盖；三级/四级等概率为面板口径，实机校准后更新。".to_string());
+    lines.push("- 五行石 1~8 级物品（`5_24423`~`5_24430`）由手工补进 `wupin.toml`，导出器按「现有五行石条目」**原样继承**，重导出不会丢失。".to_string());
+    lines.push(String::new());
+
     lines.push("## 文件".to_string());
     lines.push(String::new());
     lines.push("| 文件 | 内容 | 生成方式 |".to_string());
@@ -659,7 +714,7 @@ fn write_readme(
     lines.push("| `wupin.toml` | 物品（名称/分类/商店价） | 导出 |".to_string());
     lines.push("| `peifang.toml` | 生活技艺配方（材料 8 槽 + 产物 8 槽权重） | 导出 |".to_string());
     lines.push("| `fuwuqi.toml` | 服务器（id/mingcheng/daju） | 导出 |".to_string());
-    lines.push("| `wuxingshi.toml` | 五行石转换 | **手工维护**（待实机校准） |".to_string());
+    lines.push("| `wuxingshi.toml` | 五行石转换/合成方案/单步配方（`[[zhuanhuan]]`/`[[fangan]]`/`[[hecheng]]`） | **手工维护**（待实机校准） |".to_string());
     lines.push("| `values.toml` | 值集（费率/取整/保管费） | **手工维护**（默认 5% HALF_UP + 8000 铜/24h） |".to_string());
     lines.push(String::new());
     lines.push("## 口径与已知问题".to_string());
@@ -672,9 +727,10 @@ fn write_readme(
         "- `dui`（一组堆叠数）上游未提供，暂缺省；如需按组购买请在设置里补默认值。".to_string(),
     );
     lines.push(
-        "- 五行石精炼规则不在 `manufacture` 接口里，`wuxingshi.toml` 由手工维护，等待实机校准。"
+        "- 五行石精炼/合成规则不在 `manufacture` 接口里，`wuxingshi.toml` 手工维护（来源与待校准项见上文「五行石合成数据」一节）。"
             .to_string(),
     );
+    lines.push("- 旧家园家具成品（`10_` 产物）配方已剔除：依赖绑定/不可获得的阅读材料（徽墨/水纹纸/浣花笺/五彩墨等），按「NPC 售卖 / 合成配方 / 交易行价格」三口径均无可靠价格，计入会长期缺价。".to_string());
     lines.push("- 服务器 `id` 为手工维护的 pinyin 映射（`util::pinyin_id`）；**JX3BOX 行情接口的 `server` 参数必须用中文名 `mingcheng`**。".to_string());
     lines.push(String::new());
     if !report.warnings.is_empty() {

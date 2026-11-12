@@ -1,25 +1,139 @@
-# 五行石精炼（样例骨架，规则来自社区整理、待实机校准；界面可编辑）
-# 手工维护：JXCG P2 数据线整理于 2026-11-12；manufacture 接口不含五行石规则，需实机校准（PLAN.md §10）
-# 注意：同一等级存在可交易/绑定两个 id，P2 数据整理时按可交易版本归一。
+# ============================================================================
+# 五行石合成 / 精炼
+#
+# 来源：游戏内精炼面板（2026-11，参考 JX3BOX 2026-11-08《面向萌新的五行石精炼方法与成本》
+#       https://www.jx3box.com/community/6363）与社区配方整理；概率/加工费为面板口径，待实机校准。
+#
+# 模型：
+# - `[[fangan]]` 合成方案（游戏内「一键合成/自动合成」使用的配方集合）；
+# - `[[hecheng]]` 单步合成配方：主产物 chanpin + 材料 cailiao + 精力 + 加工费 + 概率结果 jieguo；
+#   jieguo.bp 为万分比（9276 = 92.76%），未列出的余量视为失败（材料损失、无产物）。
+# - 计算「合成到 6 级」时按期望递归展开：主产物概率 <100% 时按 1/p 放大投入，
+#   副产物（2/5/6 级）按行情折价冲抵成本。
+# - 合 6 意外出 8 级（连升两级）：`mianban_6` 下预留 bp=0 的结果槽，面板实际概率待校准；
+#   前端可传 baoji_bp 覆盖（万分比），按「额外产出」计入期望收益。
+# ============================================================================
+
+[[fangan]]
+id = "mianban"
+mingcheng = "面板配方（游戏内一键合成）"
+note = "3级=12一级；4级=3三级+7一级；5级=3四级+2三级；6级=3五级+2四级；概率取自 2026-11 精炼面板"
+
+# ---- 三级：12 一级 + 10 精力 + 0.36 金；92.76% 三级 / 7.24% 二级 ----
+[[hecheng]]
+id = "mianban_3"
+fangan = "mianban"
+chanpin = "5_24425"
+jingli = 10
+jiagongfei = 3600
+
+[[hecheng.cailiao]]
+wupin_id = "5_24423"
+shuliang = 12
+
+[[hecheng.jieguo]]
+wupin_id = "5_24425"
+bp = 9276
+
+[[hecheng.jieguo]]
+wupin_id = "5_24424"
+bp = 724
+
+# ---- 四级：3 三级 + 7 一级 + 10 精力 + 1.4421 金；99.11% 四级 / 0.72% 五级 / 0.12% 失败 ----
+[[hecheng]]
+id = "mianban_4"
+fangan = "mianban"
+chanpin = "5_24426"
+jingli = 10
+jiagongfei = 14421
+
+[[hecheng.cailiao]]
+wupin_id = "5_24425"
+shuliang = 3
+
+[[hecheng.cailiao]]
+wupin_id = "5_24423"
+shuliang = 7
+
+[[hecheng.jieguo]]
+wupin_id = "5_24426"
+bp = 9911
+
+[[hecheng.jieguo]]
+wupin_id = "5_24427"
+bp = 72
+
+# ---- 五级：3 四级 + 2 三级 + 10 精力 + 5.3801 金；99.15% 五级 / 0.85% 六级 ----
+[[hecheng]]
+id = "mianban_5"
+fangan = "mianban"
+chanpin = "5_24427"
+jingli = 10
+jiagongfei = 53801
+
+[[hecheng.cailiao]]
+wupin_id = "5_24426"
+shuliang = 3
+
+[[hecheng.cailiao]]
+wupin_id = "5_24425"
+shuliang = 2
+
+[[hecheng.jieguo]]
+wupin_id = "5_24427"
+bp = 9915
+
+[[hecheng.jieguo]]
+wupin_id = "5_24428"
+bp = 85
+
+# ---- 六级：3 五级 + 2 四级 + 10 精力 + 19.9066 金；99.55% 六级 / 0.45% 失败 ----
+[[hecheng]]
+id = "mianban_6"
+fangan = "mianban"
+chanpin = "5_24428"
+jingli = 10
+jiagongfei = 199066
+
+[[hecheng.cailiao]]
+wupin_id = "5_24427"
+shuliang = 3
+
+[[hecheng.cailiao]]
+wupin_id = "5_24426"
+shuliang = 2
+
+[[hecheng.jieguo]]
+wupin_id = "5_24428"
+bp = 9955
+
+# 合 6 意外爆出 8 级（连升两级）：面板概率待校准，填万分比（0=忽略）
+[[hecheng.jieguo]]
+wupin_id = "5_24430"
+bp = 0
+
+# ============================================================================
+# 旧的单步转换条目（保留兼容；新 UI 走 [[fangan]] + [[hecheng]]）
+# ============================================================================
 
 [[zhuanhuan]]
 id = "wuxing_1to3"
-mingcheng = "一级→三级（13 合 1）"
+mingcheng = "一级→三级（12 合 1）"
 cong = "5_24423"
 dao = "5_24425"
-xuyao = 13
+xuyao = 12
 jingli = 10
-jinbi = 3900
-chenggonglv_bp = 10000
-laiyuan = "shequ-2023"
+jinbi = 3600
+chenggonglv_bp = 9276
+laiyuan = "面板-2026-11"
 
 [[zhuanhuan]]
 id = "wuxing_3to4"
-mingcheng = "三级+一级→四级（成功率 48.78%）"
+mingcheng = "三级+一级→四级"
 cong = "5_24425"
 dao = "5_24426"
-xuyao = 1
+xuyao = 3
 jingli = 10
-jinbi = 8900
-chenggonglv_bp = 4878
-laiyuan = "shequ-2023"
+jinbi = 14421
+chenggonglv_bp = 9911
+laiyuan = "面板-2026-11"

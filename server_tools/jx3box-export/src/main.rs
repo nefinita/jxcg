@@ -24,7 +24,10 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Instant;
 
-use jxcg_api::{Banben, Cailiao, Chuchan, Fuwuqi, Jiyi, Peifang, Pinlei, Wupin, Zhuanhuan};
+use jxcg_api::{
+    Banben, Cailiao, Chuchan, Fuwuqi, Jiyi, Peifang, Pinlei, Wupin, WuxingshiFangan,
+    WuxingshiHecheng, Zhuanhuan,
+};
 use tokio::sync::Semaphore;
 use tokio::task::JoinSet;
 
@@ -45,28 +48,74 @@ enum SeasonTarget {
     Fixed(i64),
 }
 
-/// `wuxingshi.toml` 读取结构（手工维护文件；缺文件/解析失败时用内置样例）。
-#[derive(Debug, serde::Deserialize)]
+/// `wuxingshi.toml` 读取结构（手工维护文件；缺文件/解析失败时用内置样例兜底）。
+#[derive(Debug, Default, serde::Deserialize)]
 struct WuxingshiFileCheck {
     #[serde(default)]
     zhuanhuan: Vec<Zhuanhuan>,
+    #[serde(default)]
+    fangan: Vec<WuxingshiFangan>,
+    #[serde(default)]
+    hecheng: Vec<WuxingshiHecheng>,
 }
 
-/// 五行石物品 id：只取 `wuxingshi.toml` 里 `cong`/`dao` 引用到的（规则第 4 条）。
+impl WuxingshiFileCheck {
+    fn is_empty(&self) -> bool {
+        self.zhuanhuan.is_empty() && self.fangan.is_empty() && self.hecheng.is_empty()
+    }
+}
+
+/// 现有 `wupin.toml` 读取结构。
+#[derive(Debug, Default, serde::Deserialize)]
+struct WupinFileCheck {
+    #[serde(default)]
+    wupin: Vec<Wupin>,
+}
+
+/// 五行石相关物品 id：`wuxingshi.toml` 里所有引用到的物品
+/// （`[[zhuanhuan]]` 的 cong/dao + `[[hecheng]]` 的 chanpin / cailiao / jieguo；
+/// `[[fangan]]` 只声明方案、不直接引用物品）。
 fn wuxingshi_item_ids(out: &Path) -> Vec<String> {
     let path = out.join("wuxingshi.toml");
-    let conversions = std::fs::read_to_string(&path)
+    let file = std::fs::read_to_string(&path)
         .ok()
         .and_then(|text| toml::from_str::<WuxingshiFileCheck>(&text).ok())
-        .map(|file| file.zhuanhuan)
-        .filter(|list| !list.is_empty())
-        .unwrap_or_else(export::default_wuxingshi);
+        .filter(|file| !file.is_empty())
+        .unwrap_or_else(|| WuxingshiFileCheck {
+            zhuanhuan: export::default_wuxingshi(),
+            ..WuxingshiFileCheck::default()
+        });
     let mut ids: BTreeSet<String> = BTreeSet::new();
-    for conversion in conversions {
-        ids.insert(conversion.cong);
-        ids.insert(conversion.dao);
+    for conversion in &file.zhuanhuan {
+        ids.insert(conversion.cong.clone());
+        ids.insert(conversion.dao.clone());
+    }
+    for hecheng in &file.hecheng {
+        ids.insert(hecheng.chanpin.clone());
+        for cailiao in &hecheng.cailiao {
+            ids.insert(cailiao.wupin_id.clone());
+        }
+        for jieguo in &hecheng.jieguo {
+            ids.insert(jieguo.wupin_id.clone());
+        }
     }
     ids.into_iter().collect()
+}
+
+/// 现有 `wupin.toml` 里手工维护的五行石物品（重导出时原样保留）。
+///
+/// 五行石 1~8 级物品是手工补进 wupin.toml 的（合成/精炼页需要），它们不在配方引用里，
+/// 必须按「现有五行石条目」继承名称/分类，否则重导出会丢物品（离线缓存里也没有它们的旧数据）。
+fn existing_wuxingshi_items(out: &Path) -> BTreeMap<String, Wupin> {
+    std::fs::read_to_string(out.join("wupin.toml"))
+        .ok()
+        .and_then(|text| toml::from_str::<WupinFileCheck>(&text).ok())
+        .unwrap_or_default()
+        .wupin
+        .into_iter()
+        .filter(|item| item.pinlei == Pinlei::Wuxingshi)
+        .map(|item| (item.id.clone(), item))
+        .collect()
 }
 
 #[tokio::main]
@@ -155,6 +204,14 @@ async fn run() -> Result<()> {
         .filter_map(|index| all_details.get(*index))
         .map(|detail| detail.name.clone())
         .collect();
+    let old_home_removed_count = filter.old_home_removed.len();
+    let old_home_examples: Vec<String> = filter
+        .old_home_removed
+        .iter()
+        .filter_map(|index| all_details.get(*index))
+        .map(|detail| detail.name.clone())
+        .take(10)
+        .collect();
     let kept_by_tab = season::count_by_tab(&all_details, &filter.kept, true);
     let removed_by_tab = season::count_by_tab(&all_details, &filter.kept, false);
     let (kept_current_count, kept_furniture_count) = match current_dlc {
@@ -165,7 +222,8 @@ async fn run() -> Result<()> {
                 .count(),
             all_details
                 .iter()
-                .filter(|detail| detail.tab == "furniture")
+                .zip(filter.kept.iter())
+                .filter(|(detail, kept)| **kept && detail.tab == "furniture")
                 .count(),
         ),
         None => (0, 0),
@@ -187,6 +245,12 @@ async fn run() -> Result<()> {
             );
             println!("  保留（按技艺）：{}", tab_summary(&kept_by_tab));
             println!("  剔除（按技艺）：{}", tab_summary(&removed_by_tab));
+            if old_home_removed_count > 0 {
+                println!(
+                    "  旧家园家具成品剔除 {old_home_removed_count} 条（梓匠产物 10_，依赖绑定/不可获得材料如徽墨 5_3843，无可靠价格来源）：{}",
+                    old_home_examples.join(" / ")
+                );
+            }
             if !closure_recipes.is_empty() {
                 println!(
                     "  闭包补齐 {} 条旧中间材料配方：{}",
@@ -219,20 +283,29 @@ async fn run() -> Result<()> {
         }
     }
     let wuxingshi_ids = wuxingshi_item_ids(&args.out);
+    // 手工维护的五行石条目（1~8 级）原样继承，避免重导出丢失/离线缓存缺数据。
+    let manual_wupin = existing_wuxingshi_items(&args.out);
     let mut item_ids: BTreeSet<String> = BTreeSet::new();
     item_ids.extend(material_ids.iter().cloned());
     item_ids.extend(product_ids.iter().cloned());
     item_ids.extend(wuxingshi_ids.iter().cloned());
+    item_ids.extend(manual_wupin.keys().cloned());
+    // 已有手工条目的五行石不再请求上游（名称/分类沿用人工校验过的版本）。
+    let fetch_ids: Vec<String> = item_ids
+        .iter()
+        .filter(|item_id| !manual_wupin.contains_key(*item_id))
+        .cloned()
+        .collect();
     println!(
-        "\n[4/6] 拉取物品（共 {} 个：材料 {} / 产物 {} / 五行石 {}）",
+        "\n[4/6] 拉取物品（共 {} 个：材料 {} / 产物 {} / 五行石 {}；其中 {} 个手工五行石沿用现有条目，请求 {} 个）",
         item_ids.len(),
         material_ids.len(),
         product_ids.len(),
-        wuxingshi_ids.len()
+        wuxingshi_ids.len().max(manual_wupin.len()),
+        manual_wupin.len(),
+        fetch_ids.len()
     );
-    let item_id_list: Vec<String> = item_ids.iter().cloned().collect();
-    let (items, item_missing) =
-        fetch_items(&client, &item_id_list, args.concurrency, started).await;
+    let (items, item_missing) = fetch_items(&client, &fetch_ids, args.concurrency, started).await;
 
     // 中间产物清单（保留配方内 产物 ∩ 材料）：core 的自制成本展开依赖它，日志便于核对。
     let intermediate_items: Vec<(String, String)> = filter
@@ -279,6 +352,7 @@ async fn run() -> Result<()> {
     let wupin = build_wupin(
         &item_ids,
         &items,
+        &manual_wupin,
         &material_ids,
         &product_ids,
         &wuxingshi_ids,
@@ -296,14 +370,14 @@ async fn run() -> Result<()> {
     let banben_note = match current_dlc {
         Some(dlc) => {
             let season_name = season::season_mingcheng(dlc).unwrap_or("当前资料片");
-            format!("130级·{season_name}（nDlc={dlc}）· 已剔除旧赛季配方")
+            format!("50级·{season_name}（nDlc={dlc}）· 已剔除旧赛季配方")
         }
-        None => "130级·全量配方（未按赛季过滤）".to_string(),
+        None => "50级·全量配方（未按赛季过滤）".to_string(),
     };
     let bundle = DataBundle {
         generated_unix,
         banben: Banben {
-            level: 130,
+            level: 50,
             season: 3,
             modified: util::modified_date(generated_unix),
             note: banben_note,
@@ -330,6 +404,8 @@ async fn run() -> Result<()> {
         closure_recipes,
         intermediate_items,
         removed_examples,
+        old_home_removed_count,
+        old_home_examples,
         ..ExportReport::default()
     };
     export::write_data_dir(&args.out, &bundle, &mut report)?;
@@ -502,14 +578,21 @@ async fn fetch_items(
 fn build_wupin(
     item_ids: &BTreeSet<String>,
     items: &BTreeMap<String, api::ItemInfo>,
+    manual_wupin: &BTreeMap<String, Wupin>,
     material_ids: &BTreeSet<String>,
     product_ids: &BTreeSet<String>,
     wuxingshi_ids: &[String],
     craft_prices: &BTreeMap<u32, i64>,
 ) -> Vec<Wupin> {
-    let wuxingshi: BTreeSet<&str> = wuxingshi_ids.iter().map(String::as_str).collect();
+    let mut wuxingshi: BTreeSet<&str> = wuxingshi_ids.iter().map(String::as_str).collect();
+    wuxingshi.extend(manual_wupin.keys().map(String::as_str));
     let mut wupin = Vec::with_capacity(item_ids.len());
     for item_id in item_ids {
+        // 手工维护的五行石条目：原样保留（名称/分类已人工校验，离线重导也不丢）。
+        if let Some(manual) = manual_wupin.get(item_id) {
+            wupin.push(manual.clone());
+            continue;
+        }
         let info = items.get(item_id);
         let (mingcheng, type_label) = match info {
             Some(info) => (info.name.clone(), info.type_label.clone()),
@@ -821,6 +904,13 @@ fn print_summary(bundle: &DataBundle, report: &ExportReport) {
         );
         if !report.removed_examples.is_empty() {
             println!("  剔除示例：{}", report.removed_examples.join(" / "));
+        }
+        if report.old_home_removed_count > 0 {
+            println!(
+                "  旧家园家具成品剔除 {} 条（梓匠产物 10_）：{}",
+                report.old_home_removed_count,
+                report.old_home_examples.join(" / ")
+            );
         }
         if !report.closure_recipes.is_empty() {
             println!(
