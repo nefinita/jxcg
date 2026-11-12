@@ -9,7 +9,7 @@ updates:
       time: "06:00"
     open-pull-requests-limit: 10
 
-  - package-ecosystem: "npm"
+  - package-ecosystem: "bun"
     directory: "/examples/jxcg_app"
     target-branch: "dev"
     schedule:
